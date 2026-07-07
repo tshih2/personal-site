@@ -1,0 +1,19 @@
+/* 全站統一的邊界保護:不管任何頁面、任何內容(巨大展示字級、
+   flex/grid 排版等)之後怎麼變化,視窗本身都不可能出現橫向捲動。
+   這條規則作用在 html/body 這個每個頁面都共用的最外層容器,
+   不需要每個頁面、每個元素個別修一次。 */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Case study 三欄版面共用的「欄位標題列」:固定高度 + 垂直置中,
+   讓三欄標題(← BACK / PROJECT / DESCRIPTION)天生就一樣高,
+   底下內容的起始線會自然對齊,不需要靠個別調整 margin 去湊。 */
+.col-header {
+  height: 96px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

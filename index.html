@@ -7,35 +7,19 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Geist:wght@400;600&family=Geist+Mono:wght@500&family=Unbounded:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Geist:wght@400;600&family=Geist+Mono:wght@500&family=Unbounded:wght@800;900&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="theme.js"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            page: '#F2F2F0',
-            card: '#F9F9F9',
-            cardtitle: '#1A1A1A',
-            muted: '#7A7A78',
-          },
-          fontFamily: {
-            unbounded: ['Unbounded', 'sans-serif'],
-            archivo: ['"Archivo Black"', 'sans-serif'],
-            geistmono: ['"Geist Mono"', 'monospace'],
-            geist: ['Geist', 'sans-serif'],
-          },
-        },
-      },
-    }
+    tailwind.config = window.SITE_THEME;
   </script>
 
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-page text-black overflow-x-hidden">
+<body class="bg-stone text-ink">
 
-  <header class="relative bg-white min-h-screen flex flex-col overflow-hidden">
+  <header class="relative bg-cream min-h-screen flex flex-col overflow-hidden">
 
     <div class="flex justify-between items-center gap-4 px-[clamp(1.25rem,4vw,2.5rem)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
       <span>[TIM] CHAO-TING SHIH</span>
@@ -55,23 +39,21 @@
     </div>
 
     <div class="flex-1 flex items-center overflow-hidden">
-      <h1 class="w-full whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
-        Motion Graphic
+      <h1 class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
+        text
       </h1>
     </div>
 
     <div class="flex justify-between items-center px-[clamp(1.25rem,4vw,2.5rem)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em]">
-      <span>V.001.26.07.15</span>
+      <span>V.001.26.07.</span>
     </div>
   </header>
 
   <nav class="fixed inset-x-0 bottom-6 sm:bottom-8 z-50 flex justify-center px-4 pointer-events-none">
-    <div class="pointer-events-auto flex items-center gap-3 sm:gap-5 bg-white border border-black/15 px-5 py-3 sm:px-10 sm:py-[18px] font-geist text-[11px] sm:text-xs tracking-[0.05em] shadow-[0_8px_32px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.06)]">
+    <div class="pointer-events-auto flex items-center gap-3 sm:gap-5 bg-stone border border-black/15 px-5 py-3 sm:px-10 sm:py-[18px] font-geistmono text-[11px] sm:text-xs tracking-[0.167em] shadow-[0_8px_32px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.06)]">
       <a href="#" class="hover:text-neutral-500 transition-colors">HOME</a>
       <span class="text-black/20">|</span>
       <a href="#" class="hover:text-neutral-500 transition-colors">WORKS</a>
-      <span class="text-black/20">|</span>
-      <a href="#" class="hover:text-neutral-500 transition-colors">PLAY</a>
       <span class="text-black/20">|</span>
       <a href="#" class="hover:text-neutral-500 transition-colors">BLOG</a>
       <span class="text-black/20">|</span>
@@ -82,28 +64,22 @@
   <main class="max-w-[1600px] mx-auto px-[clamp(1.25rem,3.33vw,3rem)]">
 
     <section id="works" class="pt-[clamp(3rem,8.33vw,7.5rem)] pb-24">
-      <h2 class="font-geist font-semibold text-xs tracking-[0.125em] uppercase">
+      <h2 class="font-geistmono text-xs tracking-[0.125em] uppercase text-label">
         [ ALL WORKS ]
       </h2>
       <hr class="mt-1 mb-6 border-black/10">
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4 sm:gap-x-6 sm:gap-y-5 lg:gap-x-8 lg:gap-y-6">
 
-        <a href="#" class="group relative block cursor-pointer">
+        <a href="work-detail.html" class="group relative block cursor-pointer">
           <div class="bg-card rounded-xl p-[clamp(1rem,3vw,2.5rem)] transition-transform duration-300 ease-out group-hover:scale-[1.02]">
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
-              <img src="Img/VisionControl_Cover.png" alt="Vistion Control" class="w-full h-full object-contain">
+              <img src="Img/VisionControl_Cover.png" alt="Vision Control" class="w-full h-full object-contain">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">Vistion Control</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">Vistion Control</span>
-              <span class="font-mono text-xs text-neutral-400">— AI Technology</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">Vision Control</span>
+              <span class="text-muted">AI Technology</span>
             </div>
           </div>
         </a>
@@ -113,15 +89,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 02</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 02</span>
-              <span class="font-mono text-xs text-neutral-400">— Motion Graphic</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 02</span>
+              <span class="text-muted">Motion Graphic</span>
             </div>
           </div>
         </a>
@@ -131,15 +101,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 03</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 03</span>
-              <span class="font-mono text-xs text-neutral-400">— Graphic Design</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 03</span>
+              <span class="text-muted">Graphic Design</span>
             </div>
           </div>
         </a>
@@ -149,15 +113,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 04</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 04</span>
-              <span class="font-mono text-xs text-neutral-400">— 3D Render</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 04</span>
+              <span class="text-muted">3D Render</span>
             </div>
           </div>
         </a>
@@ -167,15 +125,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 05</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 05</span>
-              <span class="font-mono text-xs text-neutral-400">— Case Study</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 05</span>
+              <span class="text-muted">Case Study</span>
             </div>
           </div>
         </a>
@@ -185,15 +137,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 06</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 06</span>
-              <span class="font-mono text-xs text-neutral-400">— UI / UX</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 06</span>
+              <span class="text-muted">UI / UX</span>
             </div>
           </div>
         </a>
@@ -203,15 +149,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 07</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 07</span>
-              <span class="font-mono text-xs text-neutral-400">— Motion Graphic</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 07</span>
+              <span class="text-muted">Motion Graphic</span>
             </div>
           </div>
         </a>
@@ -221,15 +161,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 08</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 08</span>
-              <span class="font-mono text-xs text-neutral-400">— Graphic Design</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 08</span>
+              <span class="text-muted">Graphic Design</span>
             </div>
           </div>
         </a>
@@ -239,15 +173,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 09</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 09</span>
-              <span class="font-mono text-xs text-neutral-400">— 3D Render</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 09</span>
+              <span class="text-muted">3D Render</span>
             </div>
           </div>
         </a>
@@ -257,15 +185,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 10</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 10</span>
-              <span class="font-mono text-xs text-neutral-400">— Case Study</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 10</span>
+              <span class="text-muted">Case Study</span>
             </div>
           </div>
         </a>
@@ -275,15 +197,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 11</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 11</span>
-              <span class="font-mono text-xs text-neutral-400">— UI / UX</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 11</span>
+              <span class="text-muted">UI / UX</span>
             </div>
           </div>
         </a>
@@ -293,15 +209,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 12</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 12</span>
-              <span class="font-mono text-xs text-neutral-400">— Motion Graphic</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 12</span>
+              <span class="text-muted">Motion Graphic</span>
             </div>
           </div>
         </a>
@@ -311,15 +221,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">專案名稱 13</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">專案名稱 13</span>
-              <span class="font-mono text-xs text-neutral-400">— Graphic Design</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">專案名稱 13</span>
+              <span class="text-muted">Graphic Design</span>
             </div>
           </div>
         </a>
@@ -329,15 +233,9 @@
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
-            <div class="mt-3 flex items-center justify-between font-geist text-[13px]">
-              <span class="text-cardtitle">文章標題 14</span>
-              <span class="text-muted">Created by Tim Shih</span>
-            </div>
-          </div>
-          <div class="pointer-events-none absolute left-6 bottom-[4.5rem] translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-md">
-              <span class="font-mono text-xs text-neutral-900">文章標題 14</span>
-              <span class="font-mono text-xs text-neutral-400">— Article</span>
+            <div class="mt-3 flex items-center justify-between font-geist text-xs">
+              <span class="font-geistmono text-ink">文章標題 14</span>
+              <span class="text-muted">Article</span>
             </div>
           </div>
         </a>
@@ -359,7 +257,7 @@
     </div>
 
     <div class="flex-1 flex items-center overflow-hidden">
-      <p class="w-full whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
+      <p class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
         TIM SHIH
       </p>
     </div>
