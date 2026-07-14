@@ -10,47 +10,81 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Geist:wght@400;600&family=Geist+Mono:wght@500&family=Unbounded:wght@800;900&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="theme.js"></script>
+  <script src="js/theme.js"></script>
   <script>
     tailwind.config = window.SITE_THEME;
   </script>
 
-  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-stone text-ink">
 
-  <header class="relative bg-cream min-h-screen flex flex-col overflow-hidden">
+  <header class="relative bg-cream dot-grid min-h-screen flex flex-col overflow-hidden">
 
-    <div class="flex justify-between items-center gap-4 px-[clamp(1.25rem,4vw,2.5rem)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
+    <div class="flex justify-between items-center gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
       <span>[TIM] CHAO-TING SHIH</span>
       <span class="hidden sm:inline">PRODUCT DESIGNER</span>
       <span>CREATIVE TECHNOLOGIST</span>
     </div>
 
-    <div class="flex justify-between items-start px-[clamp(1.25rem,4vw,2.5rem)] mt-[clamp(2rem,6vw,4rem)] font-archivo">
-      <span class="text-[clamp(1.25rem,2.08vw,1.875rem)] tracking-[-0.05em]" data-clock-time>02:35pm</span>
-      <div class="text-right leading-[0.85] tracking-[-0.05em]">
-        <div class="flex items-start gap-2 sm:gap-3 justify-end">
-          <span class="text-[clamp(3.5rem,8.33vw,7.5rem)]" data-clock-month>07</span>
-          <span class="mt-1 sm:mt-2 text-[clamp(0.9rem,1.74vw,1.5625rem)]" data-clock-year>2026</span>
-        </div>
-        <div class="text-[clamp(3.5rem,8.33vw,7.5rem)]" data-clock-day>05</div>
-      </div>
-    </div>
+    <div class="relative flex-1 flex items-center overflow-hidden px-[var(--page-margin-x)]">
+      <!-- 背景亂碼跑馬燈:範圍刻意只限定在 hero 這個 flex-1 容器裡
+           (不是整個 header),因為 utility bar/時鐘/底部 index 列固定
+           占用 header 上下兩段,如果跑馬燈的軌道範圍是整個 header,
+           那兩段永遠不可能空出來,實際可用高度就會被壓縮成中間一小段。
+           限定在這個容器內,唯一要避開的保護區塊只剩 hero 文字本身
+           (data-protect),可用高度是這整個容器扣掉文字,不會再被
+           utility bar/時鐘/底部列擠壓。z-index 在主文字之後(DOM 順序
+           早於下面的 <h1>,兩者都沒設 z-index,自然照 DOM 順序疊層),
+           低對比、不可互動、對輔助技術隱藏,純視覺噪點。軌道由
+           js/hero-marquee.js 動態生成/回收,這裡只放一個空容器。 -->
+      <div id="marqueeField" class="pointer-events-none select-none absolute inset-0 overflow-hidden" aria-hidden="true"></div>
 
-    <div class="flex-1 flex items-center overflow-hidden">
-      <h1 class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
-        text
+      <h1 id="heroText" data-protect class="w-full min-w-0 font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]" aria-label="TIM SHIH">
+        <div class="block text-center whitespace-nowrap">
+          <span id="heroLine1" class="glitch-text inline-block align-top" data-text="TIM">TIM</span>
+        </div>
+        <div class="block text-center whitespace-nowrap mt-[var(--hero-line-gap)]">
+          <span id="heroLine2" class="glitch-text inline-block align-top" data-text="SHIH">SHIH</span>
+        </div>
       </h1>
     </div>
 
-    <div class="flex justify-between items-center px-[clamp(1.25rem,4vw,2.5rem)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em]">
-      <span>V.001.26.07.</span>
+    <div class="flex justify-between items-end px-[var(--page-margin-x)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em]">
+      <div>V.001.26.07.</div>
+      <div class="text-right">
+        <div data-clock-time>02:35pm</div>
+        <div><span data-clock-month>07</span>/<span data-clock-day>05</span> <span data-clock-year>2026</span></div>
+      </div>
     </div>
+
+    <!-- 往下滑動提示:預設在 Hero 停留時顯示(data-reveal-invert,
+         跟底部 nav 邏輯相反),進入 Work(Hero 的下一個區塊——滾動
+         順序是 Hero → All Works → About → Resume → Footer)就淡出,
+         共用 js/scroll-reveal.js 同一套 IntersectionObserver,不需要
+         另外寫一份。位移/閃爍兩層動畫都套在箭頭本身(#scrollHintArrow)
+         上,由 js/scroll-hint.js 處理,跟這裡的 reveal opacity(套在
+         外層 #scrollHint 按鈕)是不同元素、不同 GSAP tween,不會互相
+         覆蓋。 -->
+    <button
+      id="scrollHint" type="button" aria-label="Scroll to Works section"
+      data-reveal-on="#works" data-reveal-invert data-reveal-pointer-events
+      class="opacity-100 pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-[clamp(1.5rem,4vw,3rem)] z-10 transition-opacity duration-300"
+    >
+      <svg id="scrollHintArrow" class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5v14M5 12l7 7 7-7" />
+      </svg>
+    </button>
   </header>
 
   <nav class="fixed inset-x-0 bottom-6 sm:bottom-8 z-50 flex justify-center px-4 pointer-events-none">
-    <div class="pointer-events-auto flex items-center gap-3 sm:gap-5 bg-stone border border-black/15 px-5 py-3 sm:px-10 sm:py-[18px] font-geistmono text-[11px] sm:text-xs tracking-[0.167em] shadow-[0_8px_32px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.06)]">
+    <div
+      data-reveal-on="#works" data-reveal-translate data-reveal-pointer-events
+      class="opacity-0 translate-y-2 transition duration-300 ease-out flex items-center gap-3 sm:gap-5 bg-stone border border-black/15 px-5 py-3 sm:px-10 sm:py-[18px] font-geistmono text-[11px] sm:text-xs tracking-[0.167em] shadow-[0_8px_32px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.06)]"
+    >
       <a href="#" class="hover:text-neutral-500 transition-colors">HOME</a>
       <span class="text-black/20">|</span>
       <a href="#" class="hover:text-neutral-500 transition-colors">WORKS</a>
@@ -71,7 +105,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4 sm:gap-x-6 sm:gap-y-5 lg:gap-x-8 lg:gap-y-6">
 
-        <a href="work-detail.html" class="group relative block cursor-pointer">
+        <a href="vision-control.html" class="group relative block cursor-pointer">
           <div class="bg-card rounded-xl p-[clamp(1rem,3vw,2.5rem)] transition-transform duration-300 ease-out group-hover:scale-[1.02]">
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <img src="Img/VisionControl_Cover.png" alt="Vision Control" class="w-full h-full object-contain">
@@ -84,14 +118,14 @@
           </div>
         </a>
 
-        <a href="#" class="group relative block cursor-pointer">
+        <a href="mpaa.html" class="group relative block cursor-pointer">
           <div class="bg-card rounded-xl p-[clamp(1rem,3vw,2.5rem)] transition-transform duration-300 ease-out group-hover:scale-[1.02]">
             <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
             </div>
             <div class="mt-3 flex items-center justify-between font-geist text-xs">
-              <span class="font-geistmono text-ink">專案名稱 02</span>
-              <span class="text-muted">Motion Graphic</span>
+              <span class="font-geistmono text-ink">The Mary Pickford Arts Alliance</span>
+              <span class="text-muted">Product Design</span>
             </div>
           </div>
         </a>
@@ -245,29 +279,225 @@
 
   </main>
 
-  <footer class="relative bg-black text-white min-h-screen flex flex-col overflow-hidden">
+  <!-- About 區塊——不是頁尾,是 All Works 之後的下一個區塊,現在把
+       Resume 跟 Footer 全部收進同一個 pin 住的畫面裡(順序:Hero →
+       All Works → About/Resume/Footer 三段式交叉淡出淡入,全部在同一
+       個 pin 區間內完成,沒有中間的「捲動接續」動作)。深色背景 +
+       深色版圓點網格(.dot-grid-dark,跟 Hero 的 .dot-grid 同一套視覺
+       邏輯只是換色)+ 跟 Hero 同一套跑馬燈邏輯的深色版本。
 
-    <div class="flex justify-between items-center gap-4 px-[clamp(1.25rem,4vw,2.5rem)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
-      <span>[TIM] CHAO-TING SHIH</span>
-      <span class="hidden sm:inline">PRODUCT DESIGNER</span>
-      <span class="flex items-center gap-2">
-        HELLO@TIMSHIH.COM
-        <a href="#" aria-label="Social link placeholder" class="hover:text-neutral-400 transition-colors">✳</a>
-      </span>
+       這個區塊套用 Hero 同一套「pin 住 + scrub 淡入淡出」機制(見
+       js/hero-scroll-fade.js),但這裡是三段式交叉淡出淡入,不是單純
+       淡出:
+       1. #aboutWordmarkLayer(TIM SHIH)淡出
+       2. #resumeContent(Experience / Creative Experience 手風琴,
+          直接是 Resume 區塊「本尊」,不是預覽用的複製品)淡入、取代
+          TIM SHIH 原本佔據的視覺區域
+       3. #aboutFooterLayer(版權列)緊接著淡入——這一層版面位置本來
+          就保留在畫面最下方(跟 wordmark/resume 不同,不是疊在同一塊
+          區域,是 flex-col 裡固定的最後一行,一開始就「在那裡」只是
+          opacity: 0),不是靠捲動把它從畫面外移進來
+       三段都用 autoAlpha(而不是單純 opacity)避免淡出的內容還能被
+       點到/取得焦點。整段交叉淡出淡入都發生在同一個 pin 住、頁面
+       沒有真的在捲動的區間內,pin 結束的瞬間三段都已經定格(wordmark
+       隱藏、resume 跟 footer 都完全顯示),不會再有額外的捲動距離——
+       這個區塊是全站最後一個區塊,pin 解除後就是頁面底部,不需要接到
+       任何後續內容。頂部資訊列跟背景(圓點網格 + 跑馬燈)是這整個 pin
+       住的 #about 本身的其他子元素,原地不動、不參與這三段交叉淡出
+       淡入,不需要額外處理。 -->
+  <section id="about" class="relative bg-black dot-grid-dark text-white overflow-hidden">
+
+    <div class="min-h-screen flex flex-col">
+      <!-- 這排姓名/聯絡資訊在 TIM SHIH 淡出的同一段 scrub 時間軸裡,
+           不是整排一起用單一 y 位移搬過去——Figma 稿要的落地排版邏輯
+           跟 Hero 的橫向三欄(姓名/電話/email 分散在兩端)完全不同,是
+           「姓名一行、電話+email 緊鄰同一行、整體靠左堆疊」。三個
+           元素(#aboutTopRowName/Phone/Email)各自用自己的 x/y tween
+           移動到 #aboutTopRowTarget(見下面 resumeContent 裡的隱藏
+           量測用範本)裡對應元素的位置,不是整個容器搬移。
+           position:relative + z-10 是必要的,不是裝飾用:#resumeContent
+           是 position:absolute,沒有明確 z-index 的 positioned 元素
+           預設會蓋在 static 元素上面,這幾個元素位移落點又剛好會疊到
+           resumeContent 的範圍內,如果不明確拉高疊層順序,移動到定位
+           後會被 resumeContent 蓋住看不到。 -->
+      <div id="aboutTopRow" class="relative z-10 flex justify-between items-center gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
+        <span id="aboutTopRowName">[TIM] CHAO-TING SHIH</span>
+        <span id="aboutTopRowPhone" class="hidden sm:inline">+1 626-319-8937</span>
+        <span id="aboutTopRowEmail" class="flex items-center gap-2">
+          tshih2.chi@gmail.com
+          <a href="#" aria-label="Social link placeholder" class="hover:text-neutral-400 transition-colors">✳</a>
+        </span>
+      </div>
+
+      <!-- 「舞台」區:wordmark 層跟 resume 層都用 absolute inset-0 疊在
+           同一塊區域上做交叉淡出淡入,跑馬燈維持原本 absolute inset-0
+           當最底層背景,三層互不干擾。 -->
+      <div class="relative flex-1 overflow-hidden">
+        <!-- 跟 Hero 同一套跑馬燈邏輯(js/hero-marquee.js 的 initMarquee),
+             只是換一組適合深色背景的白色低透明度階,見該檔案底部的
+             initMarquee('aboutMarqueeField', ...) 呼叫。這階段先只做
+             深色底 + 跑馬燈,不加故障感的色偏/glitch 效果。 -->
+        <div id="aboutMarqueeField" class="pointer-events-none select-none absolute inset-0 overflow-hidden" aria-hidden="true"></div>
+
+        <div id="aboutWordmarkLayer" class="absolute inset-0 flex items-center px-[var(--page-margin-x)]">
+          <p data-protect class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
+            TIM SHIH
+          </p>
+        </div>
+
+        <!-- Resume 本尊(不是預覽複製品)——初始 opacity 0(見
+             js/hero-scroll-fade.js 的 autoAlpha 設定),pin 住的交叉
+             淡出淡入期間才會淡入取代上面的 wordmark。內容比舞台高時
+             用 overflow-y-auto 原生捲動,不需要另外用 JS 判斷「捲到
+             底了沒」——沿用 case-study-template.js 手風琴內容區同一套
+             overflow-y-auto 原生捲動慣例。
+
+             文字可讀性的處理不是靠這一層自己加深色背景(之前用過
+             bg-black/60,但這一層本身是 inset-0 蓋住整個舞台,深色
+             背景會連同下面的 #aboutMarqueeField 跟 #about 自己的
+             .dot-grid-dark 圓點背景一起蓋住、一起變暗,圓點背景因此
+             被誤傷變淡——圓點背景是「整個 About 區塊」共用的視覺層,
+             不該因為 Resume 這個子階段而跟著改變透明度)。改成只調暗
+             跑馬燈本身(見 js/hero-scroll-fade.js 對 #aboutMarqueeField
+             的 opacity tween,是跟這裡淡入同一個 timeline 的另一段),
+             圓點背景完全不受影響,在 wordmark/resume/footer 三個階段
+             都維持同一個透明度。 -->
+        <div id="resumeContent" class="absolute inset-0 overflow-y-auto px-[var(--page-margin-x)] py-[clamp(1.5rem,4vw,3rem)]">
+          <div class="max-w-[1600px] mx-auto">
+            <!-- 隱藏的「落地版面」範本——不會被使用者看到(opacity-0
+                 永遠不淡入,aria-hidden 避免螢幕報讀器重複唸兩次同樣的
+                 資訊),存在的目的有兩個:1) 幫上面 #aboutTopRow 裡三個
+                 各自移動的元素(姓名/電話/email)提供精確的落點座標
+                 (getBoundingClientRect(),見 js/hero-scroll-fade.js);
+                 2) 用 mb-6(24px,對應 Figma 稿的間距)在 resumeContent
+                 的版面裡預留這兩行文字的空間,讓 #aboutSocialLinks 自然
+                 往下推到正確位置,不需要另外寫死一個 margin-top 數字去
+                 湊。排版邏輯是 Figma 稿要的「姓名一行、電話+email 緊鄰
+                 同一行、整體靠左」,不是沿用 Hero 的橫向三欄分散。 -->
+            <div id="aboutTopRowTarget" aria-hidden="true" class="opacity-0 pointer-events-none select-none mb-6 font-geistmono text-xs tracking-[0.167em]">
+              <div id="aboutTopRowTargetName">[TIM] CHAO-TING SHIH</div>
+              <div class="mt-1 flex items-center gap-4">
+                <span id="aboutTopRowTargetPhone">+1 626-319-8937</span>
+                <span id="aboutTopRowTargetEmail" class="flex items-center gap-2">tshih2.chi@gmail.com ✳</span>
+              </div>
+            </div>
+
+            <!-- 社群/簡歷連結——樣式沿用深色背景版本的「元件自己的邊框」
+                 慣例(border-white/15)跟 hover 行為(hover:text-neutral-400,
+                 跟上面聯絡資訊列的 ✳ 連結同一套),不是另外設計一套。
+                 LinkedIn/Instagram 目前還沒有實際帳號網址,先用 # 佔位,
+                 等 Tim 提供後再替換,不要自己編網址。 -->
+            <div id="aboutSocialLinks" class="flex flex-wrap items-center gap-3 mb-10">
+              <!-- TODO: 等 Tim 提供實際 LinkedIn 網址後替換這裡的 # -->
+              <a href="#" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">LinkedIn</a>
+              <!-- TODO: 等 Tim 提供實際 Instagram 網址後替換這裡的 # -->
+              <a href="#" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">Instagram</a>
+              <a href="https://drive.google.com/file/d/1JQNn2m1ZNUl8oHM1VG4Aim4nW4YQRDiX/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">Resume (PDF)</a>
+            </div>
+
+            <!-- 這裡刻意不套 All Works 標籤下方的 hairline 慣例(<hr
+                 class="mt-1 mb-6 border-black/10">)——那是淺色區塊的
+                 系統規則,深色背景這裡視覺上不好看,不要照搬套用。
+                 標籤下面直接留 mb-6 的間距接手風琴,不需要一條線。 -->
+            <h2 class="mb-6 font-geistmono text-xs tracking-[0.125em] uppercase text-white/40">
+              [ RESUME ]
+            </h2>
+
+            <div class="border-t border-white/10">
+              <button id="accordionHeader-experience" type="button" class="col-header w-full cursor-pointer">
+                <h3 class="font-geistmono text-xs text-white/40 uppercase">Experience</h3>
+                <span class="toggle-icon shrink-0 w-9 h-9 flex items-center justify-center rounded-full border border-white/15 font-geistmono text-base">−</span>
+              </button>
+              <div id="accordionContent-experience" class="overflow-hidden">
+                <div class="py-8 flex flex-col gap-10">
+
+                  <div>
+                    <p class="font-geistmono text-xs text-white/60">June 2023 – Sept 2023</p>
+                    <p class="mt-2 font-geist font-semibold text-sm text-white">Internship — Champion Digital Technology Co., Ltd. <span class="font-normal text-white/60">/ Product Design</span></p>
+                    <ul class="mt-3 space-y-2 font-geist text-xs leading-[1.8] text-white/60 list-disc pl-4">
+                      <li>Researched emerging AI trends and developed strategies to integrate generative AI tools into the design workflow.</li>
+                      <li>Designed customized employee benefit products focusing on visual aesthetics and brand identity.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p class="font-geistmono text-xs text-white/60">Sept 2024 – Dec 2024</p>
+                    <p class="mt-2 font-geist font-semibold text-sm text-white">Digi Synergy Studio (ArtCenter Sponsored Project) <span class="font-normal text-white/60">/ UI / UX Design</span></p>
+                    <ul class="mt-3 space-y-2 font-geist text-xs leading-[1.8] text-white/60 list-disc pl-4">
+                      <li>Partnered with the Mary Pickford Foundation to design an experience for an AI-integrated platform aimed at enhancing inter-institutional cooperation.</li>
+                      <li>Engaged with stakeholders to identify core user challenges and developed digital solutions balancing visual clarity with practical functionality.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p class="font-geistmono text-xs text-white/60">Jan 2025 – April 2025</p>
+                    <p class="mt-2 font-geist font-semibold text-sm text-white">Teaching Assistant: Motion Design 1</p>
+                    <ul class="mt-3 space-y-2 font-geist text-xs leading-[1.8] text-white/60 list-disc pl-4">
+                      <li>Conducted project demonstrations and provided technical troubleshooting.</li>
+                      <li>Guided students on project direction and execution, helping bridge the gap between conceptual ideas and polished motion visuals.</li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t border-white/10">
+              <button id="accordionHeader-creative-experience" type="button" class="col-header w-full cursor-pointer">
+                <h3 class="font-geistmono text-xs text-white/40 uppercase">Creative Experience</h3>
+                <span class="toggle-icon shrink-0 w-9 h-9 flex items-center justify-center rounded-full border border-white/15 font-geistmono text-base">+</span>
+              </button>
+              <div id="accordionContent-creative-experience" class="overflow-hidden" style="height: 0;">
+                <div class="py-8 flex flex-col gap-10">
+
+                  <div>
+                    <p class="font-geistmono text-xs text-white/60">May 2024 – Sept 2024</p>
+                    <p class="mt-2 font-geist font-semibold text-sm text-white">Study Abroad Program, Berlin</p>
+                    <ul class="mt-3 space-y-2 font-geist text-xs leading-[1.8] text-white/60 list-disc pl-4">
+                      <li>Gained international perspectives and design insights differing from Asia and the U.S.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p class="font-geistmono text-xs text-white/60">Sept 2020</p>
+                    <p class="mt-2 font-geist font-semibold text-sm text-white">2nd Place Winner — Startup Weekend <span class="font-normal text-white/60">/ UI / UX Design</span></p>
+                    <ul class="mt-3 space-y-2 font-geist text-xs leading-[1.8] text-white/60 list-disc pl-4">
+                      <li>Identified a social challenge and developed a viable solution by translating conceptual ideas into a tangible product prototype.</li>
+                      <li>Presented the final product vision and business model to a panel of professional investors.</li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <hr class="border-white/10">
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer 層——版面位置固定在 #about 這個 flex-col 的最後一行
+           (跟 Hero 的底部版本號/日期時鐘列是同一種「flex-col 最後一個
+           flex-none 列」寫法),一開始就 autoAlpha:0(見
+           js/hero-scroll-fade.js),三段淡出淡入的最後一段才淡入顯示。
+           不需要另外的 <section>,也不需要捲動才會出現。 -->
+      <footer id="aboutFooterLayer" class="px-[var(--page-margin-x)] py-[clamp(1.5rem,4vw,3rem)] flex justify-between items-center font-geistmono text-xs tracking-[0.167em]">
+        <span>© 2026 ALL RIGHTS RESERVED</span>
+        <span>TIM SHIH</span>
+      </footer>
     </div>
 
-    <div class="flex-1 flex items-center overflow-hidden">
-      <p class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
-        TIM SHIH
-      </p>
-    </div>
+  </section>
 
-    <div class="flex justify-between items-center px-[clamp(1.25rem,4vw,2.5rem)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em]">
-      <span>© 2026 ALL RIGHTS RESERVED</span>
-      <span>TIM SHIH</span>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/hero-glitch.js"></script>
+  <script src="js/hero-marquee.js"></script>
+  <script src="js/hero-scroll-fade.js"></script>
+  <script src="js/scroll-reveal.js"></script>
+  <script src="js/scroll-hint.js"></script>
+  <script src="js/accordion.js"></script>
+  <script>
+    initAccordion(['experience', 'creative-experience'], { defaultOpenId: 'experience' });
+  </script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node test-template.js)",
+      "Bash(node test-responsive.js)",
+      "Bash(node test-breakpoint-check.js)",
+      "Bash(node test-title-overflow.js)",
+      "Bash(node test-title-debug.js)"
+    ]
+  }
+}

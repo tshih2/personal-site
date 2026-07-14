@@ -1,0 +1,97 @@
+/* 全站統一的邊界保護:不管任何頁面、任何內容(巨大展示字級、
+   flex/grid 排版等)之後怎麼變化,視窗本身都不可能出現橫向捲動。
+   這條規則作用在 html/body 這個每個頁面都共用的最外層容器,
+   不需要每個頁面、每個元素個別修一次。 */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+:root {
+  /* 首頁 header/footer 共用的左右邊界——utility bar、時鐘列、hero
+     巨大展示字、底部 index 列全部套用同一個變數(`px-[var(--page-margin-x)]`),
+     確保這幾排視覺上永遠對齊,以後要調整留白只需要改這一處。 */
+  --page-margin-x: clamp(1.25rem, 4vw, 2.5rem);
+
+  /* Hero 兩行交疊排版:第二行的 margin-top,數值越負兩行貼越近。
+     見 index.html 的 #heroLine2(`mt-[var(--hero-line-gap)]`)。
+     上一輪定案 -0.03em 是實測出來的安全下限(用 Playwright 量測四句
+     文案的 line1/line2 getBoundingClientRect() 間距,-0.04em 起
+     CREATIVE/TECHNOLOGIST 就開始貼合)。這一輪要求再拉開約 10px:
+     10px 換算成 em 是用當時測試時的中間字級(約 200px)反推,
+     10/200 = 0.05em,疊加在 -0.03em 上得到 +0.02em。因為是 em 單位,
+     實際 px 增量會隨字級縮放(140px 字級時約 +7px,274px 字級時約
+     +13.7px),不是每句都精確等於 10px,但這是刻意的——用 em 才能
+     維持跟 clamp() 響應式字級掛鉤,不要改成寫死的 px 蓋掉它。
+     以後要再調整,一樣要重新用 Playwright 量測實際 px 間距再改,
+     不要只憑肉眼截圖判斷。 */
+  --hero-line-gap: 0.02em;
+
+  /* ink 色的原生 CSS 變數版本——跟 js/theme.js 的 Tailwind `ink` token
+     是同一個顏色(#111111),只是給 JS 動態產生的元素(例如
+     js/hero-marquee.js 用 JS 生成的跑馬燈軌道)在沒辦法用 Tailwind
+     class 的情況下也能直接讀同一個顏色來源,不需要另外寫死一份 hex。
+     修改顏色時這裡跟 js/theme.js 的 `ink` 要一起改,兩邊才不會兜不起來。 */
+  --ink: #111111;
+}
+
+/* Case study 版面共用的「標題列」:固定高度 + 垂直置中,
+   讓左欄的「← BACK」跟右欄的 Overview/每個手風琴標題天生就
+   一樣高,底下內容的起始線會自然對齊,不需要靠個別調整 margin
+   去湊。新增手風琴區塊時套用這個 class 就會自動對齊,不用
+   額外處理。 */
+.col-header {
+  height: 96px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 「系統故障」美學:整齊的點陣網格背景,用 ink 色的低透明度做點,
+   不需要新增顏色 token——套用在任何區塊背景上即可,間距用 CSS
+   變數 --dot-size 控制,預設 24px。 */
+.dot-grid {
+  --dot-size: 24px;
+  background-image: radial-gradient(rgba(17, 17, 17, 0.12) 1px, transparent 1px);
+  background-size: var(--dot-size) var(--dot-size);
+}
+
+/* 深色背景版本的圓點網格——跟 .dot-grid 同一套視覺邏輯(同樣的
+   --dot-size,只是換成適合深色背景的白色低透明度點),用在 About
+   這類深色區塊上,維持跟 Hero 的圓點背景是「同一個系統」而不是
+   兩套不相干的紋理。 */
+.dot-grid-dark {
+  --dot-size: 24px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: var(--dot-size) var(--dot-size);
+}
+
+/* 「系統故障」美學:巨大展示字的紅藍(cyan/red)錯位色偏,模擬印刷
+   對版沒對準的故障感。用 ::before/::after 疊兩層同文字、用
+   mix-blend-mode:multiply 讓重疊處自然變暗,不需要額外遮罩或 JS。
+   套用在任何一個 `<span class="glitch-text" data-text="同樣的文字內容">`
+   上即可(hero 現在是兩行,所以套在「每一行」自己的 span 上,不是整個
+   `<h1>`),data-text 要跟可見文字內容一致,兩層才會疊對齊。
+   錯位量用 --glitch-dx/--glitch-dy 兩個 CSS 變數控制,預設 fallback
+   是 0(靜止狀態乾淨無色偏);js/hero-glitch.js 只有在故障動畫期間
+   才會用 GSAP 把這兩個變數動態調大做出色偏抖動,--glitch-dx/dy 是
+   inherit 下來的,設在共同的祖先(h1)上兩行就會同步變化。 */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+}
+.glitch-text::before {
+  color: #49c7d3;
+  transform: translate(calc(var(--glitch-dx, 0em) * -1), var(--glitch-dy, 0em));
+}
+.glitch-text::after {
+  color: #e16c67;
+  transform: translate(var(--glitch-dx, 0em), calc(var(--glitch-dy, 0em) * -1));
+}
