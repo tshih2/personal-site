@@ -26,8 +26,6 @@
 
     <div class="flex justify-between items-center gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
       <span>[TIM] CHAO-TING SHIH</span>
-      <span class="hidden sm:inline">PRODUCT DESIGNER</span>
-      <span>CREATIVE TECHNOLOGIST</span>
     </div>
 
     <div class="relative flex-1 flex items-center overflow-hidden px-[var(--page-margin-x)]">
@@ -66,9 +64,11 @@
          順序是 Hero → All Works → About → Resume → Footer)就淡出,
          共用 js/scroll-reveal.js 同一套 IntersectionObserver,不需要
          另外寫一份。位移/閃爍兩層動畫都套在箭頭本身(#scrollHintArrow)
-         上,由 js/scroll-hint.js 處理,跟這裡的 reveal opacity(套在
-         外層 #scrollHint 按鈕)是不同元素、不同 GSAP tween,不會互相
-         覆蓋。 -->
+         上,由 js/scroll-hint.js 的通用工廠 initScrollHint()(頁面底部
+         明確呼叫,見 <script> 區塊,跟 initAccordion() 同一種呼叫慣例)
+         處理,跟這裡的 reveal opacity(套在外層 #scrollHint 按鈕)是
+         不同元素、不同 GSAP tween,不會互相覆蓋。About/Resume 區塊底部
+         的往上箭頭是同一個工廠函式的第二個呼叫,方向相反。 -->
     <button
       id="scrollHint" type="button" aria-label="Scroll to Works section"
       data-reveal-on="#works" data-reveal-invert data-reveal-pointer-events
@@ -91,7 +91,11 @@
       <span class="text-black/20">|</span>
       <a href="#" class="hover:text-neutral-500 transition-colors">BLOG</a>
       <span class="text-black/20">|</span>
-      <a href="#" class="hover:text-neutral-500 transition-colors">ABOUT</a>
+      <!-- 點擊直接跳到 About/Resume 這個 pin 住區塊的「完成態」(TIM
+           SHIH 已淡出、Resume 內容可見),不是跳到 pin 剛開始、TIM SHIH
+           大字還在的那個瞬間——實際捲動邏輯見 js/hero-scroll-fade.js
+           的 scrollToAboutLanded(),這裡只負責攔截預設的錨點跳轉。 -->
+      <a href="#" id="navAboutLink" class="hover:text-neutral-500 transition-colors">ABOUT</a>
     </div>
   </nav>
 
@@ -289,10 +293,13 @@
        這個區塊套用 Hero 同一套「pin 住 + scrub 淡入淡出」機制(見
        js/hero-scroll-fade.js),但這裡是三段式交叉淡出淡入,不是單純
        淡出:
-       1. #aboutWordmarkLayer(TIM SHIH)淡出
-       2. #resumeContent(Experience / Creative Experience 手風琴,
-          直接是 Resume 區塊「本尊」,不是預覽用的複製品)淡入、取代
-          TIM SHIH 原本佔據的視覺區域
+       1. #aboutWordmarkLayer(TIM SHIH)淡出,同時 #aboutTopRow 裡
+          姓名/電話/email 從 Hero 式的橫向三欄位移、重新編排成 Figma
+          稿要的「姓名一行、電話+email 同一行」堆疊排版,視覺上像是
+          落地變成 #resumeContent 最上面的一塊內容
+       2. #resumeContent(Experience / Creative Experience 手風琴,直接是
+          Resume 區塊「本尊」,不是預覽用的複製品)淡入、取代 TIM SHIH
+          原本佔據的視覺區域
        3. #aboutFooterLayer(版權列)緊接著淡入——這一層版面位置本來
           就保留在畫面最下方(跟 wordmark/resume 不同,不是疊在同一塊
           區域,是 flex-col 裡固定的最後一行,一開始就「在那裡」只是
@@ -302,9 +309,9 @@
        沒有真的在捲動的區間內,pin 結束的瞬間三段都已經定格(wordmark
        隱藏、resume 跟 footer 都完全顯示),不會再有額外的捲動距離——
        這個區塊是全站最後一個區塊,pin 解除後就是頁面底部,不需要接到
-       任何後續內容。頂部資訊列跟背景(圓點網格 + 跑馬燈)是這整個 pin
-       住的 #about 本身的其他子元素,原地不動、不參與這三段交叉淡出
-       淡入,不需要額外處理。 -->
+       任何後續內容。背景(圓點網格 + 跑馬燈)是這整個 pin 住的 #about
+       本身的其他子元素,原地不動、不參與這三段交叉淡出淡入,不需要
+       額外處理。 -->
   <section id="about" class="relative bg-black dot-grid-dark text-white overflow-hidden">
 
     <div class="min-h-screen flex flex-col">
@@ -315,17 +322,77 @@
            元素(#aboutTopRowName/Phone/Email)各自用自己的 x/y tween
            移動到 #aboutTopRowTarget(見下面 resumeContent 裡的隱藏
            量測用範本)裡對應元素的位置,不是整個容器搬移。
+
+           這個容器本身不能是 #resumeContent 的真實子節點——早期版本
+           試過這樣做,結果撞上一道無法繞過的牆:#resumeContent 是
+           overflow-y-auto(它的祖先「舞台」容器還多一層
+           overflow-hidden),任何被 transform 移到這兩層裁切範圍「外面」
+           (也就是這裡、頂部資訊列原本的位置)的子元素,一律會被裁掉、
+           完全看不見。所以「本尊活在 resumeContent 裡、從外面飛進來」
+           這個方向在技術上走不通,只能維持「本尊活在 resumeContent
+           外面、疊在上面」的做法,但換一種方式解決重疊 bug——見下面
+           js/hero-scroll-fade.js 對 #resumeContent 加的 scroll 事件
+           同步:當 #resumeContent 因為內容過長觸發內部捲動時,額外把
+           這個容器往上位移相同的距離,讓它跟 [ RESUME ] / EXPERIENCE
+           保持視覺同步,不會再各自捲動、疊在一起。
+
            position:relative + z-10 是必要的,不是裝飾用:#resumeContent
            是 position:absolute,沒有明確 z-index 的 positioned 元素
            預設會蓋在 static 元素上面,這幾個元素位移落點又剛好會疊到
            resumeContent 的範圍內,如果不明確拉高疊層順序,移動到定位
-           後會被 resumeContent 蓋住看不到。 -->
-      <div id="aboutTopRow" class="relative z-10 flex justify-between items-center gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
+           後會被 resumeContent 蓋住看不到。
+
+           手機寬度(`sm:` 以下)三個元素(姓名+電話+email)硬擠成一行
+           會溢出或需要截斷,之前用 `hidden sm:inline` 把電話直接藏起來
+           繞過這個問題,但這樣手機上永遠看不到電話號碼,不是真的修好
+           溢出、只是把內容藏了。改成 `flex-col` 直向堆疊(電話號碼一律
+           顯示,不再隱藏),`sm:` 以上寬度足夠時才切回原本的橫向
+           `justify-between` 排列。這個元件的位置座標會被上面 GSAP 的
+           computeDelta 即時量測,不管目前是直向還是橫向排列都會量到
+           正確的當下位置,不需要額外處理。 -->
+      <div id="aboutTopRow" class="relative z-10 flex flex-col items-start gap-2.5 sm:flex-row sm:justify-between sm:items-center sm:gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
         <span id="aboutTopRowName">[TIM] CHAO-TING SHIH</span>
-        <span id="aboutTopRowPhone" class="hidden sm:inline">+1 626-319-8937</span>
+        <!-- 電話跟 email 各自有一顆獨立的複製按鈕,兩者標記/樣式完全對稱
+             (唯一差異是 id 分別是 aboutPhoneCopyBtn/aboutEmailCopyBtn)——
+             靠 js/copy-button.js 的 initCopyButton() 各自初始化一次,
+             各自的 default/success 圖示切換互不影響對方,不是共用一個
+             狀態。圖示、顏色、hover 效果說明見下面 email 那顆按鈕的
+             註解,不重複寫兩遍。 -->
+        <span id="aboutTopRowPhone" class="flex items-center gap-2">
+          +1 626-319-8937
+          <button
+            type="button" id="aboutPhoneCopyBtn" aria-label="Copy phone number to clipboard"
+            class="relative inline-flex items-center justify-center shrink-0 text-white/70 hover:text-white hover:scale-110 transition-all duration-200 cursor-pointer"
+          >
+            <svg data-copy-icon-default class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+            </svg>
+            <svg data-copy-icon-success class="hidden w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+          </button>
+        </span>
         <span id="aboutTopRowEmail" class="flex items-center gap-2">
           tshih2.chi@gmail.com
-          <a href="#" aria-label="Social link placeholder" class="hover:text-neutral-400 transition-colors">✳</a>
+          <!-- 複製 email 按鈕——不是導覽連結,改用 <button> 語意更正確。
+               圖示用兩個重疊的 <svg>(預設的複製圖示 + 複製成功的打勾),
+               靠 js/copy-button.js 的 initCopyButton() 切換顯示,邏輯
+               集中寫成通用工具,不是這裡寫死一份 one-off 邏輯。顏色故意
+               比周圍文字淡一階(text-white/70)避免搶眼,hover 時才變亮
+               + 微幅放大提示可互動。 -->
+          <button
+            type="button" id="aboutEmailCopyBtn" aria-label="Copy email to clipboard"
+            class="relative inline-flex items-center justify-center shrink-0 text-white/70 hover:text-white hover:scale-110 transition-all duration-200 cursor-pointer"
+          >
+            <svg data-copy-icon-default class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+            </svg>
+            <svg data-copy-icon-success class="hidden w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+          </button>
         </span>
       </div>
 
@@ -340,7 +407,18 @@
         <div id="aboutMarqueeField" class="pointer-events-none select-none absolute inset-0 overflow-hidden" aria-hidden="true"></div>
 
         <div id="aboutWordmarkLayer" class="absolute inset-0 flex items-center px-[var(--page-margin-x)]">
-          <p data-protect class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,19vw,17.5rem)]">
+          <!-- 這裡的 clamp() 係數不能直接沿用 Hero #heroText 的 19vw——
+               Hero 的「TIM」「SHIH」是拆成兩行、每行只有一個單字,這裡
+               「TIM SHIH」是同一行的完整字串,同樣係數在單行情境下會
+               比容器寬,導致文字被外層 overflow-hidden 裁掉(在 320px
+               到約 1474px 之間的所有寬度都會裁到,包括 1440 桌面基準
+               寬度,只是因為裁切發生在有 overflow-hidden 的區域內、
+               不會造成整頁橫向捲動,才會在只檢查
+               document.documentElement.scrollWidth 的驗證方式下被
+               忽略)。改成 15vw 是照 CLAUDE.md 的換算公式重新針對
+               「TIM SHIH」單行字串量測寬度反推,在 320px 到 1440px
+               之間都留有安全餘裕。 -->
+          <p data-protect class="w-full min-w-0 whitespace-nowrap text-center font-unbounded font-black leading-[0.8] tracking-[-0.064em] text-[clamp(2.5rem,15vw,17.5rem)]">
             TIM SHIH
           </p>
         </div>
@@ -373,26 +451,58 @@
                  的版面裡預留這兩行文字的空間,讓 #aboutSocialLinks 自然
                  往下推到正確位置,不需要另外寫死一個 margin-top 數字去
                  湊。排版邏輯是 Figma 稿要的「姓名一行、電話+email 緊鄰
-                 同一行、整體靠左」,不是沿用 Hero 的橫向三欄分散。 -->
+                 同一行、整體靠左」,不是沿用 Hero 的橫向三欄分散——但這是
+                 桌面寬度的稿子,手機寬度下電話+email 硬擠同一行會溢出,
+                 所以電話/email 這行也比照上面 #aboutTopRow 的做法,
+                 `sm:` 以下先各自獨立成行,`sm:` 以上才照 Figma 稿合併
+                 同一行。姓名行跟電話/email 行之間的間距(mt-2.5)要跟
+                 上面 #aboutTopRow 手機版三行堆疊的間距(gap-2.5)一致,
+                 兩者是「同一組資訊」在動畫前後的樣子,間距不該不一樣。
+
+                 這個範本本身不會被 GSAP 位移——#aboutTopRow 那組本尊
+                 是「飛」進來疊在這塊保留空間上面,不是真的變成這裡的
+                 DOM 子節點(見上面 #aboutTopRow 的註解,說明了為什麼
+                 本尊不能真的活在 #resumeContent 裡面)。這意味著本尊
+                 跟這個容器原生是兩個獨立的捲動座標系,#resumeContent
+                 因內容過長觸發內部捲動時,js/hero-scroll-fade.js 會
+                 額外監聽這個捲動、同步調整本尊的位移量,讓兩者視覺上
+                 保持對齊,不會出現本尊浮在 [ RESUME ] / EXPERIENCE
+                 上面的重疊問題。電話/email 旁邊的複製圖示這裡也各自要
+                 放一份(純 <svg>,不需要真的可以點,因為這個範本本身
+                 pointer-events-none/aria-hidden,不會被使用者看到或
+                 點到)——只是為了讓量出來的落點寬度,跟 #aboutTopRow
+                 裡「真的會被點擊」的那兩個複製按鈕的實際寬度一致,不然
+                 尺寸對不上,落點座標會偏。 -->
             <div id="aboutTopRowTarget" aria-hidden="true" class="opacity-0 pointer-events-none select-none mb-6 font-geistmono text-xs tracking-[0.167em]">
               <div id="aboutTopRowTargetName">[TIM] CHAO-TING SHIH</div>
-              <div class="mt-1 flex items-center gap-4">
-                <span id="aboutTopRowTargetPhone">+1 626-319-8937</span>
-                <span id="aboutTopRowTargetEmail" class="flex items-center gap-2">tshih2.chi@gmail.com ✳</span>
+              <div class="mt-2.5 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-4">
+                <span id="aboutTopRowTargetPhone" class="flex items-center gap-2">
+                  +1 626-319-8937
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+                  </svg>
+                </span>
+                <span id="aboutTopRowTargetEmail" class="flex items-center gap-2">
+                  tshih2.chi@gmail.com
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+                  </svg>
+                </span>
               </div>
             </div>
 
             <!-- 社群/簡歷連結——樣式沿用深色背景版本的「元件自己的邊框」
-                 慣例(border-white/15)跟 hover 行為(hover:text-neutral-400,
-                 跟上面聯絡資訊列的 ✳ 連結同一套),不是另外設計一套。
-                 LinkedIn/Instagram 目前還沒有實際帳號網址,先用 # 佔位,
-                 等 Tim 提供後再替換,不要自己編網址。 -->
+                 慣例(border-white/15)跟 hover 行為(hover:text-neutral-400),
+                 四個按鈕(LinkedIn/Instagram/GitHub/Resume PDF)共用同一套
+                 樣式跟間距,不是各自客製。全部指向外部網址,一律
+                 target="_blank" + rel="noopener noreferrer"。 -->
             <div id="aboutSocialLinks" class="flex flex-wrap items-center gap-3 mb-10">
-              <!-- TODO: 等 Tim 提供實際 LinkedIn 網址後替換這裡的 # -->
-              <a href="#" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">LinkedIn</a>
-              <!-- TODO: 等 Tim 提供實際 Instagram 網址後替換這裡的 # -->
-              <a href="#" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">Instagram</a>
+              <a href="https://www.linkedin.com/in/tim-shih-6b819b221/" target="_blank" rel="noopener noreferrer" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">LinkedIn</a>
+              <a href="https://www.instagram.com/71ng.chi/" target="_blank" rel="noopener noreferrer" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">Instagram</a>
               <a href="https://drive.google.com/file/d/1JQNn2m1ZNUl8oHM1VG4Aim4nW4YQRDiX/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">Resume (PDF)</a>
+              <a href="https://github.com/tshih2?tab=repositories" target="_blank" rel="noopener noreferrer" class="border border-white/15 rounded-full px-4 py-2 font-geistmono text-xs uppercase tracking-[0.1em] hover:text-neutral-400 hover:border-white/25 transition-colors">GitHub</a>
             </div>
 
             <!-- 這裡刻意不套 All Works 標籤下方的 hairline 慣例(<hr
@@ -483,7 +593,20 @@
            不需要另外的 <section>,也不需要捲動才會出現。 -->
       <footer id="aboutFooterLayer" class="px-[var(--page-margin-x)] py-[clamp(1.5rem,4vw,3rem)] flex justify-between items-center font-geistmono text-xs tracking-[0.167em]">
         <span>© 2026 ALL RIGHTS RESERVED</span>
-        <span>TIM SHIH</span>
+        <!-- 往上捲回 Hero 頂端的提示箭頭——樣式/動畫邏輯完全沿用 Hero
+             底部往下箭頭那套(js/scroll-hint.js 的 initScrollHint()),
+             只是方向相反、SVG path 上下鏡射。這顆按鈕不需要自己另外接
+             data-reveal-on/IntersectionObserver 淡入淡出,顯示/隱藏
+             直接跟著 #aboutFooterLayer 整列的 autoAlpha(見
+             js/hero-scroll-fade.js 的三段式 timeline)走。 -->
+        <button
+          id="aboutScrollTopHint" type="button" aria-label="Scroll back to top"
+          class="inline-flex items-center justify-center"
+        >
+          <svg id="aboutScrollTopHintArrow" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19v-14M5 12l7-7 7 7" />
+          </svg>
+        </button>
       </footer>
     </div>
 
@@ -496,8 +619,27 @@
   <script src="js/scroll-reveal.js"></script>
   <script src="js/scroll-hint.js"></script>
   <script src="js/accordion.js"></script>
+  <script src="js/copy-button.js"></script>
   <script>
     initAccordion(['experience', 'creative-experience'], { defaultOpenId: 'experience' });
+    initCopyButton(document.getElementById('aboutPhoneCopyBtn'), '+1 626-319-8937');
+    initCopyButton(document.getElementById('aboutEmailCopyBtn'), 'tshih2.chi@gmail.com');
+    initScrollHint('scrollHint', 'scrollHintArrow', {
+      direction: 'down',
+      onClick: () => document.getElementById('works').scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    });
+    initScrollHint('aboutScrollTopHint', 'aboutScrollTopHintArrow', {
+      direction: 'up',
+      // 不用 header.scrollIntoView()——header 本身在捲動途中會被
+      // ScrollTrigger 的 pin 機制重新設回 position:fixed(捲動位置一旦
+      // 回到 Hero 的 pin 區間內就會重新 pin 住),瀏覽器原生的
+      // scrollIntoView 在目標元素於捲動過程中途「變成 fixed」時會找不到
+      // 正確的終點,實測會卡在 pin 區間的邊界(scrollY 900,這時
+      // #heroText 剛好整個淡出到 opacity:0,畫面上完全看不到 TIM
+      // SHIH)。Hero 本來就是頁面第一個區塊,直接捲到 scrollY 0 就等於
+      // 捲到 Hero 頂端,不需要依賴任何元素的座標。
+      onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+    });
   </script>
 </body>
 </html>

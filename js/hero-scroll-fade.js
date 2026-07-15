@@ -25,10 +25,27 @@
 //       只需要往下移,三者的位移量都不一樣,不能共用同一個 tween。
 //       落點座標是量測 #aboutTopRowTarget(resumeContent 裡一個永遠
 //       opacity:0、純粹用來占版面 + 提供落點座標的隱藏範本)裡對應
-//       元素的位置,不是寫死的數字。整體效果是讓 About 讀起來像
-//       「姓名/聯絡資訊 → 社群按鈕 → Resume 手風琴」一個完整有層次的
-//       版面,不是「頂部資訊列固定、下面內容各自淡入」兩層互不相干的
-//       感覺。
+//       元素的位置,不是寫死的數字。
+//
+//       這組元素(#aboutTopRow)本身不能是 #resumeContent 的真實子
+//       節點——試過這個方向,結果撞上一道無法繞過的牆:#resumeContent
+//       是 overflow-y-auto(它的祖先「舞台」容器還多一層
+//       overflow-hidden),任何被 transform 移到這兩層裁切範圍「外面」
+//       (也就是 #aboutTopRow 原本的位置)的子元素,一律會被裁掉、完全
+//       看不見——「本尊活在 resumeContent 裡、從外面飛進來」這個方向
+//       在技術上走不通。所以本尊只能繼續活在 resumeContent 外面、
+//       疊在上面,但這樣一來本尊跟 resumeContent 是兩個獨立的捲動
+//       座標系:手機螢幕矮,resumeContent 內容常態性超出可視高度,
+//       使用者滑動時瀏覽器 nested scroll chaining 會優先捲動
+//       resumeContent 自己的內容(把 [ RESUME ] 標籤、EXPERIENCE 往上
+//       推),但本尊的位置是另一個獨立算出來的 transform,不會跟著
+//       一起動,兩個座標系一旦不同步,姓名/電話/email 就會浮在
+//       [ RESUME ] / EXPERIENCE 上面蓋住它們——這是實際踩到的手機版
+//       重疊 bug。修法不是硬把本尊塞進 resumeContent(會被裁切),而是
+//       額外監聽 #resumeContent 的 scroll 事件,resumeContent 每捲動
+//       多少,就同步把 #aboutTopRow 往反方向位移多少(見下面
+//       `syncTopRowToResumeScroll`),讓兩個獨立的座標系保持視覺同步,
+//       不需要真的共用同一個 DOM 節點。
 //    b. #resumeContent(Experience / Creative Experience 手風琴本尊,
 //       不是預覽複製品)淡入、取代 TIM SHIH 原本佔據的視覺區域
 //    c. #aboutFooterLayer(版權列)緊接著淡入——這一層版面位置本來就
@@ -58,7 +75,6 @@
   const aboutFooterLayer = document.getElementById('aboutFooterLayer');
   const aboutMarqueeField = document.getElementById('aboutMarqueeField');
   const aboutTopRow = document.getElementById('aboutTopRow');
-  const aboutSocialLinks = document.getElementById('aboutSocialLinks');
   const aboutTopRowTarget = document.getElementById('aboutTopRowTarget');
   // 姓名/電話/email 三個「會移動」的來源元素,跟它們各自在
   // #aboutTopRowTarget 隱藏範本裡對應的落點元素——一一配對,不是共用
@@ -70,6 +86,14 @@
   ].filter((pair) => pair.from && pair.to);
   const aboutReady = aboutSection && aboutWordmarkLayer && resumeContent && aboutFooterLayer;
   if ((!header || !heroText) && !aboutReady) return;
+
+  // About pin 的 ScrollTrigger 實例——建立時機在下面
+  // matchMedia('(prefers-reduced-motion: no-preference)') 分支裡,提升
+  //到這個外層作用域是為了讓 scrollToAboutLanded()(給底部 nav ABOUT
+  // 連結用)可以讀到它的 `.end`(pin 結束、也就是 scrub 進度 100% 那個
+  // scroll 位置的像素值)。matchMedia 停止匹配(例如切換
+  // prefers-reduced-motion)時會歸零,避免拿到已經 kill 掉的殘留實例。
+  let aboutSt = null;
 
   // 量測某個「來源元素」現在的位置,跟它要移動過去的「落點元素」
   // (#aboutTopRowTarget 隱藏範本裡的對應元素)之間差多少像素——用
@@ -175,7 +199,7 @@
       // pin 區間抓 150vh——比原本兩段式的 110vh 更長,因為現在塞了
       // 三段交叉淡出淡入,要維持「跟之前一樣自然、不倉促」的節奏,
       // 區間要跟著多出來的內容量按比例拉長,不是照抄原本的數字。
-      const aboutSt = ScrollTrigger.create({
+      aboutSt = ScrollTrigger.create({
         trigger: aboutSection,
         start: 'top top',
         end: '+=150%',
@@ -183,10 +207,43 @@
         scrub: true,
         animation: aboutTl,
         invalidateOnRefresh: true,
+        // resumeContent.scrollTop 是瀏覽器原生狀態,不會因為這個區塊
+        // 暫時離開可視範圍就自動歸零——使用者如果在上一次進入 pin 時
+        // 把 resumeContent 內部捲動過(手機上很容易發生),離開再重新
+        // 進入 pin 時,如果不主動歸零,#aboutTopRow 一開始就會帶著
+        // 上一輪殘留的位移量,在 wordmark 都還沒開始淡出時就顯得莫名
+        // 位移過。onLeave/onLeaveBack 涵蓋「往下捲出 pin」跟「往上捲
+        // 出 pin」兩個方向,確保下一次重新進入永遠是乾淨的初始狀態。
+        onLeave: () => { resumeContent.scrollTop = 0; },
+        onLeaveBack: () => { resumeContent.scrollTop = 0; },
       });
+
+      // 修正手機版重疊 bug 的關鍵一段:#aboutTopRow(姓名/電話/email
+      // 本尊的容器)技術上不能真的活在 #resumeContent 裡面(見上面檔案
+      // 開頭註解的完整說明——會被 overflow-y-auto/overflow-hidden 裁
+      // 掉),只能繼續疊在它上面,靠這段監聽 #resumeContent 自己的原生
+      // scroll 事件,把 resumeContent 目前捲動的距離,同步反向套用在
+      // #aboutTopRow 這個容器上——resumeContent 往上捲 N px([ RESUME ]/
+      // EXPERIENCE 跟著往上移 N px),#aboutTopRow 就額外往上位移
+      // 同樣的 N px,兩個獨立的捲動座標系因此永遠保持視覺對齊,不會再
+      // 出現姓名/電話/email 浮在 [ RESUME ]/EXPERIENCE 上面的重疊。
+      // 這個 y 值套在容器本身(#aboutTopRow),跟套在姓名/電話/email
+      // 各自身上的 scrub 位移 tween(上面的 travelPairs)是兩個不同的
+      // 元素、互不衝突,不需要合併計算——容器的 y 平常是 0,只有
+      // resumeContent 內部捲動時才會被這裡改動。用 `scrollTop` 直接
+      // 算絕對值(不是累加相對值),每次都重新算一次目前的正確位移量,
+      // 不會有累加誤差越飄越偏的風險。
+      function syncTopRowToResumeScroll() {
+        if (!aboutTopRow) return;
+        gsap.set(aboutTopRow, { y: -resumeContent.scrollTop });
+      }
+      resumeContent.addEventListener('scroll', syncTopRowToResumeScroll);
 
       cleanups.push(() => {
         aboutSt.kill();
+        aboutSt = null;
+        resumeContent.removeEventListener('scroll', syncTopRowToResumeScroll);
+        if (aboutTopRow) gsap.set(aboutTopRow, { y: 0 });
         gsap.set(aboutWordmarkLayer, { autoAlpha: 1 });
         gsap.set(resumeContent, { autoAlpha: 1 });
         gsap.set(aboutFooterLayer, { autoAlpha: 1 });
@@ -204,12 +261,12 @@
   // 就是 absolute inset-0 疊在 wordmark 上面,aboutFooterLayer 預設是
   // autoAlpha:0(見上面),如果什麼都不做,沒有動畫可以把它們「淡入
   // 顯示」,會變成 Resume 永遠疊在 wordmark 上擋住它、Footer 永遠隱形
-  // 兩邊都看不到。改成把 wordmark/resume 兩層轉回正常文件流(position:
-  // relative,不再疊在同一塊區域),footer 層直接設回完全顯示,三塊
-  // 內容依序排列,使用者用一般捲動依序看到,不需要任何 pin 或 opacity
-  // 動畫。用 gsap.set 而不是直接改 classList,是因為 matchMedia 只會
-  // 自動 revert 用 GSAP 設過的 inline style,這樣切換動態偏好設定時
-  // 才不會留下沒清乾淨的殘留樣式。
+  // 兩邊都看不到。改成把 wordmark/resume 兩層轉回正常
+  // 文件流(position: relative,不再疊在同一塊區域),footer 層直接設回
+  // 完全顯示,三塊內容依序排列,使用者用一般捲動依序看到,不需要任何
+  // pin 或 opacity 動畫。用 gsap.set 而不是直接改 classList,是因為
+  // matchMedia 只會自動 revert 用 GSAP 設過的 inline style,這樣切換
+  // 動態偏好設定時才不會留下沒清乾淨的殘留樣式。
   mm.add('(prefers-reduced-motion: reduce)', () => {
     if (aboutReady) {
       gsap.set(aboutWordmarkLayer, { position: 'relative', inset: 'auto', minHeight: '100vh' });
@@ -226,4 +283,33 @@
       if (aboutTopRowTarget) gsap.set(aboutTopRowTarget, { marginBottom: 0, height: 0, overflow: 'hidden' });
     }
   });
+
+  // 底部 nav 列的 ABOUT 連結——點擊直接跳到這個 pin 住區塊的「完成態」
+  // (TIM SHIH 已淡出、Resume 內容可見),不是跳到 pin 剛開始的那個
+  // 瞬間。做法不是「先跳到 pin 起點、再手動把 timeline 設成
+  // progress:1」——這個 scrub:true 的 ScrollTrigger 每次捲動都會根據
+  // 目前實際的捲動位置重新算 timeline 進度,如果只是手動設進度、捲動
+  // 位置卻還停在 pin 起點,使用者只要再滑一點點,scrub 就會立刻把
+  // 進度打回接近 0,完成態瞬間消失。真正要的是讓「捲動位置」本身就
+  // 落在 pin 結束的那個像素值(aboutSt.end),這樣 scrub 算出來的進度
+  // 自然就是 1,之後使用者從這裡正常往回捲,也會跟著 scrub 自然反向
+  // 播放,不會有上面說的那種「瞬間跳回」問題。
+  // reduced-motion 模式下沒有 pin/scrub(aboutSt 是 null),退回單純
+  // scrollIntoView——那個模式的 Resume 內容本來就已經在正常文件流裡
+  // 完整顯示,捲過去就是完成態,不需要額外處理。
+  window.scrollToAboutLanded = function scrollToAboutLanded() {
+    if (aboutSt) {
+      window.scrollTo({ top: aboutSt.end, behavior: 'smooth' });
+    } else if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const navAboutLink = document.getElementById('navAboutLink');
+  if (navAboutLink) {
+    navAboutLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.scrollToAboutLanded();
+    });
+  }
 })();
