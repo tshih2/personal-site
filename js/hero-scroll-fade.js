@@ -33,11 +33,22 @@
 //    預覽——標籤 + 兩張複用 #works 本尊內容的卡片,不是全部 14 個
 //    作品的完整複製品)跟 #heroText 疊在同一個舞台上做交叉淡出淡入,
 //    讓使用者在 pin 住、頁面還沒真的捲動出新內容的這段時間,就已經
-//    「看到」All Works 進場——等 pin 真正解除、捲動帶出 #works 本尊
-//    的自然位置時,視覺上感覺是同一個過場的延續,不是兩個互不相干的
-//    階段接起來。#worksPreviewLayer 淡入完成後留下的空檔(pin 解除到
-//    #works 本尊出現之間,還是有上面那個數學常數決定的距離)靠 end
-//    值調整到內容不會顯得斷裂,不需要也不能真的歸零。
+//    「看到」All Works 進場。
+//
+//    這裡踩過一個坑,值得記錄:第一版只做了「淡入」沒有做「淡出」——
+//    worksPreviewLayer 淡入到 autoAlpha:1 之後,timeline 剩下的部分
+//    什麼都不對它做,以為反正 pin 解除後 header 會滑走、預覽自然就
+//    看不到了。但 scrub 動畫只在 ScrollTrigger 的 [start,end] 範圍內
+//    生效,捲動位置一旦超過 end,animation 的進度永遠停在 1、不會
+//    自動歸零。worksPreviewLayer 是 position:absolute 疊在 header
+//    「舞台」裡的子元素,pin 解除後 header 恢復正常文件流、開始隨
+//    捲動正常往上滑走時,worksPreviewLayer 會跟著 header 一起正常
+//    滑走,但因為 autoAlpha 停在 1,它是完全不透明地滑走——使用者
+//    體感上等於「多了一個要捲過去的區塊」,標籤/卡片內容看起來出現
+//    了兩次(一次是滑走中的預覽、一次是後面真正的 #works)。修法是
+//    在 timeline 尾段(0.75–1.0)明確把 worksPreviewLayer 淡出回
+//    autoAlpha:0,確保 progress 到 1(也就是 pin 解除)的那一刻,它
+//    已經完全不可見,pin 解除後 header 滑走時不會帶著任何殘影。
 //
 // 2. About 區塊(#about)——跟 Hero 同一套 pin 機制,但這裡是三段式
 //    交叉淡出淡入 + 一段版面位移/重新編排,不是單純淡出:
@@ -148,23 +159,43 @@
     if (header && heroText) {
       if (worksPreviewLayer) gsap.set(worksPreviewLayer, { autoAlpha: 0 });
 
-      // heroText 淡出走整條 timeline(duration-space 0–1),
-      // worksPreviewLayer 淡入從 0.65 開始到 1 結束——跟 heroText 的
-      // 尾段 0.65–1.0 重疊,製造「Hero 還沒完全消失、All Works 已經
-      // 開始浮現」的交疊感,不是淡完才開始淡入的生硬切換。跟 About 的
-      // wordmark→resume 交叉淡出淡入是同一個時間軸重疊手法。
+      // 四段式 timeline,全部發生在同一個 pin 住、畫面不動的區間內:
+      // 0–0.45:heroText 淡出
+      // 0.30–0.50:worksPreviewLayer 淡入,故意跟 heroText 尾段重疊
+      //           (0.30–0.45),製造「Hero 還沒完全消失、All Works 已經
+      //           開始浮現」的交疊感,不是淡完才開始淡入的生硬切換。
+      // 0.50–0.75:worksPreviewLayer 維持完全顯示(沒有 tween,自然
+      //           停在 autoAlpha:1),讓使用者有足夠時間看清楚這個
+      //           預覽,不是一閃而過。
+      // 0.75–1.0:worksPreviewLayer 淡出,回到 autoAlpha:0——這一段是
+      //           修正版新增的關鍵段落。之前的版本沒有這段,
+      //           worksPreviewLayer 淡入到 1 之後就再也沒有任何 tween
+      //           把它變回 0,而 scrub 動畫只在 [start,end] 範圍內
+      //           生效,一旦捲動位置超過 end,它的 autoAlpha 就永遠
+      //           停在最後算出來的值(1)不會自動歸零。這個 pin 解除
+      //           後,header 恢復正常文件流、開始隨捲動正常往上滑走,
+      //           但 worksPreviewLayer 是 header 內部 absolute
+      //           定位的子元素,會跟著 header 一起正常滑走,卻仍然是
+      //           完全不透明的——使用者體感上就是「多了一個要捲過去
+      //           的區塊」,跟真正的 #works 重複出現同樣的標籤/卡片。
+      //           在 pin 解除前(progress 到 1 之前)就先淡出歸零,
+      //           確保 pin 一解除、header 開始正常滑走時,
+      //           worksPreviewLayer 已經是 autoAlpha:0(opacity:0 +
+      //           visibility:hidden),不會有任何殘影跟著滑走。
       const heroTl = gsap
         .timeline()
-        .to(heroText, { opacity: 0, ease: 'none', duration: 1 }, 0);
+        .to(heroText, { opacity: 0, ease: 'none', duration: 0.45 }, 0);
 
       if (worksPreviewLayer) {
-        heroTl.to(worksPreviewLayer, { autoAlpha: 1, ease: 'none', duration: 0.35 }, 0.65);
+        heroTl
+          .to(worksPreviewLayer, { autoAlpha: 1, ease: 'none', duration: 0.2 }, 0.3)
+          .to(worksPreviewLayer, { autoAlpha: 0, ease: 'none', duration: 0.25 }, 0.75);
       }
 
-      // pin 區間比純淡出時期(+=20%)拉長一些(+=45%),因為現在
-      // timeline 裡塞了兩段交叉淡出淡入,需要比單一淡出更充裕的 scrub
-      // 空間才不會顯得倉促——這是經驗值,用 Playwright 錄影確認過
-      // 節奏後定案,不是照抄前一版的數字。
+      // pin 區間(+=45%)維持跟前一版一樣的長度——四段式 timeline 需要
+      // 的總距離跟三段式(淡入沒有淡出)差不多,新增的「淡出」段只是
+      // 把原本「淡入後什麼都不做」的尾段換成有動作的淡出,不需要額外
+      // 拉長。
       const heroSt = ScrollTrigger.create({
         trigger: header,
         start: 'top top',
