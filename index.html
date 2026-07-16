@@ -49,6 +49,62 @@
           <span id="heroLine2" class="glitch-text inline-block align-top" data-text="SHIH">SHIH</span>
         </div>
       </h1>
+
+      <!-- All Works 進場預覽——不是真正的 #works(那個還是留在 <main>
+           裡正常的文件流位置,捲動行為完全不受影響),是疊在 Hero 這個
+           舞台裡的一份輕量預覽,只放 [ ALL WORKS ] 標籤 + 兩張卡片
+           (直接複用 #works 裡對應的前兩個真實作品的內容,不是另外編
+           一份假資料,作品更新時只需要改 #works 那份,這裡也要記得
+           同步更新標題/分類/圖片)。存在的目的是讓 Hero 大字淡出的
+           同時,畫面上「看起來像」All Works 已經淡入取代它的位置——
+           跟 About 區塊 wordmark→resume 的交叉淡出淡入是同一個 pattern
+           (兩個 absolute inset-0 的圖層疊在同一塊舞台上,用 autoAlpha
+           交叉淡出淡入),差別只在於這裡的「淡入」對象是預覽用的
+           輕量副本,不是真正的內容本尊——這是刻意的取捨:真正的
+           #works grid 沒辦法在 Hero 淡出的當下就直接「本尊過來」,
+           因為 Hero 自己是 min-h-screen,GSAP 的 pin-spacer 一定會
+           保留這整個自然高度,不管 pin 的 end 抓多短,pin 解除的時間
+           點跟 #works 真正的文件流位置之間永遠會差開 header 自己的
+           高度那麼多,無法真的做到「pin 解除瞬間 = #works 本尊已經
+           自然落地」。
+
+           pointer-events-none + aria-hidden + 不用 <a href> (用純
+           <div>)——這是純視覺過場,不能被點擊誤觸進作品頁,也不需要
+           對輔助技術重複朗讀一次跟 #works 一樣的內容。卡片 grid 固定
+           兩欄(不像 #works 本尊那樣 responsive 到單欄),是為了控制
+           整體高度不要在手機窄螢幕上超出 Hero 舞台的可視空間——這裡
+           本來就只是短暫的過場预覽,不需要照搬 #works 本尊的完整
+           responsive 規則。 -->
+      <div id="worksPreviewLayer" aria-hidden="true" class="opacity-0 pointer-events-none select-none absolute inset-0 flex items-center justify-center px-[var(--page-margin-x)]">
+        <div class="w-full max-w-[640px]">
+          <h2 class="font-geistmono text-xs tracking-[0.125em] uppercase text-label">
+            [ ALL WORKS ]
+          </h2>
+          <hr class="mt-1 mb-4 border-black/10">
+          <div class="grid grid-cols-2 gap-3">
+            <div class="relative block">
+              <div class="bg-card rounded-xl p-3">
+                <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
+                  <img src="Img/VisionControl_Cover.png" alt="" class="w-full h-full object-contain">
+                </div>
+                <div class="mt-2 flex items-center justify-between font-geist text-[11px]">
+                  <span class="font-geistmono text-ink">Vision Control</span>
+                  <span class="text-muted">AI Technology</span>
+                </div>
+              </div>
+            </div>
+            <div class="relative block">
+              <div class="bg-card rounded-xl p-3">
+                <div class="relative aspect-[4/3] rounded overflow-hidden bg-card"></div>
+                <div class="mt-2 flex items-center justify-between font-geist text-[11px]">
+                  <span class="font-geistmono text-ink">The Mary Pickford Arts Alliance</span>
+                  <span class="text-muted">Product Design</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="flex justify-between items-end px-[var(--page-margin-x)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em]">
