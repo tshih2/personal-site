@@ -1,6 +1,7 @@
-// Case study 資料範本——複製這個檔案改名成 data-<作品名>.js,
-// 把下面的空值填上真實內容,再照 vision-control-rewritten.html 複製一份殼
-// (換 <title> 跟載入的 data 檔名,並依作品名稱取一個對應的檔名)即可套用 case-study-template.js 的樣板。
+// Case study 資料範本——複製這個檔案改名成 data-<作品 slug>.js,
+// 把下面的空值填上真實內容,不需要另外建立 html 殼,透過
+// case-study.html?work=<作品 slug> 就能存取(見 CLAUDE.md「Case study
+// 樣板系統」的「共用殼:case-study.html?work=」)。
 // 完整格式說明見 case-study-template.js 檔案開頭的註解。
 
 const CASE_STUDY_DATA = {

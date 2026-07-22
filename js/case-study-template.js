@@ -35,13 +35,23 @@
  * }
  *
  * media 項目格式:
- *   { type: 'image', src, alt } | { type: 'video', src } | { type: 'placeholder', label }
+ *   { type: 'image', src, alt } | { type: 'video', src } | { type: 'youtube', src, alt } | { type: 'placeholder', label }
  *
  *   src 可以是純字串(同一個檔案兩種斷點都顯示),也可以是
  *   { desktop, mobile } 物件(兩種斷點各自顯示不同檔案,`lg:` 以上顯示
  *   desktop、以下顯示 mobile,純 CSS class 切換,見下面渲染模式 2 的
  *   說明)。沒有另外準備 Mobile 版本素材時,給純字串就好——不是每張圖
  *   都強制要求兩個版本,樣板會正確處理只有 desktop 的情況。
+ *
+ *   `youtube` 是外部 YouTube 影片(素材本身不在專案裡,不像 `video`
+ *   類型放的是本地檔案),src 給 YouTube 網址就好(`https://youtu.be/xxx`
+ *   或 `https://www.youtube.com/watch?v=xxx` 兩種格式都支援,
+ *   extractYouTubeId() 會自己解析出 11 碼影片 ID),渲染成
+ *   `aspect-video`(16:9)容器包住的 `<iframe>`,不支援 `{desktop,mobile}`
+ *   物件(YouTube 沒有「手機版影片」這回事)。iframe 沒有像 `<img>`/
+ *   `<video>` 那樣的「素材原始尺寸」可以量,高度純粹由容器寬度 × 16:9
+ *   算出來,initMediaColumnHeights() 量測時對這種元素不必等任何
+ *   load/loadedmetadata 事件,layout 算完就能立刻讀到高度。
  *
  * 兩種渲染模式(由 media 陣列是否存在自動決定,不需要另外設定開關):
  *
@@ -73,7 +83,7 @@
  *
  *      **手風琴框的高度是每個區塊各自獨立算的**(見
  *      initMediaColumnHeights()),不是全站共用同一個值——量這個區塊
- *      自己 media 陣列裡所有圖片/影片渲染高度的中位數,讓每個區塊的
+ *      自己 media 陣列裡所有圖片/影片渲染高度的最大值,讓每個區塊的
  *      框都貼合自己的素材,不會被別的區塊(尤其是 OVERVIEW)的素材
  *      長寬比拖累。同時仍會夾一個視窗高度上限(見下面說明),確保
  *      「展開時看得到下一個標題」的保證不會被某個區塊特別高的圖片
@@ -323,6 +333,15 @@ function buildMediaColumn(media, id) {
 // 錯誤版本的問題。桌面版那個 <img> 加 data-variant="desktop",讓
 // initMediaColumnHeights() 量測高度時能明確排除 Mobile 版本(見該函式
 // 註解)。
+// 從 youtu.be/xxx 或 youtube.com/watch?v=xxx 網址解析出 11 碼的影片 ID
+// ——兩種格式的使用者都可能貼,不強制規定貼哪一種。解析不出來就回傳
+// 空字串,iframe 的 embed 網址會變成 .../embed/,YouTube 會顯示自己的
+// 錯誤畫面而不是整頁壞掉。
+function extractYouTubeId(url) {
+  const match = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : '';
+}
+
 function buildMediaItem(item) {
   if (item.type === 'image') {
     if (typeof item.src === 'object') {
@@ -341,6 +360,21 @@ function buildMediaItem(item) {
       `;
     }
     return `<video src="${item.src}" class="w-full block" controls></video>`;
+  }
+  if (item.type === 'youtube') {
+    const videoId = extractYouTubeId(item.src);
+    return `
+      <div class="youtube-embed-wrapper w-full aspect-video">
+        <iframe
+          class="w-full h-full"
+          src="https://www.youtube.com/embed/${videoId}"
+          title="${item.alt || 'YouTube video'}"
+          frameborder="0"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </div>
+    `;
   }
   return `
     <div class="w-full aspect-[4/3] border border-dashed border-black/15 flex items-center justify-center">
@@ -596,13 +630,14 @@ function initLightbox(mount) {
 
    量測邏輯:
    1. 對每個有 media 的區塊,抓出它自己媒體欄裡所有「目前生效的」
-      <img>/<video>(排除 data-variant="mobile"——桌面寬度下量測時,
-      Mobile 版本那個元素是 lg:hidden,getBoundingClientRect().height
-      會是 0,量到的話會拉低結果)。
-   2. 每個項目各自的 load/loadedmetadata 事件都會觸發重新計算一次
+      <img>/<video>/.youtube-embed-wrapper(排除 data-variant="mobile"
+      ——桌面寬度下量測時,Mobile 版本那個元素是 lg:hidden,
+      getBoundingClientRect().height 會是 0,量到的話會拉低結果)。
+   2. img/video 各自的 load/loadedmetadata 事件都會觸發重新計算一次
       ——不是等全部素材都載入完才算,而是隨著素材陸續載入完成,結果
       逐步收斂到最終正確值(先算出來的暫時值可能不準,但不會擋著不
-      顯示東西)。
+      顯示東西)。youtube-embed-wrapper 沒有素材要下載(高度純粹由
+      CSS aspect-video 決定),不等任何事件,layout 算完立刻計入。
    3. 取這個區塊所有已載入項目「渲染高度」的**最大值**(不是中位數或
       平均——這裡踩過一次坑:一開始用中位數,結果一個 section 裡如果
       同時有很矮跟很高的圖(例如 130px/220px/410px 混在一起),中位數
@@ -643,7 +678,7 @@ function initMediaColumnHeights(mount, data) {
     if (!mediaColumn) return;
 
     const primaryMediaEls = Array.from(
-      mediaColumn.querySelectorAll('img:not([data-variant="mobile"]), video:not([data-variant="mobile"])')
+      mediaColumn.querySelectorAll('img:not([data-variant="mobile"]), video:not([data-variant="mobile"]), .youtube-embed-wrapper')
     );
     if (primaryMediaEls.length === 0) return;
 
@@ -674,9 +709,14 @@ function initMediaColumnHeights(mount, data) {
       if (el.tagName === 'VIDEO') {
         if (el.readyState >= 1) applyHeight();
         else el.addEventListener('loadedmetadata', applyHeight, { once: true });
-      } else {
+      } else if (el.tagName === 'IMG') {
         if (el.complete) applyHeight();
         else el.addEventListener('load', applyHeight, { once: true });
+      } else {
+        // .youtube-embed-wrapper(或未來其他純 CSS aspect-ratio 決定
+        // 高度的元素)——沒有素材要下載,layout 算完就能立刻讀到正確
+        // 高度,不需要等任何 load/loadedmetadata 事件。
+        applyHeight();
       }
     });
 

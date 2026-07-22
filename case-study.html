@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Study | Tim Shih</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Geist:wght@400;600&family=Geist+Mono:wght@500&family=Unbounded:wght@800;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    tailwind.config = window.SITE_THEME;
+  </script>
+
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-cream text-ink font-geist lg:h-screen lg:overflow-hidden">
+
+  <div id="app"></div>
+
+  <!-- 這是共用殼,不是單一作品專屬的頁面——實際顯示哪個作品由網址的
+       ?work=<作品 slug> 參數決定,js/case-study-loader.js 依這個參數
+       動態載入對應的 data/data-<作品 slug>.js,再呼叫
+       renderCaseStudyPage()。新增作品時只要準備資料檔,不需要複製這個
+       html。 -->
+  <script src="js/case-study-template.js"></script>
+  <script src="js/case-study-loader.js"></script>
+</body>
+</html>

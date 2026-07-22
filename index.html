@@ -105,7 +105,12 @@
 
   <main class="max-w-[1600px] mx-auto px-[clamp(1.25rem,3.33vw,3rem)]">
 
-    <section id="works" class="pt-[clamp(3rem,8.33vw,7.5rem)] pb-24">
+    <!-- min-h-screen:WORKS/BLOG 兩個分頁的卡片數量差很多(Works 13 張、
+         Blog 目前只有 1 篇文章),沒有這個下限的話,內容少的分頁高度會
+         矮到讓上方 Hero 或下方 About(黑底)的背景在同一個視窗裡露出來
+         ——見 js/works-grid.js 的 scrollToWorksTop() 註解,兩者是同一個
+         問題的一體兩面(容器高度下限 + 精確捲動定位)。 -->
+    <section id="works" class="min-h-screen pt-[clamp(3rem,8.33vw,7.5rem)] pb-24">
       <h2 id="worksHeader" class="font-geistmono text-xs tracking-[0.125em] uppercase text-label">
         [ ALL WORKS ]
       </h2>
@@ -114,8 +119,10 @@
       <!-- 內容由 js/works-grid.js 的 initWorksGrid() 動態渲染(見頁面
            底部的呼叫),依網址 hash 決定初始顯示 WORKS 還是 BLOG 資料,
            不是寫死在這裡的靜態 HTML——WORKS/BLOG 共用同一份卡片樣板
-           (buildWorkCard()),資料只在 data/data-works.js、
-           data/data-blog.js 兩個檔案裡,不要回頭在這裡手寫卡片。 -->
+           (buildWorkCard())。WORKS 直接吃 data/data-works.js;BLOG 的
+           原始資料(data/data-blog.js 的 BLOG_POSTS)存的是完整文章
+           內容給 blog-post.html 用,卡片形狀是頁面底部的呼叫現場用
+           .map() 現算出來的,不要回頭在這裡手寫卡片。 -->
       <div id="worksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4 sm:gap-x-6 sm:gap-y-5 lg:gap-x-8 lg:gap-y-6"></div>
     </section>
 
@@ -465,13 +472,23 @@
     initAccordion(['experience', 'creative-experience'], { defaultOpenId: 'experience' });
     initCopyButton(document.getElementById('aboutPhoneCopyBtn'), '+1 626-319-8937');
     initCopyButton(document.getElementById('aboutEmailCopyBtn'), 'tshih2.chi@gmail.com');
+    // BLOG_DATA(來自 data/data-blog.js)現在存的是完整文章內容
+    // (BLOG_POSTS),不是卡片形狀——這裡現算出 works-grid.js 卡片樣板
+    // 需要的 { title, category, href, thumbnail } 形狀,category 這個
+    // 欄位借來放日期,href 指向共用的 blog-post.html 殼帶上 slug。
+    const blogCards = BLOG_POSTS.map((post) => ({
+      title: post.title,
+      category: post.date,
+      href: `blog-post.html?slug=${post.slug}`,
+      thumbnail: post.coverImage,
+    }));
     initWorksGrid({
       gridSelector: '#worksGrid',
       headerSelector: '#worksHeader',
       defaultTab: 'works',
       tabs: {
         works: { label: 'ALL WORKS', items: WORKS_DATA },
-        blog: { label: 'BLOG', items: BLOG_DATA },
+        blog: { label: 'BLOG', items: blogCards, numbered: true, cropThumbnails: true },
       },
     });
     initScrollHint('scrollHint', 'scrollHintArrow', {
