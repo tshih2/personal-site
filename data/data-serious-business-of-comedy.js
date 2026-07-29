@@ -16,8 +16,8 @@ const CASE_STUDY_DATA = {
       '<strong>Role & Scope</strong><br><br>Graphic Designer<br>Duration: 14 weeks<br>Tool: Adobe InDesign<br>Format: Black-and-white printed zine',
     ],
     media: [
-      { type: 'image', src: 'Img/Comedy_Sources/Design/Book_Cover.jpg', alt: 'The Serious Business of Comedy printed zine' },
-      { type: 'image', src: 'Img/Comedy_Sources/Design/Front__Cover.jpg', alt: 'Front cover featuring blurred stage lights' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Book_Cover.jpg', alt: 'The Serious Business of Comedy printed zine' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Front__Cover.jpg', alt: 'Front cover featuring blurred stage lights' },
     ],
   },
 
@@ -30,8 +30,8 @@ const CASE_STUDY_DATA = {
         '<strong>The final curtain</strong><br><br>The back cover removes most of the circles, leaving only a few fading lights. This visual subtraction closes the experience like a venue going dark after the performance.',
       ],
       media: [
-        { type: 'image', src: 'Img/Comedy_Sources/Design/Page_3-4.jpg', alt: 'Opening spread with a beam of light illuminating the introductory text' },
-        { type: 'image', src: 'Img/Comedy_Sources/Design/Back_Cover.jpg', alt: 'Back cover with disappearing lights signaling the end of the show' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Page_3-4.jpg', alt: 'Opening spread with a beam of light illuminating the introductory text' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Back_Cover.jpg', alt: 'Back cover with disappearing lights signaling the end of the show' },
       ],
     },
     {
@@ -42,10 +42,10 @@ const CASE_STUDY_DATA = {
         '<strong>Comedy as hidden dialogue</strong><br><br>Visible chapters including “Defining Laughter,” “Hidden Dialogues,” and “Digital Disruption” move from comedy\'s history and vocabulary toward its role in social commentary and its changing relationship with digital platforms.',
       ],
       media: [
-        { type: 'image', src: 'Img/Comedy_Sources/Design/Page_5-6.jpg', alt: 'Defining Laughter spread combining essay, history, vocabulary, and Ali Wong imagery' },
-        { type: 'image', src: 'Img/Comedy_Sources/Design/Page_7-8.jpg', alt: 'Hidden Dialogues spread using tilted columns and layered side information' },
-        { type: 'image', src: 'Img/Comedy_Sources/Design/Page_9-10.jpg', alt: 'Editorial spread demonstrating the comedy vocabulary system' },
-        { type: 'image', src: 'Img/Comedy_Sources/Design/Page_11-12.jpg', alt: 'Digital Disruption spread combining editorial text, reference information, and stage imagery' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Page_5-6.jpg', alt: 'Defining Laughter spread combining essay, history, vocabulary, and Ali Wong imagery' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Page_7-8.jpg', alt: 'Hidden Dialogues spread using tilted columns and layered side information' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Page_9-10.jpg', alt: 'Editorial spread demonstrating the comedy vocabulary system' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Design/Page_11-12.jpg', alt: 'Digital Disruption spread combining editorial text, reference information, and stage imagery' },
       ],
     },
     {

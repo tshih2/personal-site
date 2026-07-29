@@ -12,12 +12,12 @@ const CASE_STUDY_DATA = {
       'The project began with a problem I observed during an internship and was developed independently during a 14-week academic course. It allowed me to turn an ambiguous content-production challenge into a functional system while learning unfamiliar technologies, including pose tracking, API integration, ControlNet, and local server configuration.',
     ],
     media: [
-      { type: 'image', src: 'Img/VisionControl_Sources/vision-control-new/03-hero-thumbnail.png', alt: 'VisionControl AI project overview' },
-      { type: 'image', src: 'Img/VisionControl_Sources/vision-control-new/04-problem-framing-image-1.png', alt: 'Early text-to-image generation experiment' },
-      { type: 'image', src: 'Img/VisionControl_Sources/vision-control-new/05-problem-framing-image-2.png', alt: 'Example showing the limitations of controlling poses through text prompts' },
-      { type: 'video', src: 'Img/VisionControl_Sources/vision-control-new/06-ml5-pose-tracking-demo.mp4' },
-      { type: 'image', src: 'Img/VisionControl_Sources/vision-control-new/07-javascript-skeleton-capture.png', alt: 'JavaScript interface capturing a skeletal pose from the webcam' },
-      { type: 'image', src: 'Img/VisionControl_Sources/vision-control-new/08-stable-diffusion-controlnet-result.png', alt: 'AI-generated character following the captured ControlNet pose' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/03-hero-thumbnail.png', alt: 'VisionControl AI project overview' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/04-problem-framing-image-1.png', alt: 'Early text-to-image generation experiment' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/05-problem-framing-image-2.png', alt: 'Example showing the limitations of controlling poses through text prompts' },
+      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/06-ml5-pose-tracking-demo.mp4' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/07-javascript-skeleton-capture.png', alt: 'JavaScript interface capturing a skeletal pose from the webcam' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/08-stable-diffusion-controlnet-result.png', alt: 'AI-generated character following the captured ControlNet pose' },
     ],
   },
 
@@ -35,24 +35,24 @@ const CASE_STUDY_DATA = {
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_ID+TPC — Internship Discovery + Traditional Production Costs.png',
-            mobile: 'Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_ID+TPC — Internship Discovery + Traditional Production Costs - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_ID+TPC — Internship Discovery + Traditional Production Costs.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_ID+TPC — Internship Discovery + Traditional Production Costs - Mobile.png',
           },
           alt: 'Internship discovery and traditional production costs overview',
         },
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_EAIE+KPP — Early AI Experiments + Key Pain Points.png',
-            mobile: 'Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_EAIE+KPP — Early AI Experiments + Key Pain Points - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_EAIE+KPP — Early AI Experiments + Key Pain Points.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_EAIE+KPP — Early AI Experiments + Key Pain Points - Mobile.png',
           },
           alt: 'Early AI experiments and key pain points',
         },
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_OS — Opportunity Statement.png',
-            mobile: 'Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_OS — Opportunity Statement  - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_OS — Opportunity Statement.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research &amp; Problem Framing/R&amp;PF_OS — Opportunity Statement  - Mobile.png',
           },
           alt: 'Opportunity statement summary',
         },
@@ -70,8 +70,8 @@ const CASE_STUDY_DATA = {
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Solution &amp; Product Direction/S&amp;PD — Direct Input &amp; System Flow.png',
-            mobile: 'Img/VisionControl_Sources/Solution &amp; Product Direction/S&amp;PD — Direct Input &amp; System Flow  - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Solution &amp; Product Direction/S&amp;PD — Direct Input &amp; System Flow.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Solution &amp; Product Direction/S&amp;PD — Direct Input &amp; System Flow  - Mobile.png',
           },
           alt: 'Direct input and system flow diagram',
         },
@@ -90,16 +90,16 @@ const CASE_STUDY_DATA = {
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Build The PoC/BTPC — Debug the Pipeline One Layer at a Time.png',
-            mobile: 'Img/VisionControl_Sources/Build The PoC/BTPC — Debug the Pipeline One Layer at a Time  - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Build The PoC/BTPC — Debug the Pipeline One Layer at a Time.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Build The PoC/BTPC — Debug the Pipeline One Layer at a Time  - Mobile.png',
           },
           alt: 'Debugging the pipeline one layer at a time',
         },
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Build The PoC/BTPC — From Movement to Generated Image.png',
-            mobile: 'Img/VisionControl_Sources/Build The PoC/BTPC — From Movement to Generated Image  - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Build The PoC/BTPC — From Movement to Generated Image.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Build The PoC/BTPC — From Movement to Generated Image  - Mobile.png',
           },
           alt: 'From movement to generated image',
         },

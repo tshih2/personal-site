@@ -18,7 +18,7 @@ const CASE_STUDY_DATA = {
       '<strong>Outcome</strong><br><br>We delivered a fully clickable Figma prototype that demonstrated the complete product concept and its role-based flows. It was a design prototype rather than an engineered or deployed system.',
     ],
     media: [
-      { type: 'video', src: 'Img/MPAA_Sources/Overview/Promo_Video_Ver_Final.mp4' },
+      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Overview/Promo_Video_Ver_Final.mp4' },
     ],
   },
 
@@ -31,8 +31,8 @@ const CASE_STUDY_DATA = {
         '<strong>Insight</strong><br><br>Small nonprofit teams carry overlapping responsibilities while depending on donations to provide free programs and materials. Collaboration often relies on personal connections, and organizations lack the time, staffing, and shared infrastructure to consistently discover partners, coordinate resources, and follow through on new opportunities.',
       ],
       media: [
-        { type: 'image', src: 'Img/MPAA_Sources/Research &amp; Problem Framing/MPAA — Research Signals to Product Opportunity.png', alt: 'Research signals to product opportunity synthesis' },
-        { type: 'image', src: 'Img/MPAA_Sources/Research &amp; Problem Framing/MPAA_Interview.avif', alt: 'Art Division interview' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Research &amp; Problem Framing/MPAA — Research Signals to Product Opportunity.png', alt: 'Research signals to product opportunity synthesis' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Research &amp; Problem Framing/MPAA_Interview.avif', alt: 'Art Division interview' },
       ],
     },
     {
@@ -44,9 +44,9 @@ const CASE_STUDY_DATA = {
         '<strong>One platform, two modes</strong><br><br>I proposed separating the experience by role. The public-facing website helps general users discover organizations, events, and ways to participate. After authentication, nonprofit members enter a workspace designed for partnership management, proposal review, resources, and progress tracking.',
       ],
       media: [
-        { type: 'image', src: 'Img/MPAA_Sources/Product Strategy/MPAA Product Strategy 01 — Strategic Focus.png', alt: 'Strategic focus' },
-        { type: 'image', src: 'Img/MPAA_Sources/Product Strategy/MPAA Product Strategy 02 — Feature Prioritization.png', alt: 'Feature prioritization' },
-        { type: 'image', src: 'Img/MPAA_Sources/Product Strategy/MPAA Product Strategy 03 — One Platform, Two Modes.png', alt: 'One platform, two modes' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Product Strategy/MPAA Product Strategy 01 — Strategic Focus.png', alt: 'Strategic focus' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Product Strategy/MPAA Product Strategy 02 — Feature Prioritization.png', alt: 'Feature prioritization' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Product Strategy/MPAA Product Strategy 03 — One Platform, Two Modes.png', alt: 'One platform, two modes' },
       ],
     },
     {
@@ -58,8 +58,8 @@ const CASE_STUDY_DATA = {
         '<strong>A complete interactive prototype</strong><br><br>We connected the public and nonprofit-facing journeys in Figma so the end-to-end concept could be explored through clickable interactions. The prototype communicated the proposed information architecture and workflow; it did not contain a working recommendation engine, backend, or live organizational data.',
       ],
       media: [
-        { type: 'video', src: 'Img/MPAA_Sources/Designing The Experience/MPAA.mp4' },
-        { type: 'image', src: 'Img/MPAA_Sources/Designing The Experience/WireFrame.png' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Designing The Experience/MPAA.mp4' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Designing The Experience/WireFrame.png' },
       ],
     },
     {

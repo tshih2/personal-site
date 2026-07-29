@@ -17,7 +17,7 @@ const CASE_STUDY_DATA = {
     ],
 
     media: [
-      { type: 'image', src: 'Img/Typography Conference/Cover/B&W_Ver.jpg', alt: 'LDN 24 black and white typography conference posters' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Typography Conference/Cover/B&W_Ver.jpg', alt: 'LDN 24 black and white typography conference posters' },
     ],
   },
 
@@ -43,8 +43,8 @@ const CASE_STUDY_DATA = {
         '<strong>Hierarchy Across a Tall Format</strong><br><br>The narrow 3 × 6-foot composition organizes the wordmark, speaker groups, date, venue, and supporting information along a strong vertical path. Large constructed letters create the primary rhythm, while smaller text blocks and frame elements anchor the conference details without competing with the custom typography.',
       ],
       media: [
-        { type: 'image', src: 'Img/Typography Conference/Design/Black_Ver.jpg', alt: 'LDN 24 white-on-black conference poster' },
-        { type: 'image', src: 'Img/Typography Conference/Design/White_Ver.jpg', alt: 'LDN 24 black-on-white conference poster' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Typography Conference/Design/Black_Ver.jpg', alt: 'LDN 24 white-on-black conference poster' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Typography Conference/Design/White_Ver.jpg', alt: 'LDN 24 black-on-white conference poster' },
       ],
     },
   ],

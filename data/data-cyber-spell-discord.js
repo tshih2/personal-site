@@ -16,7 +16,7 @@ const CASE_STUDY_DATA = {
     ],
 
     media: [
-      { type: 'video', src: 'Img/Discord_Sources/Motion/3DMG_FinalScene_TS_noAC.mp4' },
+      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Motion/3DMG_FinalScene_TS_noAC.mp4' },
     ],
   },
 
@@ -28,13 +28,13 @@ const CASE_STUDY_DATA = {
         '<strong>Turning Growth Into Motion</strong><br><br>Rather than explain the story with text, I translated each idea into a visual event: circuitry and machinery suggest development, multiplying figures represent adoption, floating Nitro symbols introduce the service, and the phone becomes the final destination. Camera movement, matching shapes, and moving objects help carry the viewer from one scene into the next.',
       ],
       media: [
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board.png', alt: 'Early sketches mapping the visual story and scene transitions' },
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board - 1.png', alt: 'Early sketches mapping the visual story and scene transitions' },
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board - 2.png', alt: 'Early sketches mapping the visual story and scene transitions' },
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board - 3.png', alt: 'Early sketches mapping the visual story and scene transitions' },
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board - 4.png', alt: 'Early sketches mapping the visual story and scene transitions' },
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board - 5.png', alt: 'Early sketches mapping the visual story and scene transitions' },
-        { type: 'image', src: 'Img/Discord_Sources/Story Board/Discord - Story Board - 6.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board - 1.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board - 2.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board - 3.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board - 4.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board - 5.png', alt: 'Early sketches mapping the visual story and scene transitions' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Story Board/Discord - Story Board - 6.png', alt: 'Early sketches mapping the visual story and scene transitions' },
       ],
     },
     {
@@ -44,13 +44,13 @@ const CASE_STUDY_DATA = {
         '<strong>A Consistent 3D World</strong><br><br>The style frames use a restrained blue, violet, and neutral palette to connect Discord’s identity with a soft futuristic atmosphere. Repeated arches, spheres, tracks, circuits, and transparent surfaces create variation while keeping the animation visually coherent.',
       ],
       media: [
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame.png', alt: 'Style frame showing Discord-inspired 3D forms' },
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame - 1.png', alt: 'Style frame showing Discord-inspired 3D forms' },
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame - 2.png', alt: 'Style frame from the machine and circuit sequence' },
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame - 3.png', alt: 'Style frame visualizing Discord user growth' },
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame - 4.png', alt: 'Style frame from the Nitro sequence' },
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame - 5.png', alt: 'Style frame showing the mobile transition' },
-        { type: 'image', src: 'Img/Discord_Sources/Style Frame/Discord - Style Frame - 6.png', alt: 'Final style frame from Cyber Spell: Discord' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame.png', alt: 'Style frame showing Discord-inspired 3D forms' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame - 1.png', alt: 'Style frame showing Discord-inspired 3D forms' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame - 2.png', alt: 'Style frame from the machine and circuit sequence' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame - 3.png', alt: 'Style frame visualizing Discord user growth' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame - 4.png', alt: 'Style frame from the Nitro sequence' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame - 5.png', alt: 'Style frame showing the mobile transition' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Style Frame/Discord - Style Frame - 6.png', alt: 'Final style frame from Cyber Spell: Discord' },
       ],
     },
     {

@@ -38,8 +38,23 @@
 - `data/data-works.js` — 首頁 WORKS 分頁的卡片清單(見下面「首頁 WORKS/BLOG 分頁切換」)
 - `data/data-blog.js` — **Blog 文章的唯一資料來源**(`BLOG_POSTS` 陣列),存完整文章內容(標題、日期、封面圖、作者、結構化的 `content` 區塊陣列),不是卡片形狀的假資料——首頁 BLOG 分頁的卡片清單跟 `blog-post.html` 的文章內文共用同一份,見下面「Blog 文章系統」
 - `css/style.css` — 全站共用的少量原生 CSS:防止橫向捲動的 `html,body` 規則、case-study 標題列共用的 `.col-header`、`.dot-grid`/`.dot-grid-dark`(淺色/深色兩版圓點網格背景)、`.glitch-text`(紅藍色偏)
-- `Img/` — 網站實際會載入的媒體素材;每個作品如果素材較多,底下開自己的子資料夾(例如 `Img/VisionControl_Sources/`、`Img/MPAA_Sources/`),依內容再分子資料夾(如 Overview、Product Strategy)
+- `Img/` — 本地端的媒體素材原始檔,**已經排除在 git 版控外**(見 `.gitignore`),只留在本機當備份/編輯預覽用——實際部署的網站讀的是 Cloudflare R2 上的副本,不是這個資料夾。細節見下面「媒體素材託管:Cloudflare R2」。每個作品如果素材較多,底下開自己的子資料夾(例如 `Img/VisionControl_Sources/`、`Img/MPAA_Sources/`),依內容再分子資料夾(如 Overview、Product Strategy)——新增素材時本地路徑慣例維持不變,只是最後寫進 `data/*.js` 的 `src`/`thumbnail` 要換成 R2 網址,不是本地相對路徑。
 - `reference/` — 純設計參考用的情緒板/截圖,不是網站會載入的東西,已排除在 git 版控外(見 `.gitignore`);跟特定作品內容擷取有關的原始素材(例如網頁 scrape 下來的 HTML/JSON)歸進對應的 `Img/<作品>/` 資料夾,不要堆在 `reference/` 裡混淆用途
+
+## 媒體素材託管:Cloudflare R2
+
+**所有圖片/影片都放在 Cloudflare R2(bucket 名稱 `tshih-media`),不是 git repo 裡——這是 2026-07-29 定案的架構,新增素材一律照這套流程,不要把媒體檔案 commit 進 git。**
+
+**為什麼不能放 git 裡**:這個網站部署在 Cloudflare Workers(靜態資源模式),Workers 的靜態資源有 **25 MiB 單檔上限**,比 GitHub 本身的 100MB 上限更嚴格——這個專案有好幾支作品影片超過 25MB(甚至超過 100MB),放在 git 裡會直接讓 `wrangler deploy` 失敗(`[ERROR] Asset too large`)。就算檔案都壓在 25MB 以下,git 本身也不適合存大量二進位媒體檔案,repo 只會越滾越大、clone 越來越慢。
+
+**運作方式**:
+- 本地 `Img/` 資料夾維持原樣(檔名、資料夾結構都不變),只是加進 `.gitignore`,不進 git 版控——純粹當作素材的本機備份跟預覽用途。
+- `data/*.js` 裡所有原本寫 `Img/xxx.png` 這種相對路徑的地方,一律換成 R2 的公開網址:`https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/xxx.png`(網址裡刻意保留 `Img/` 這一段路徑,跟本地資料夾結構對應,方便一眼看出對應到本機的哪個檔案)。
+- **新增作品/新增素材的流程**:素材先照舊放進本機 `Img/<作品>/` 對應資料夾 → 手動上傳到 R2 bucket 的同一個相對路徑(Cloudflare Dashboard → R2 → 選 bucket → Upload,或用有 R2 API 憑證時的批次上傳腳本)→ `data/*.js` 裡的 `src`/`thumbnail` 直接寫 `https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/<作品>/<檔名>`,不要寫本地相對路徑。
+- R2 的 **Public Development URL**(`pub-xxxxx.r2.dev` 這組網址)已經在 bucket 設定裡手動啟用——這是免費、不需要另外綁自訂網域就能公開讀取的網址,足夠這個網站現在的規模用,不需要另外設定 `cdn.tshih.me` 這種自訂子網域(除非之後有品牌一致性的需求)。
+- R2 免費額度是每月 10GB 儲存 + 1000 萬次讀取,目前用量(約 870MB)遠低於額度上限。
+
+**驗證新素材有沒有正確連到 R2**:除了平常的 Playwright 截圖/console error 檢查,新增媒體時要額外確認瀏覽器實際發出的請求是打到 `pub-xxxxx.r2.dev` 網址且回應碼是 200(不是本地 404),避免路徑寫成本地相對路徑卻忘記換成 R2 網址而沒被發現。
 
 ## Case study 樣板系統
 

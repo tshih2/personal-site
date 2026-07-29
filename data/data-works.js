@@ -3,13 +3,13 @@
 // 還沒有對應頁面時用 '#')、thumbnail(縮圖路徑,可省略,沒有縮圖時
 // 卡片會維持 bg-card 色塊當佔位框,不會報錯或留白)。
 const WORKS_DATA = [
-  { title: 'VisionControl.AI', category: 'Generative AI', href: 'case-study.html?work=vision-control-rewritten', thumbnail: 'Img/VisionControl_Sources/vision-control-new/03-hero-thumbnail.png' },
-  { title: 'The Mary Pickford Arts Alliance', category: 'Product Design', href: 'case-study.html?work=mpaa-new', thumbnail: 'Img/MPAA_Sources/Cover/Mpaa_Cover_3.png' },
-  { title: 'OkoEcho', category: 'UI / UX', href: 'case-study.html?work=oko-echo', thumbnail: 'Img/OkoEcho/Design MockUp/01.png' },
-  { title: 'A Message To The End.', category: 'Interactive Installation', href: 'case-study.html?work=a-message-to-the-end', thumbnail: 'Img/A Message To The End/Cover/MessageToTheEnd.mp4' },
-  { title: 'The Criterion Channel Brand Identity', category: 'Motion Graphic', href: 'case-study.html?work=criterion-channel', thumbnail: 'Img/CriterionChannel_Sources/Motion/Criterion Channel.mp4' },
-  { title: 'Cyber Spell: Discord', category: 'Motion Graphic', href: 'case-study.html?work=cyber-spell-discord', thumbnail: 'Img/Discord_Sources/Motion/Cyber_Spell_Discord.mp4' },
-  { title: 'Psycho Thrills', category: 'Graphic Design', href: 'case-study.html?work=psycho-thrills', thumbnail: 'Img/PsychoThriller_Sources/Cover/Poster_Close-up_4.jpg' },
-  { title: 'The Serious Business of Comedy', category: 'Graphic Design', href: 'case-study.html?work=serious-business-of-comedy', thumbnail: 'Img/Comedy_Sources/Cover/Magazine_Cover.png' },
-  { title: 'LDN 24', category: 'Graphic Design', href: 'case-study.html?work=ldn-24', thumbnail: 'Img/Typography Conference/Cover/B&W_Ver.jpg' },
+  { title: 'VisionControl.AI', category: 'Generative AI', href: 'case-study.html?work=vision-control-rewritten', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/03-hero-thumbnail.png' },
+  { title: 'The Mary Pickford Arts Alliance', category: 'Product Design', href: 'case-study.html?work=mpaa-new', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Cover/Mpaa_Cover_3.png' },
+  { title: 'OkoEcho', category: 'UI / UX', href: 'case-study.html?work=oko-echo', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/01.png' },
+  { title: 'A Message To The End.', category: 'Interactive Installation', href: 'case-study.html?work=a-message-to-the-end', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Cover/MessageToTheEnd.mp4' },
+  { title: 'The Criterion Channel Brand Identity', category: 'Motion Graphic', href: 'case-study.html?work=criterion-channel', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Motion/Criterion Channel.mp4' },
+  { title: 'Cyber Spell: Discord', category: 'Motion Graphic', href: 'case-study.html?work=cyber-spell-discord', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Discord_Sources/Motion/Cyber_Spell_Discord.mp4' },
+  { title: 'Psycho Thrills', category: 'Graphic Design', href: 'case-study.html?work=psycho-thrills', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/PsychoThriller_Sources/Cover/Poster_Close-up_4.jpg' },
+  { title: 'The Serious Business of Comedy', category: 'Graphic Design', href: 'case-study.html?work=serious-business-of-comedy', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Cover/Magazine_Cover.png' },
+  { title: 'LDN 24', category: 'Graphic Design', href: 'case-study.html?work=ldn-24', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Typography Conference/Cover/B&W_Ver.jpg' },
 ];

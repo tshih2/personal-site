@@ -13,10 +13,10 @@ const CASE_STUDY_DATA = {
       '<strong>Project Status</strong><br><br>The result is a Figma interactive prototype rather than a developed application. GPS tracking, receipt and payment integrations, local AI processing, automatic carbon calculations, and reward partnerships are proposed product capabilities; they were not technically implemented or validated in this project.',
     ],
     media: [
-      { type: 'image', src: 'Img/OkoEcho/Design MockUp/02.png' },
-      { type: 'image', src: 'Img/OkoEcho/Design MockUp/03.png' },
-      { type: 'image', src: 'Img/OkoEcho/Design MockUp/04.png' },
-      { type: 'image', src: 'Img/OkoEcho/Design MockUp/05.png' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/02.png' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/03.png' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/04.png' },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/05.png' },
     ],
   },
 
@@ -31,7 +31,7 @@ const CASE_STUDY_DATA = {
         '<strong>Problem Statement</strong><br><br>Modern urban life creates a serious information gap between immediate convenience and invisible, delayed environmental harm. Without timely and personal feedback, people struggle to understand the consequences of daily behavior or build enough motivation to change it.',
       ],
       media: [
-        { type: 'image', src: 'Img/OkoEcho/Research/Persona.png' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Research/Persona.png' },
       ],
     },
     {
@@ -43,8 +43,8 @@ const CASE_STUDY_DATA = {
         '<strong>Core Experience</strong><br><br>The user flow moves through four connected stages: authorize selected data sources; review daily and monthly carbon feedback; explore personal and community activity through the Urban Resonance Map; and earn points that can be exchanged for offers from sustainability-focused partners.',
       ],
       media: [
-        { type: 'image', src: 'Img/OkoEcho/Research/HMW.png', alt: 'How Might We questions for the OkoEcho project' },
-        { type: 'image', src: 'Img/OkoEcho/Design Screen/Wireframe.png', alt: 'OkoEcho splash screen introducing the product experience' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Research/HMW.png', alt: 'How Might We questions for the OkoEcho project' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design Screen/Wireframe.png', alt: 'OkoEcho splash screen introducing the product experience' },
       ],
     },
     {
@@ -56,10 +56,10 @@ const CASE_STUDY_DATA = {
         '<strong>Privacy as a Product Requirement</strong><br><br>Because the concept depends on sensitive behavioral and location data, the Canvas exploration proposed limited collection, local processing, selective keyword extraction, and explicit permission for social visibility. These ideas establish privacy as a design constraint, but they were not technically tested and would require dedicated security and policy work before implementation.',
       ],
       media: [
-        { type: 'video', src: 'Img/OkoEcho/Prototype Demo/DashBoard_AE.mp4' },
-        { type: 'video', src: 'Img/OkoEcho/Prototype Demo/Map_AE.mp4' },
-        { type: 'video', src: 'Img/OkoEcho/Prototype Demo/Redeem_AE.mp4' },
-        { type: 'video', src: 'Img/OkoEcho/Prototype Demo/Login_AE.mp4' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Prototype Demo/DashBoard_AE.mp4' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Prototype Demo/Map_AE.mp4' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Prototype Demo/Redeem_AE.mp4' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Prototype Demo/Login_AE.mp4' },
       ],
     },
     {
@@ -71,8 +71,8 @@ const CASE_STUDY_DATA = {
         '<strong>Interactive Prototype</strong><br><br>The final Figma prototype connects onboarding, account creation, the dashboard, emission histories, the Resonance Map, and the coupon-redemption flow. After Effects was used to present the interface through motion and product mockups.',
       ],
       media: [
-        { type: 'video', src: 'Img/OkoEcho/Design Screen/_Design Screen.mp4' },
-        { type: 'image', src: 'Img/OkoEcho/Design System/Design System.png', alt: '' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design Screen/_Design Screen.mp4' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design System/Design System.png', alt: '' },
       ],
     },
     {

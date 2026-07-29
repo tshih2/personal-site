@@ -30,7 +30,7 @@ const BLOG_POSTS = [
     slug: 'minecraft-plagiarism',
     title: 'Reflections on Minecraft Shorts Plagiarism and the Content Ecosystem',
     date: 'Mar 30, 2026',
-    coverImage: 'Img/Blog_Cover/Cover_01.jpg',
+    coverImage: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Blog_Cover/Cover_01.jpg',
     author: 'Tim Shih',
     // 逐字稿來源:Blog_content/01.Reflections on Minecraft Shorts
     // Plagiarism and the Content Ecosystem/minecraft-shorts-reflection-en.md
@@ -58,7 +58,7 @@ const BLOG_POSTS = [
     slug: 'ai-virtual-personas-community-ethics',
     title: 'Reflections on AI Virtual Personas and Community Ethics: When "Real" Is No Longer the Only Label',
     date: 'Apr 01, 2026',
-    coverImage: 'Img/Blog_Cover/Cover_02.jpg',
+    coverImage: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Blog_Cover/Cover_02.jpg',
     author: 'Tim Shih',
     // 逐字稿來源:Blog_content/02.AI Virtual Personas and Community Ethics -
     // When Real Is No Longer the Only Label/ai-virtual-personas-community-ethics-en.md
@@ -96,7 +96,7 @@ const BLOG_POSTS = [
     slug: 'world-middle-ground',
     title: "The World's Middle Ground",
     date: 'Apr 08, 2026',
-    coverImage: 'Img/Blog_Cover/Cover_03.jpg',
+    coverImage: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Blog_Cover/Cover_03.jpg',
     author: 'Tim Shih',
     // 逐字稿來源:Blog_content/03.The World's Middle Ground/world-middle-ground-en.md
     // ——原文結尾有一段「Related: [[...]]」交互參照清單,大部分連到的
@@ -126,7 +126,7 @@ const BLOG_POSTS = [
     slug: 'graduation-forbidden-archive',
     title: 'Graduation Season Notes: 400 Years in the Forbidden Archive, and My Four',
     date: 'Apr 20, 2026',
-    coverImage: 'Img/Blog_Cover/Cover_04.jpg',
+    coverImage: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Blog_Cover/Cover_04.jpg',
     author: 'Tim Shih',
     // 逐字稿來源:Blog_content/04.Graduation Season Notes 400 Years in the
     // Forbidden Archive and My Four/graduation-forbidden-archive-en.md
@@ -159,7 +159,7 @@ const BLOG_POSTS = [
     slug: 'ai-agent-microtransactions-subscriptions',
     title: 'Trend Watch: AI Agents, Microtransactions, and the End of Subscriptions',
     date: 'May 11, 2026',
-    coverImage: 'Img/Blog_Cover/Cover_05.jpg',
+    coverImage: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Blog_Cover/Cover_05.jpg',
     author: 'Tim Shih',
     // 逐字稿來源:Blog_content/05.Trend Watch AI Agents Microtransactions
     // and the End of Subscriptions/ai-agent-microtransactions-subscriptions-en.md

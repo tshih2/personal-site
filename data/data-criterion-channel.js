@@ -15,7 +15,7 @@ const CASE_STUDY_DATA = {
       '<strong>Creative Direction</strong><br><br>The Criterion Channel preserves and restores foundational films while introducing them to contemporary audiences. I translated that mission into a visual narrative in which a form grows, evolves, merges, and ultimately resolves into the Criterion logo.',
     ],
     media: [
-      { type: 'video', src: 'Img/CriterionChannel_Sources/Motion/TimShih_Proj2_sp24_2.mp4' },
+      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Motion/TimShih_Proj2_sp24_2.mp4' },
     ],
   },
 
@@ -28,11 +28,11 @@ const CASE_STUDY_DATA = {
         '<strong>A cinematic visual language</strong><br><br>The segmented forms reference film strips and tape: individual frames joining together to create movement and meaning. Gold with a fluorescent glow evokes the anticipation of watching a film—the charged moment before images come alive on screen.',
       ],
       media: [
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Story Board/Criterion - Story Board.png', alt: 'Criterion Channel motion identity storyboard' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 1.png', alt: 'Storyboard exploring growth in the motion identity' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 2.png', alt: 'Storyboard exploring evolution in the motion identity' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 3.png', alt: 'Storyboard exploring fusion in the motion identity' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 4.png', alt: 'Storyboard resolving the animation into the Criterion logo' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Story Board/Criterion - Story Board.png', alt: 'Criterion Channel motion identity storyboard' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 1.png', alt: 'Storyboard exploring growth in the motion identity' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 2.png', alt: 'Storyboard exploring evolution in the motion identity' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 3.png', alt: 'Storyboard exploring fusion in the motion identity' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Story Board/Criterion - Story Board - 4.png', alt: 'Storyboard resolving the animation into the Criterion logo' },
       ],
     },
     {
@@ -43,11 +43,11 @@ const CASE_STUDY_DATA = {
         '<strong>Designing motion as brand meaning</strong><br><br>The transitions are not only visual effects. Growth represents the foundation of cinema; evolution reflects new techniques and changing audiences; fusion brings past and present together; and the final logo turns that history into a contemporary identity.',
       ],
       media: [
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame.png', alt: 'Style frame exploring the segmented cinematic form' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 1.png', alt: 'Style frame exploring the segmented cinematic form' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 2.png', alt: 'Style frame showing the luminous gold material' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 3.png', alt: 'Style frame showing the evolving 3D form' },
-        { type: 'image', src: 'Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 4.png', alt: 'Style frame showing the motion identity transformation' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame.png', alt: 'Style frame exploring the segmented cinematic form' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 1.png', alt: 'Style frame exploring the segmented cinematic form' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 2.png', alt: 'Style frame showing the luminous gold material' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 3.png', alt: 'Style frame showing the evolving 3D form' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Style Frame/Criterion - Style Frame - 4.png', alt: 'Style frame showing the motion identity transformation' },
       ],
     },
     {
@@ -58,7 +58,7 @@ const CASE_STUDY_DATA = {
         '<strong>What I learned</strong><br><br>The project taught me that a strong motion identity begins with a clear relationship between brand purpose, form, and transformation. It also showed me the importance of planning technical experiments and production constraints early, so an ambitious concept has enough time and resources to reach its intended finish.',
       ],
       media: [
-        { type: 'video', src: 'Img/CriterionChannel_Sources/Motion/TimShih_Proj2_sp24_2.mp4' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/CriterionChannel_Sources/Motion/TimShih_Proj2_sp24_2.mp4' },
       ],
     },
   ],

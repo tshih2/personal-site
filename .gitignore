@@ -1,2 +1,8 @@
 .claude/settings.local.json
 reference/
+
+# 媒體素材已經搬到 Cloudflare R2(見 CLAUDE.md「媒體素材託管」),
+# 本地檔案只留著當備份/方便編輯時預覽,不需要再進 git 版本歷史——
+# Cloudflare Workers 靜態資源有 25 MiB 單檔上限,大型影片/圖片留在
+# repo 裡會導致部署失敗,git 本身對大型二進位檔案也不友善。
+Img/

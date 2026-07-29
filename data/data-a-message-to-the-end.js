@@ -13,7 +13,7 @@ const CASE_STUDY_DATA = {
       '<strong>Watch the Project</strong><br><br><a href="https://youtu.be/6Ebcn9hrrlM" target="_blank" rel="noopener noreferrer">Watch the final installation film</a><br><a href="https://youtu.be/cp0RGuOdbmQ" target="_blank" rel="noopener noreferrer">Watch the mailbox fabrication process</a>',
     ],
     media: [
-      { type: 'video', src: 'Img/A Message To The End/Overview/Project_ShowCase_Subtitled.mp4' },
+      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Overview/Project_ShowCase_Subtitled.mp4' },
     ],
   },
 
@@ -26,8 +26,8 @@ const CASE_STUDY_DATA = {
         '<strong>Color and Season</strong><br><br>The original concept assigned four paper colors to four seasons. Red represented spring, pink represented summer, gold represented autumn, and white represented winter. Each letter was intended to call forth its corresponding environment and flower animation, turning an intimate written message into a visible change in the landscape.',
       ],
       media: [
-        { type: 'image', src: 'Img/A Message To The End/A Farewell Told Through Four Seasons/Flower Spawn.png', alt: 'Early concept development for the spider lily installation' },
-        { type: 'image', src: 'Img/A Message To The End/A Farewell Told Through Four Seasons/4_Season_Flowers.png', alt: 'Early concept development for the spider lily installation' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/A Farewell Told Through Four Seasons/Flower Spawn.png', alt: 'Early concept development for the spider lily installation' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/A Farewell Told Through Four Seasons/4_Season_Flowers.png', alt: 'Early concept development for the spider lily installation' },
         ],
     },
     {
@@ -39,10 +39,10 @@ const CASE_STUDY_DATA = {
         '<strong>Making the Transition Feel Alive</strong><br><br>Timeline Nodes shaped each transition with a slow–fast–slow rhythm. I tested changes in camera field of view, motion blur, and lens flares to avoid a simple cut between scenes. An orbiting camera built with an Actor Blueprint, SpringArm, and Camera component gave the environment continuous motion.',
       ],
       media: [
-        { type: 'video', src: 'Img/A Message To The End/Building the Digital World/Winter Scene_2.mp4' },
-        { type: 'image', src: 'Img/A Message To The End/Building the Digital World/Meshy.AI.png', alt: 'Early Unreal Engine environment development' },
-        { type: 'image', src: 'Img/A Message To The End/Building the Digital World/Flower Spawn with Keyboard.png', alt: 'Unreal Engine Data Layer setup for the seasonal environments' },
-        { type: 'image', src: 'Img/A Message To The End/Building the Digital World/Camera_Shift.png', alt: 'Blueprint logic for controlling seasonal scene visibility' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Building the Digital World/Winter Scene_2.mp4' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Building the Digital World/Meshy.AI.png', alt: 'Early Unreal Engine environment development' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Building the Digital World/Flower Spawn with Keyboard.png', alt: 'Unreal Engine Data Layer setup for the seasonal environments' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Building the Digital World/Camera_Shift.png', alt: 'Blueprint logic for controlling seasonal scene visibility' },
         ],
     },
     {
@@ -54,11 +54,11 @@ const CASE_STUDY_DATA = {
         '<strong>Final Hardware</strong><br><br>The exhibited system used a Seeed Studio XIAO ESP32C3 soldered to a TCS34725 sensor. It connected to the exhibition computer through USB-C. I designed and fabricated the entire physical mailbox, including its structure, exterior, sensor placement, and integration with the digital display.',
       ],
       media: [
-        { type: 'image', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Flowers Inside the Camera View_1.png', alt: 'Initial microcontroller signal test during physical-computing development' },
-        { type: 'image', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Flowers Inside the Camera View_2.png', alt: 'TCS34725 sensor after soldering' },
-        { type: 'video', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Machine_testing_1.mp4', alt: 'Final mailbox design with integrated sensor' },
-        { type: 'video', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Machine_testing_2.mp4', alt: 'Final mailbox design with integrated sensor' },
-        { type: 'video', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Furniture_Process.mp4', alt: 'Final mailbox design with integrated sensor' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Experimenting Failing and Rebuilding/Flowers Inside the Camera View_1.png', alt: 'Initial microcontroller signal test during physical-computing development' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Experimenting Failing and Rebuilding/Flowers Inside the Camera View_2.png', alt: 'TCS34725 sensor after soldering' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Experimenting Failing and Rebuilding/Machine_testing_1.mp4', alt: 'Final mailbox design with integrated sensor' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Experimenting Failing and Rebuilding/Machine_testing_2.mp4', alt: 'Final mailbox design with integrated sensor' },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Experimenting Failing and Rebuilding/Furniture_Process.mp4', alt: 'Final mailbox design with integrated sensor' },
       ],
     },
     {
@@ -69,8 +69,8 @@ const CASE_STUDY_DATA = {
         '<strong>Reflection</strong><br><br>The most important decision was not adding another technical feature, but simplifying the interaction when the original sensing method proved unstable. Building the installation taught me to treat reliability as part of the audience experience and to separate the emotional purpose of an interaction from one specific implementation. The color mapping changed, but the essential ritual—writing a farewell, letting it go, and seeing the world respond—remained intact.',
       ],
       media: [
-        { type: 'image', src: 'Img/A Message To The End/From Prototype to Graduation Exhibition/Grad_Show.png', alt: 'Completed interactive mailbox and Unreal Engine installation at the graduation exhibition' },
-        { type: 'image', src: 'Img/A Message To The End/From Prototype to Graduation Exhibition/Letters.jpg', alt: 'Approximately 60 handwritten farewell messages collected during the exhibition' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/From Prototype to Graduation Exhibition/Grad_Show.png', alt: 'Completed interactive mailbox and Unreal Engine installation at the graduation exhibition' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/From Prototype to Graduation Exhibition/Letters.jpg', alt: 'Approximately 60 handwritten farewell messages collected during the exhibition' },
       ],
     },
   ],
