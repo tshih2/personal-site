@@ -21,6 +21,15 @@
 </head>
 <body class="bg-cream text-ink font-geist lg:h-screen lg:overflow-hidden">
 
+  <!-- 進站載入動畫——見 js/page-loader.js。ready 訊號由
+       js/case-study-loader.js 在資料渲染完成(或找不到作品/資料載入
+       失敗)後呼叫,見該檔案的 notifyReady()。 -->
+  <div id="pageLoader" class="fixed inset-0 z-[9999] bg-cream flex items-center justify-center" aria-hidden="true">
+    <div class="loader-dots"></div>
+  </div>
+  <script src="js/page-loader.js"></script>
+  <script>window.__pageLoader = initPageLoader();</script>
+
   <div id="app"></div>
 
   <!-- 這是共用殼,不是單一作品專屬的頁面——實際顯示哪個作品由網址的

@@ -25,6 +25,7 @@
 - `js/scroll-hint.js` — Hero 的往下滑動提示箭頭(位移 + 閃爍兩層獨立 GSAP tween、點擊捲動到 `#works`),顯示/隱藏邏輯委託給 `js/scroll-reveal.js`,不是自己另外寫一套
 - `js/accordion.js` — 通用手風琴(`initAccordion(ids, options)`),邏輯跟 `js/case-study-template.js` 的 `initAccordions()` 是同一套(GSAP 高度展開/收合 + 互斥),差別是不綁死 case study 的資料格式,靠 `#accordionHeader-<id>`/`#accordionContent-<id>` 命名慣例運作,目前用在首頁 Resume 區塊
 - `js/hero-scroll-fade.js` — GSAP ScrollTrigger 的 pin + scrub 效果集中在這裡(見下面「首頁捲動敘事」專門一節)
+- `js/page-loader.js` — 全站共用的頁面載入動畫(圓點網格脈動),`index.html`/`case-study.html`/`blog-post.html` 三個共用殼都套用同一套(見下面「頁面載入動畫:圓點網格脈動」)
 - `data/data-vision-control-rewritten.js` — VisionControl.AI 目前上線使用的資料物件,採用目前推薦的預設資料格式(`content` 陣列 + `media[].afterParagraph` 捲動同步,見下面「Case study 樣板系統」)
 - `data/data-mpaa-new.js` — The Mary Pickford Arts Alliance 目前上線使用的資料物件
 - `data/data-criterion-channel.js` — The Criterion Channel Brand Identity 的資料物件,透過 `case-study.html?work=criterion-channel` 存取
@@ -37,7 +38,7 @@
 - `data/data-template.js` — 新增作品時複製這份改名用的空白範本,已更新成目前推薦的預設格式(`content` 陣列 + `media[].afterParagraph`),所有 key 都在、值留空
 - `data/data-works.js` — 首頁 WORKS 分頁的卡片清單(見下面「首頁 WORKS/BLOG 分頁切換」)
 - `data/data-blog.js` — **Blog 文章的唯一資料來源**(`BLOG_POSTS` 陣列),存完整文章內容(標題、日期、封面圖、作者、結構化的 `content` 區塊陣列),不是卡片形狀的假資料——首頁 BLOG 分頁的卡片清單跟 `blog-post.html` 的文章內文共用同一份,見下面「Blog 文章系統」
-- `css/style.css` — 全站共用的少量原生 CSS:防止橫向捲動的 `html,body` 規則、case-study 標題列共用的 `.col-header`、`.dot-grid`/`.dot-grid-dark`(淺色/深色兩版圓點網格背景)、`.glitch-text`(紅藍色偏)
+- `css/style.css` — 全站共用的少量原生 CSS:防止橫向捲動的 `html,body` 規則、case-study 標題列共用的 `.col-header`、`.dot-grid`/`.dot-grid-dark`(淺色/深色兩版圓點網格背景)、`.glitch-text`(紅藍色偏)、`.loading-lock`/`.loader-dots`/`.loader-dot`(頁面載入動畫,見下面「頁面載入動畫:圓點網格脈動」)
 - `Img/` — 本地端的媒體素材原始檔,**已經排除在 git 版控外**(見 `.gitignore`),只留在本機當備份/編輯預覽用——實際部署的網站讀的是 Cloudflare R2 上的副本,不是這個資料夾。細節見下面「媒體素材託管:Cloudflare R2」。每個作品如果素材較多,底下開自己的子資料夾(例如 `Img/VisionControl_Sources/`、`Img/MPAA_Sources/`),依內容再分子資料夾(如 Overview、Product Strategy)——新增素材時本地路徑慣例維持不變,只是最後寫進 `data/*.js` 的 `src`/`thumbnail` 要換成 R2 網址,不是本地相對路徑。
 - `reference/` — 純設計參考用的情緒板/截圖,不是網站會載入的東西,已排除在 git 版控外(見 `.gitignore`);跟特定作品內容擷取有關的原始素材(例如網頁 scrape 下來的 HTML/JSON)歸進對應的 `Img/<作品>/` 資料夾,不要堆在 `reference/` 裡混淆用途
 
@@ -251,6 +252,33 @@ Hero 大字(`js/hero-glitch.js`)這類「字級/內容都會動態改變」的�
 **內容切換也會呼叫 `ScrollTrigger.refresh()`。** 切換分頁改變 `#works` 的實際高度,連帶改變 `#about` 在文件裡的絕對位置,但 ScrollTrigger 快取的 trigger 起訖位置不會自動偵測這種非 resize 觸發的版面變動——不 refresh 的話,`js/hero-scroll-fade.js` 那個 pin 住 `#about` 的 ScrollTrigger 會繼續沿用切換前、已經對不準的位置,造成 pin 觸發時機跟實際畫面對不上。這個 refresh 只影響 `#about` pin 的觸發位置,不影響 Hero→Works 的淡出邏輯(Hero 的 pin 位置只跟它自己的高度有關,不受 `#works` 高度變化影響)。
 
 **之後如果要新增第三個分頁(或幫某個分頁加子分類)**,延續同一套模式:`tabs` 物件多加一個 key,`items` 是 `{ title, category, href, thumbnail? }` 格式(直接來自資料檔,或像 Blog 一樣從別的資料形狀 `.map()` 出來都可以),不需要改 `buildWorkCard()` 或分頁切換邏輯本身。
+
+## 頁面載入動畫:圓點網格脈動(`js/page-loader.js`)
+
+**三個共用殼(`index.html`/`case-study.html`/`blog-post.html`)都套用同一套進站/進入作品頁的載入動畫,不是各自寫一份。** 這是為了解決「點進頁面時內容還沒加載完整,直接看到半成品畫面」的體感問題——蓋一層 overlay 擋住底下還在初始化的內容(字型切換、跑馬燈/hero-glitch 這類 GSAP 動畫初始化、圖片/影片還沒到位造成的版面跳動),等內容真的準備好才掀開,而不是讓使用者看著頁面「組裝」的過程。
+
+**視覺是圓點網格脈動,不是純 CSS 的 `.dot-grid`。** 兩者刻意用不同技術:`.dot-grid` 是 `background-image: radial-gradient(...)` 做的裝飾背景,沒辦法逐點控制;載入動畫需要每一顆圓點各自的 stagger 位移/縮放才能做出「從中心往外脈動」的效果,所以 `js/page-loader.js` 用 JS 動態生成一批 `<span class="loader-dot">` 節點(間距 48px,比裝飾用的 24px 更疏,避免節點數量太多拖慢效能),透過 `gsap.utils.distribute` 系統性地做 `grid: [rows, cols]` 的 stagger,不是隨機亂數。視覺上仍讀作同一套「圓點網格」語言,只是密度不同——這是刻意的取捨,不是不一致。
+
+**三個殼的標記與初始化寫法完全一樣**(`<body>` 最上面):
+```html
+<div id="pageLoader" class="fixed inset-0 z-[9999] bg-cream flex items-center justify-center" aria-hidden="true">
+  <div class="loader-dots"></div>
+</div>
+<script src="js/page-loader.js"></script>
+<script>window.__pageLoader = initPageLoader();</script>
+```
+`initPageLoader()` 立刻鎖住捲動(`<html>` 加 `loading-lock` class,見 `css/style.css`)、生成圓點、開始脈動循環,回傳 `{ markReady() }`。**`blog-post.html` 原本沒有載入 GSAP**(純文字版面用不到),這次為了套用共用的載入動畫補上了 `<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>`。
+
+**每個殼各自決定「內容真正就緒」的時機,呼叫 `window.__pageLoader.markReady()`——這是唯一每個頁面需要客製化的地方:**
+- `index.html`:等 `document.fonts.ready` + `window.load`(所有圖片/影片 metadata 載完)兩者都完成。
+- `case-study.html`:由 `js/case-study-loader.js` 的 `notifyReady()` 呼叫——不管最後是成功渲染、找不到作品(`?work=` 缺漏或對應資料檔不存在)、還是資料檔載入失敗,三條路徑都要呼叫,不然使用者會卡在載入畫面出不去;呼叫時機是 `renderCaseStudyPage()` 執行完(同步)之後,再等 `document.fonts.ready`。
+- `blog-post.html`:`renderBlogPost()` 執行完(同步)之後,同樣再等 `document.fonts.ready`。
+
+**`markReady()` 呼叫的當下不代表立刻隱藏。** `initPageLoader()` 內部會取「最短顯示時間」(預設 500ms,避免載入太快時動畫一閃而過像故障)跟「內容真的就緒」兩者較晚的那個,同時有一個「最長等待時間」的保險(預設 4000ms)——不管 `markReady()` 有沒有被呼叫到(例如某個資源意外卡住、程式碼有 bug 忘記呼叫),到時間一定會強制隱藏,不會讓使用者永遠卡住。隱藏動畫是圓點先各自縮小淡出(同樣用 `grid` stagger,從中心往外收)、整個 overlay 才淡出,結束後 `display:none` 移出版面並移除 `loading-lock`。
+
+**`prefers-reduced-motion: reduce` 時跳過脈動循環跟位移類動畫**,圓點直接固定在中間亮度、隱藏時只做單純的 overlay 淡出——呼應全站其他動畫元件已經定案的 reduced-motion 處理原則(見「首頁捲動敘事」一節的對應說明),不是這裡另外發明一套。
+
+**這套機制目前只服務「整頁導覽」(進站、進入 case study、進入 blog 文章),不套用在首頁 WORKS/BLOG 分頁切換上**——那是同一個 `#worksGrid` 容器的資料來源切換(見上一節),不是真正的頁面導覽,本來就沒有「內容還沒加載完整」的問題,已經有自己的 GSAP `autoAlpha` 交叉淡出邏輯,不需要疊加這層 overlay。
 
 ## Responsive 斷點:兩套系統,不要混用
 

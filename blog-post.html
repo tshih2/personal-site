@@ -15,9 +15,19 @@
     tailwind.config = window.SITE_THEME;
   </script>
 
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-cream dot-grid text-ink font-geist">
+
+  <!-- 進站載入動畫——見 js/page-loader.js。這個頁面原本沒有載入 GSAP
+       (純文字版面不需要),這次為了共用同一套載入動畫補上。 -->
+  <div id="pageLoader" class="fixed inset-0 z-[9999] bg-cream flex items-center justify-center" aria-hidden="true">
+    <div class="loader-dots"></div>
+  </div>
+  <script src="js/page-loader.js"></script>
+  <script>window.__pageLoader = initPageLoader();</script>
 
   <div id="app"></div>
 
@@ -25,6 +35,8 @@
   <script src="data/data-blog.js"></script>
   <script>
     renderBlogPost(BLOG_POSTS, '#app');
+    const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+    fontsReady.then(() => window.__pageLoader.markReady());
   </script>
 </body>
 </html>

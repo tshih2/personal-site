@@ -31,9 +31,19 @@
     `;
   }
 
+  // 進站載入動畫(js/page-loader.js)的 ready 訊號——不管最後是成功
+  // 渲染、找不到作品、還是資料檔載入失敗,都要呼叫,不然使用者會卡在
+  // 載入畫面出不去。等字型就緒才隱藏,避免蓋子掀開時字型還在切換。
+  function notifyReady() {
+    if (!window.__pageLoader) return;
+    const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+    fontsReady.then(() => window.__pageLoader.markReady());
+  }
+
   const work = new URLSearchParams(location.search).get('work');
   if (!work) {
     app.innerHTML = buildNotFound();
+    notifyReady();
     return;
   }
 
@@ -42,13 +52,16 @@
   script.onload = () => {
     if (typeof CASE_STUDY_DATA === 'undefined') {
       app.innerHTML = buildNotFound();
+      notifyReady();
       return;
     }
     document.title = `${CASE_STUDY_DATA.title} | Tim Shih`;
     renderCaseStudyPage(CASE_STUDY_DATA, '#app');
+    notifyReady();
   };
   script.onerror = () => {
     app.innerHTML = buildNotFound();
+    notifyReady();
   };
   document.head.appendChild(script);
 })();

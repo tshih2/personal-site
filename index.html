@@ -22,6 +22,17 @@
 </head>
 <body class="bg-stone text-ink">
 
+  <!-- 進站載入動畫——見 js/page-loader.js 檔案開頭的完整說明。放在
+       <body> 最上面確保是第一個進入畫面的元素,蓋住底下還在初始化
+       的內容(字型、跑馬燈、hero-glitch 等)。ready 訊號等 window
+       load(所有圖片/影片 metadata 載完)+ 字型就緒,見本頁最下面的
+       呼叫。 -->
+  <div id="pageLoader" class="fixed inset-0 z-[9999] bg-cream flex items-center justify-center" aria-hidden="true">
+    <div class="loader-dots"></div>
+  </div>
+  <script src="js/page-loader.js"></script>
+  <script>window.__pageLoader = initPageLoader();</script>
+
   <header class="relative bg-cream dot-grid min-h-screen flex flex-col overflow-hidden">
 
     <div class="flex justify-between items-center gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
@@ -507,6 +518,17 @@
       // 捲到 Hero 頂端,不需要依賴任何元素的座標。
       onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
     });
+
+    // 進站載入動畫的 ready 訊號——等字型就緒 + window load(所有圖片/
+    // 影片 metadata 載完)兩者都完成才隱藏,確保蓋子掀開時內容不會
+    // 還在跳動/字型還在切換。
+    Promise.all([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise((resolve) => {
+        if (document.readyState === 'complete') resolve();
+        else window.addEventListener('load', resolve, { once: true });
+      }),
+    ]).then(() => window.__pageLoader.markReady());
   </script>
 </body>
 </html>

@@ -48,6 +48,28 @@ html, body {
   justify-content: space-between;
 }
 
+/* 頁面載入動畫(js/page-loader.js)顯示期間鎖住捲動,避免使用者在
+   內容位置都還沒定位好之前就滑動導致跳動感。載入完成後會自動移除
+   這個 class。 */
+.loading-lock {
+  overflow: hidden;
+}
+
+/* 頁面載入動畫:圓點網格脈動。圓點本身是 js/page-loader.js 動態生成
+   的獨立 DOM 節點(每個 <span class="loader-dot">),不是共用下面
+   .dot-grid 那種 background-image 做法——GSAP 需要逐點操作才能做出
+   脈動 stagger 效果,background-image 沒辦法逐點控制。 */
+.loader-dots {
+  display: grid;
+  place-items: center;
+}
+.loader-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background-color: var(--ink);
+}
+
 /* 「系統故障」美學:整齊的點陣網格背景,用 ink 色的低透明度做點,
    不需要新增顏色 token——套用在任何區塊背景上即可,間距用 CSS
    變數 --dot-size 控制,預設 24px。 */
