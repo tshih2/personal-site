@@ -13,7 +13,7 @@ const CASE_STUDY_DATA = {
       '<strong>Watch the Project</strong><br><br><a href="https://youtu.be/6Ebcn9hrrlM" target="_blank" rel="noopener noreferrer">Watch the final installation film</a><br><a href="https://youtu.be/cp0RGuOdbmQ" target="_blank" rel="noopener noreferrer">Watch the mailbox fabrication process</a>',
     ],
     media: [
-      { type: 'video', src: 'Img/A Message To The End/Overview/Project_Showcase.mov' },
+      { type: 'video', src: 'Img/A Message To The End/Overview/Project_ShowCase_Subtitled.mp4' },
     ],
   },
 
@@ -39,10 +39,10 @@ const CASE_STUDY_DATA = {
         '<strong>Making the Transition Feel Alive</strong><br><br>Timeline Nodes shaped each transition with a slow–fast–slow rhythm. I tested changes in camera field of view, motion blur, and lens flares to avoid a simple cut between scenes. An orbiting camera built with an Actor Blueprint, SpringArm, and Camera component gave the environment continuous motion.',
       ],
       media: [
-        { type: 'video', src: 'Img\\A Message To The End\\Building the Digital World\\Winter Scene_2.mp4' },
-        { type: 'image', src: 'Img\\A Message To The End\\Building the Digital World\\Meshy.AI.png', alt: 'Early Unreal Engine environment development' },
-        { type: 'image', src: 'Img\\A Message To The End\\Building the Digital World\\Flower Spawn with Keyboard.png', alt: 'Unreal Engine Data Layer setup for the seasonal environments' },
-        { type: 'image', src: 'Img\\A Message To The End\\Building the Digital World\\Camera_Shift.png', alt: 'Blueprint logic for controlling seasonal scene visibility' },
+        { type: 'video', src: 'Img/A Message To The End/Building the Digital World/Winter Scene_2.mp4' },
+        { type: 'image', src: 'Img/A Message To The End/Building the Digital World/Meshy.AI.png', alt: 'Early Unreal Engine environment development' },
+        { type: 'image', src: 'Img/A Message To The End/Building the Digital World/Flower Spawn with Keyboard.png', alt: 'Unreal Engine Data Layer setup for the seasonal environments' },
+        { type: 'image', src: 'Img/A Message To The End/Building the Digital World/Camera_Shift.png', alt: 'Blueprint logic for controlling seasonal scene visibility' },
         ],
     },
     {
@@ -54,11 +54,11 @@ const CASE_STUDY_DATA = {
         '<strong>Final Hardware</strong><br><br>The exhibited system used a Seeed Studio XIAO ESP32C3 soldered to a TCS34725 sensor. It connected to the exhibition computer through USB-C. I designed and fabricated the entire physical mailbox, including its structure, exterior, sensor placement, and integration with the digital display.',
       ],
       media: [
-        { type: 'image', src: 'Img\\A Message To The End\\Experimenting Failing and Rebuilding\\Flowers Inside the Camera View_1.png', alt: 'Initial microcontroller signal test during physical-computing development' },
-        { type: 'image', src: 'Img\\A Message To The End\\Experimenting Failing and Rebuilding\\Flowers Inside the Camera View_2.png', alt: 'TCS34725 sensor after soldering' },
-        { type: 'video', src: 'Img\\A Message To The End\\Experimenting Failing and Rebuilding\\Machine_testing_1.mp4', alt: 'Final mailbox design with integrated sensor' },
-        { type: 'video', src: 'Img\\A Message To The End\\Experimenting Failing and Rebuilding\\Machine_testing_2.mp4', alt: 'Final mailbox design with integrated sensor' },
-        { type: 'video', src: 'Img\\A Message To The End\\Experimenting Failing and Rebuilding\\Furniture_Process.mp4', alt: 'Final mailbox design with integrated sensor' },
+        { type: 'image', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Flowers Inside the Camera View_1.png', alt: 'Initial microcontroller signal test during physical-computing development' },
+        { type: 'image', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Flowers Inside the Camera View_2.png', alt: 'TCS34725 sensor after soldering' },
+        { type: 'video', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Machine_testing_1.mp4', alt: 'Final mailbox design with integrated sensor' },
+        { type: 'video', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Machine_testing_2.mp4', alt: 'Final mailbox design with integrated sensor' },
+        { type: 'video', src: 'Img/A Message To The End/Experimenting Failing and Rebuilding/Furniture_Process.mp4', alt: 'Final mailbox design with integrated sensor' },
       ],
     },
     {

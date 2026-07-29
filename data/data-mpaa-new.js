@@ -58,9 +58,8 @@ const CASE_STUDY_DATA = {
         '<strong>A complete interactive prototype</strong><br><br>We connected the public and nonprofit-facing journeys in Figma so the end-to-end concept could be explored through clickable interactions. The prototype communicated the proposed information architecture and workflow; it did not contain a working recommendation engine, backend, or live organizational data.',
       ],
       media: [
-        { type: 'image', src: 'Img/MPAA_Sources/Designing The Experience/feature 1.png', alt: 'Designing the experience — feature 1' },
-        { type: 'image', src: 'Img/MPAA_Sources/Designing The Experience/feature 2.png', alt: 'Designing the experience — feature 2' },
-        { type: 'image', src: 'Img/MPAA_Sources/Designing The Experience/feature 3.png', alt: 'Designing the experience — feature 3' },
+        { type: 'video', src: 'Img/MPAA_Sources/Designing The Experience/MPAA.mp4' },
+        { type: 'image', src: 'Img/MPAA_Sources/Designing The Experience/WireFrame.png' },
       ],
     },
     {

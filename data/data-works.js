@@ -4,7 +4,8 @@
 // 卡片會維持 bg-card 色塊當佔位框,不會報錯或留白)。
 const WORKS_DATA = [
   { title: 'VisionControl.AI', category: 'Generative AI', href: 'case-study.html?work=vision-control-rewritten', thumbnail: 'Img/VisionControl_Sources/vision-control-new/03-hero-thumbnail.png' },
-  { title: 'The Mary Pickford Arts Alliance', category: 'Product Design', href: 'case-study.html?work=mpaa-new', thumbnail: 'Img/MPAA_Sources/Cover/Mpaa_Cover.png' },
+  { title: 'The Mary Pickford Arts Alliance', category: 'Product Design', href: 'case-study.html?work=mpaa-new', thumbnail: 'Img/MPAA_Sources/Cover/Mpaa_Cover_3.png' },
+  { title: 'OkoEcho', category: 'UI / UX', href: 'case-study.html?work=oko-echo', thumbnail: 'Img/OkoEcho/Design MockUp/01.png' },
   { title: 'A Message To The End.', category: 'Interactive Installation', href: 'case-study.html?work=a-message-to-the-end', thumbnail: 'Img/A Message To The End/Cover/MessageToTheEnd.mp4' },
   { title: 'The Criterion Channel Brand Identity', category: 'Motion Graphic', href: 'case-study.html?work=criterion-channel', thumbnail: 'Img/CriterionChannel_Sources/Motion/Criterion Channel.mp4' },
   { title: 'Cyber Spell: Discord', category: 'Motion Graphic', href: 'case-study.html?work=cyber-spell-discord', thumbnail: 'Img/Discord_Sources/Motion/Cyber_Spell_Discord.mp4' },
