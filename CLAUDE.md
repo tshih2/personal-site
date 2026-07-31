@@ -35,6 +35,7 @@
 - `data/data-ldn-24.js` — LDN 24 的資料物件,透過 `case-study.html?work=ldn-24` 存取
 - `data/data-a-message-to-the-end.js` — A Message To The End. 的資料物件,透過 `case-study.html?work=a-message-to-the-end` 存取
 - `data/data-oko-echo.js` — OkoEcho 的資料物件,透過 `case-study.html?work=oko-echo` 存取
+- `data/data-mahjong.js` — MahJong Ledger 的資料物件,透過 `case-study.html?work=mahjong` 存取
 - `data/data-template.js` — 新增作品時複製這份改名用的空白範本,已更新成目前推薦的預設格式(`content` 陣列 + `media[].afterParagraph`),所有 key 都在、值留空
 - `data/data-works.js` — 首頁 WORKS 分頁的卡片清單(見下面「首頁 WORKS/BLOG 分頁切換」)
 - `data/data-blog.js` — **Blog 文章的唯一資料來源**(`BLOG_POSTS` 陣列),存完整文章內容(標題、日期、封面圖、作者、結構化的 `content` 區塊陣列),不是卡片形狀的假資料——首頁 BLOG 分頁的卡片清單跟 `blog-post.html` 的文章內文共用同一份,見下面「Blog 文章系統」

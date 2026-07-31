@@ -12,4 +12,5 @@ const WORKS_DATA = [
   { title: 'Psycho Thrills', category: 'Graphic Design', href: 'case-study.html?work=psycho-thrills', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/PsychoThriller_Sources/Cover/Poster_Close-up_4.jpg' },
   { title: 'The Serious Business of Comedy', category: 'Graphic Design', href: 'case-study.html?work=serious-business-of-comedy', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Comedy_Sources/Cover/Magazine_Cover.png' },
   { title: 'LDN 24', category: 'Graphic Design', href: 'case-study.html?work=ldn-24', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/Typography Conference/Cover/B&W_Ver.jpg' },
+  { title: 'MahJong Ledger', category: 'Vibe Coding', href: 'case-study.html?work=mahjong', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MahJong/Video/MahJongDemo.mp4' },
 ];
