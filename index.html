@@ -79,12 +79,18 @@
          明確呼叫,見 <script> 區塊,跟 initAccordion() 同一種呼叫慣例)
          處理,跟這裡的 reveal opacity(套在外層 #scrollHint 按鈕)是
          不同元素、不同 GSAP tween,不會互相覆蓋。About/Resume 區塊底部
-         的往上箭頭是同一個工廠函式的第二個呼叫,方向相反。 -->
+         的往上箭頭是同一個工廠函式的第二個呼叫,方向相反,但那邊沒有
+         套用下面這個文字提示——只有 Hero 這個進站第一眼看到的箭頭需要
+         明確告訴使用者「這是可以往下捲動的」,About/Resume 底部的往上
+         箭頭語意已經很明確(使用者已經知道自己在捲動),不需要重複說。
+         SCROLL 文字放進同一個 <button> 裡,跟箭頭共用同一組
+         data-reveal-* 淡入淡出邏輯,不需要另外處理顯示/隱藏。 -->
     <button
       id="scrollHint" type="button" aria-label="Scroll to Works section"
       data-reveal-on="#works" data-reveal-invert data-reveal-pointer-events
-      class="opacity-100 pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-[clamp(1.5rem,4vw,3rem)] z-10 transition-opacity duration-300"
+      class="opacity-100 pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-[clamp(1.5rem,4vw,3rem)] z-10 flex flex-col items-center gap-2 transition-opacity duration-300"
     >
+      <span class="font-geistmono text-xs tracking-[0.125em] uppercase text-muted">Scroll</span>
       <svg id="scrollHintArrow" class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 5v14M5 12l7 7 7-7" />
       </svg>

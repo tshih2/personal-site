@@ -41,10 +41,13 @@
  * 廉價。目前只有 Blog 分頁在用。
  *
  * `item.thumbnail` 是 `.mp4`/`.mov`/`.webm` 副檔名時,卡片自動渲染
- * `<video muted loop playsinline>` 取代 `<img>`,滑鼠移進卡片播放、
- * 移開暫停(wireHoverVideos()),不需要在資料裡另外宣告「這是影片」
- * ——副檔名已經夠明確,不用為了這個小功能把 thumbnail 從字串改成
- * { type, src } 物件。
+ * `<video muted loop playsinline>` 取代 `<img>`,不需要在資料裡另外
+ * 宣告「這是影片」——副檔名已經夠明確,不用為了這個小功能把 thumbnail
+ * 從字串改成 { type, src } 物件。互動邏輯依裝置有沒有 hover 能力分兩種
+ * (wireHoverVideos()):有 hover 的裝置(滑鼠)是移進卡片播放、移開
+ * 暫停;沒有 hover 的裝置(手機/平板觸控)改用 IntersectionObserver,
+ * 卡片捲進視窗才播放、捲出視窗暫停——不能沿用桌面那套邏輯,因為
+ * `mouseenter` 在觸控裝置上永遠不會觸發,縮圖會一直停在空白畫面。
  *
  * 導覽列對應的連結加 data-tab-link="<tab key>"(見 index.html 的
  * WORKS/BLOG 連結),由這裡統一攔截 click、換內容,不需要在 HTML
@@ -125,6 +128,7 @@ function initWorksGrid({ gridSelector, headerSelector, tabs, defaultTab }) {
   const FADE_DURATION = 0.3;
 
   let currentTab = null;
+  let hoverVideoObserver = null;
   const worksSection = document.getElementById('works');
 
   // 點擊 WORKS/BLOG 後把畫面精確捲動到 #works 頂部——#works 現在有
@@ -138,13 +142,57 @@ function initWorksGrid({ gridSelector, headerSelector, tabs, defaultTab }) {
   // 哪就是哪,下次 hover 從那裡接著播)——每次 applyTab() 換內容後都要
   // 重新綁一次,因為卡片是整批用 innerHTML 重新產生的新 DOM 節點,
   // 舊的 event listener 不會留著。
+  //
+  // 觸控裝置(手機/平板)沒有 hover 這個概念,`mouseenter` 永遠不會被
+  // 觸發——結果是縮圖在使用者點擊卡片離開頁面之前完全是空白的一片
+  // (iOS Safari 對從沒播放過的 `<video>` 常常連第一影格都不解碼,不是
+  // 單純「沒有動態效果」而已,是整個縮圖看不到)。用
+  // `matchMedia('(hover: hover)')` 判斷裝置有沒有真正的 hover 能力,
+  // 沒有的話改用 IntersectionObserver:卡片捲進視窗才播放、捲出視窗就
+  // 暫停——不是一次把所有卡片的影片都自動播放,一次播放十支影片會浪費
+  // 行動網路流量跟電量,而且大多數根本不在畫面上。`prefers-reduced-motion`
+  // 時進一步收斂:只在捲進視窗的當下跳到一個極小的時間點解碼出單一
+  // 影格讓縮圖不再空白,不自動循環播放。
   function wireHoverVideos() {
-    grid.querySelectorAll('video[data-hover-video]').forEach((video) => {
-      const card = video.closest('a');
-      if (!card) return;
-      card.addEventListener('mouseenter', () => video.play().catch(() => {}));
-      card.addEventListener('mouseleave', () => video.pause());
-    });
+    const videos = grid.querySelectorAll('video[data-hover-video]');
+    const supportsHover = window.matchMedia('(hover: hover)').matches;
+
+    if (hoverVideoObserver) {
+      hoverVideoObserver.disconnect();
+      hoverVideoObserver = null;
+    }
+
+    if (supportsHover) {
+      videos.forEach((video) => {
+        const card = video.closest('a');
+        if (!card) return;
+        card.addEventListener('mouseenter', () => video.play().catch(() => {}));
+        card.addEventListener('mouseleave', () => video.pause());
+      });
+      return;
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function showFirstFrame(video) {
+      const seek = () => { video.currentTime = Math.min(0.1, video.duration || 0.1); };
+      if (video.readyState >= 1) seek();
+      else video.addEventListener('loadedmetadata', seek, { once: true });
+    }
+
+    hoverVideoObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          if (reduceMotion) showFirstFrame(video);
+          else video.play().catch(() => {});
+        } else if (!reduceMotion) {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    videos.forEach((video) => hoverVideoObserver.observe(video));
   }
 
   function applyTab(key) {
