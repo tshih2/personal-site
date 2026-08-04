@@ -12,12 +12,7 @@ const CASE_STUDY_DATA = {
       'The project began with a problem I observed during an internship and was developed independently during a 14-week academic course. It allowed me to turn an ambiguous content-production challenge into a functional system while learning unfamiliar technologies, including pose tracking, API integration, ControlNet, and local server configuration.',
     ],
     media: [
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/03-hero-thumbnail.png', alt: 'VisionControl AI project overview' },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/04-problem-framing-image-1.png', alt: 'Early text-to-image generation experiment' },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/05-problem-framing-image-2.png', alt: 'Example showing the limitations of controlling poses through text prompts' },
-      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/06-ml5-pose-tracking-demo.mp4' },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/07-javascript-skeleton-capture.png', alt: 'JavaScript interface capturing a skeletal pose from the webcam' },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/08-stable-diffusion-controlnet-result.png', alt: 'AI-generated character following the captured ControlNet pose' },
+      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Vision Control Demo/Vision Control Demo.mp4', alt: 'VisionControl demo video' },
     ],
   },
 
@@ -75,6 +70,8 @@ const CASE_STUDY_DATA = {
           },
           alt: 'Direct input and system flow diagram',
         },
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/06-ml5-pose-tracking-demo.mp4' },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/05-problem-framing-image-2.png', alt: 'Example showing the limitations of controlling poses through text prompts' },
       ],
     },
     {
@@ -103,6 +100,7 @@ const CASE_STUDY_DATA = {
           },
           alt: 'From movement to generated image',
         },
+        { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Build The PoC/Vscode.png', alt: 'Example showing the limitations of controlling poses through text prompts' },
       ],
     },
     {
@@ -113,15 +111,18 @@ const CASE_STUDY_DATA = {
         '<strong>Limitations</strong><br><br>The prototype required a locally configured server and significant computing resources. Because Stable Diffusion and the supporting server were both running on my MacBook, each image took approximately five to ten minutes to generate. I therefore used a prerecorded demonstration during the final presentation rather than asking the audience to wait for a live result. Image upload remained a product concept, the prototype was not tested with professional content creators, and character consistency and common AI artifacts were not fully resolved. I also did not establish a reliable version-control and documentation process, and the original source code was eventually lost.',
         '<strong>What I Learned</strong><br><br>VisionControl taught me how to move from an ambiguous observation to a testable technical system. I entered the project without prior experience in server configuration or AI API integration, but learned to break unfamiliar problems into smaller parts, test them independently, and reconnect them into a working experience. It also changed how I think about human–AI interaction: better results do not always come from asking users to write more precise prompts. Sometimes the more natural interface is to let people show the system what they mean.',
       ],
-    },
-    {
-      title: 'Rebuilding VisionControl',
-      content: [
-        '<strong>Why Rebuild It</strong><br><br>I am now rebuilding VisionControl as a web-based product that people can try online. The rebuild is an opportunity to preserve the original interaction, address the prototype\'s technical limitations, and document the development process more responsibly.',
-        '<strong>Experience Goals</strong><br><br>The new version will support both live camera input and uploaded reference images, convert either input into a pose condition, combine the pose with character, setting, and visual-direction prompts, and return a result without requiring users to configure their own AI server. It will also provide clear progress and fallback states when generation is slow or unavailable.',
-        '<strong>Technical Goals</strong><br><br>The rebuild will replace the local generation setup with a hosted inference workflow and target a substantially shorter waiting time. The development process will be preserved through version control, architecture documentation, experiment records, screenshots, and video.',
-        '<strong>Ongoing Documentation</strong><br><br>This section will continue to grow as the new system is designed, built, tested, and deployed. When complete, the case study will include a public experience link, a demonstration video, and documented findings from user testing.',
+      media: [
+        { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Vision Control Demo/Vision Control Demo.mp4', alt: 'VisionControl demo video' },
       ],
     },
+    // {
+    //   title: 'Rebuilding VisionControl',
+    //   content: [
+    //     '<strong>Why Rebuild It</strong><br><br>I am now rebuilding VisionControl as a web-based product that people can try online. The rebuild is an opportunity to preserve the original interaction, address the prototype\'s technical limitations, and document the development process more responsibly.',
+    //     '<strong>Experience Goals</strong><br><br>The new version will support both live camera input and uploaded reference images, convert either input into a pose condition, combine the pose with character, setting, and visual-direction prompts, and return a result without requiring users to configure their own AI server. It will also provide clear progress and fallback states when generation is slow or unavailable.',
+    //     '<strong>Technical Goals</strong><br><br>The rebuild will replace the local generation setup with a hosted inference workflow and target a substantially shorter waiting time. The development process will be preserved through version control, architecture documentation, experiment records, screenshots, and video.',
+    //     '<strong>Ongoing Documentation</strong><br><br>This section will continue to grow as the new system is designed, built, tested, and deployed. When complete, the case study will include a public experience link, a demonstration video, and documented findings from user testing.',
+    //   ],
+    // },
   ],
 };
