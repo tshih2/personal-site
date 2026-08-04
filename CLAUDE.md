@@ -13,6 +13,7 @@
 - `index.html` — 首頁,捲動敘事是 Hero → All Works → About → Resume → Footer(見下面「首頁捲動敘事:Hero / About / Resume / Footer」);All Works 區塊底下的 WORKS/BLOG 是同一個 grid 容器的分頁切換,不是路由跳轉(見下面「首頁 WORKS/BLOG 分頁切換」)
 - `case-study.html` — **所有 case study 頁共用的單一薄殼**,不是每個作品各自建一個 html 檔案(VisionControl.AI/MPAA 兩個較早期作品原本各自有自己的 `vision-control-rewritten.html`/`mpaa.html`,已經統一遷移改用這個共用殼,兩份舊檔案已移除)。靠網址 `?work=<作品 slug>` 參數決定顯示哪個作品,`js/case-study-loader.js` 依這個參數動態載入對應的 `data/data-<作品 slug>.js`,呼叫 `renderCaseStudyPage()`(見下面「Case study 樣板系統」)
 - `blog-post.html` — **所有 Blog 文章共用的單一薄殼**,不是每篇文章各自一個 html 檔案。載入 `js/blog-post-template.js` + `data/data-blog.js`,依網址 `?slug=` 從 `BLOG_POSTS` 陣列找出對應那篇文章的資料才渲染(見下面「Blog 文章系統」)
+- `favicon.png` — 全站網站圖標,是唯一刻意放在根目錄、直接進 git 版控的圖片(見下面「網站圖標」)——瀏覽器分頁圖示是每個頁面載入都要用到的東西,不適合跟其他 case study 素材一樣依賴 R2(多一次外部請求、R2 掛掉時整站分頁圖示都不見),而且檔案很小,直接進 repo 沒有 Img/ 那種大型媒體檔案的顧慮
 - `js/case-study-template.js` — **Case study 頁面的樣板引擎**,吃一個資料物件、動態生成整個三欄版面(見下面「Case study 樣板系統」)
 - `js/case-study-loader.js` — `case-study.html` 的載入邏輯:讀網址 `?work=` 參數、動態插入對應的 `data/data-<work>.js` `<script>`、載入完成後呼叫 `renderCaseStudyPage()`。找不到 `?work=` 參數或資料檔載入失敗都會顯示「找不到這個作品」的畫面 + 回首頁連結,不會整頁壞掉。
 - `js/blog-post-template.js` — **Blog 文章頁的樣板引擎**,吃 `BLOG_POSTS` 陣列 + 網址上的 `slug`,動態生成單欄文章閱讀版面(見下面「Blog 文章系統」)
@@ -42,6 +43,19 @@
 - `css/style.css` — 全站共用的少量原生 CSS:防止橫向捲動的 `html,body` 規則、case-study 標題列共用的 `.col-header`、`.dot-grid`/`.dot-grid-dark`(淺色/深色兩版圓點網格背景)、`.glitch-text`(紅藍色偏)、`.loading-lock`/`.loader-dots`/`.loader-dot`(頁面載入動畫,見下面「頁面載入動畫:圓點網格脈動」)
 - `Img/` — 本地端的媒體素材原始檔,**已經排除在 git 版控外**(見 `.gitignore`),只留在本機當備份/編輯預覽用——實際部署的網站讀的是 Cloudflare R2 上的副本,不是這個資料夾。細節見下面「媒體素材託管:Cloudflare R2」。每個作品如果素材較多,底下開自己的子資料夾(例如 `Img/VisionControl_Sources/`、`Img/MPAA_Sources/`),依內容再分子資料夾(如 Overview、Product Strategy)——新增素材時本地路徑慣例維持不變,只是最後寫進 `data/*.js` 的 `src`/`thumbnail` 要換成 R2 網址,不是本地相對路徑。
 - `reference/` — 純設計參考用的情緒板/截圖,不是網站會載入的東西,已排除在 git 版控外(見 `.gitignore`);跟特定作品內容擷取有關的原始素材(例如網頁 scrape 下來的 HTML/JSON)歸進對應的 `Img/<作品>/` 資料夾,不要堆在 `reference/` 裡混淆用途
+
+## 網站圖標
+
+`favicon.png`(根目錄)是全站唯一的圖標檔案,三個共用殼(`index.html`/`case-study.html`/`blog-post.html`)的 `<head>` 都在 `<title>` 後面接同樣兩行:
+
+```html
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+```
+
+**這是刻意跟其他媒體素材分開處理的例外**:case study 用的圖片/影片都在 R2(見下面「媒體素材託管」),但 favicon 是每個頁面載入都會請求的東西,不適合再多繞一次外部網域(多一次 DNS/TLS 交握,而且 R2 萬一出狀況會連分頁圖示都不見),檔案本身也很小(707×707,個位數 KB),直接進 git 版控沒有 `Img/` 那種大型媒體檔案會拖垮 repo 的顧慮。
+
+來源檔案是 `Img/Self-Identity/71nG_transparent.png`(1080×1081,標誌本身只佔畫面中間一小條、四周留白很多),`favicon.png` 是從這份原始檔裁切出標誌實際佔用的範圍、置中貼進一個正方形透明畫布(707×707)後產生的——直接拿原始檔當圖標的話,標誌在瀏覽器分頁那種 16–32px 的小尺寸下會小到幾乎看不見。這個裁切是一次性手動處理,不是自動化流程;之後如果要換一個新的圖標圖案,同樣需要先確認裁切後在小尺寸下清不清楚可辨識,不能直接拿原始設計稿套用。
 
 ## 媒體素材託管:Cloudflare R2
 
@@ -146,6 +160,8 @@ Lightbox 裡一律顯示 **desktop 版本**的圖片,不管目前是哪個斷點
 <script>tailwind.config = window.SITE_THEME;</script>
 <link rel="stylesheet" href="css/style.css">
 ```
+
+`<title>` 後面緊接著也要固定放 favicon 兩個 `<link>` 標籤(見下面「網站圖標」),三個共用殼都是這個順序。
 
 ## Blog 文章系統
 
