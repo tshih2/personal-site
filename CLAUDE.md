@@ -10,19 +10,19 @@
 
 專案是純 HTML 在根目錄,共用的 JS/CSS/資料分別收在 `js/`、`data/`、`css/` 三個子資料夾——這是 2026-07-08 整理過的結構,新檔案要照這個分類放,不要又把 `.js`/`.css` 檔案散在根目錄。
 
-- `index.html` — 首頁,捲動敘事是 Hero → All Works → About → Resume → Footer(見下面「首頁捲動敘事:Hero / About / Resume / Footer」);All Works 區塊底下的 WORKS/BLOG 是同一個 grid 容器的分頁切換,不是路由跳轉(見下面「首頁 WORKS/BLOG 分頁切換」)
+- `index.html` — 首頁,捲動敘事是 Hero → All Works → About → Resume → Footer(見下面「首頁捲動敘事:About / Resume / Footer」跟「首頁全站背景」);All Works 區塊底下的 WORKS/BLOG/PLAY 是同一個 grid 容器的分頁切換,不是路由跳轉(見下面「首頁 WORKS/BLOG/PLAY 分頁切換」)
 - `case-study.html` — **所有 case study 頁共用的單一薄殼**,不是每個作品各自建一個 html 檔案(VisionControl.AI/MPAA 兩個較早期作品原本各自有自己的 `vision-control-rewritten.html`/`mpaa.html`,已經統一遷移改用這個共用殼,兩份舊檔案已移除)。靠網址 `?work=<作品 slug>` 參數決定顯示哪個作品,`js/case-study-loader.js` 依這個參數動態載入對應的 `data/data-<作品 slug>.js`,呼叫 `renderCaseStudyPage()`(見下面「Case study 樣板系統」)
 - `blog-post.html` — **所有 Blog 文章共用的單一薄殼**,不是每篇文章各自一個 html 檔案。載入 `js/blog-post-template.js` + `data/data-blog.js`,依網址 `?slug=` 從 `BLOG_POSTS` 陣列找出對應那篇文章的資料才渲染(見下面「Blog 文章系統」)
 - `favicon.png` — 全站網站圖標,是唯一刻意放在根目錄、直接進 git 版控的圖片(見下面「網站圖標」)——瀏覽器分頁圖示是每個頁面載入都要用到的東西,不適合跟其他 case study 素材一樣依賴 R2(多一次外部請求、R2 掛掉時整站分頁圖示都不見),而且檔案很小,直接進 repo 沒有 Img/ 那種大型媒體檔案的顧慮
 - `js/case-study-template.js` — **Case study 頁面的樣板引擎**,吃一個資料物件、動態生成整個三欄版面(見下面「Case study 樣板系統」)
 - `js/case-study-loader.js` — `case-study.html` 的載入邏輯:讀網址 `?work=` 參數、動態插入對應的 `data/data-<work>.js` `<script>`、載入完成後呼叫 `renderCaseStudyPage()`。找不到 `?work=` 參數或資料檔載入失敗都會顯示「找不到這個作品」的畫面 + 回首頁連結,不會整頁壞掉。
 - `js/blog-post-template.js` — **Blog 文章頁的樣板引擎**,吃 `BLOG_POSTS` 陣列 + 網址上的 `slug`,動態生成單欄文章閱讀版面(見下面「Blog 文章系統」)
-- `js/works-grid.js` — 首頁 WORKS/BLOG 分頁切換引擎(見下面「首頁 WORKS/BLOG 分頁切換」),`initWorksGrid()` 吃一組 tabs 設定,動態渲染 `#worksGrid` 卡片、處理 nav 點擊/網址 hash/瀏覽器上一頁下一頁,支援 `numbered: true` 幫卡片標題自動加兩位數流水號(目前只有 Blog 分頁在用)
+- `js/works-grid.js` — 首頁 WORKS/BLOG/PLAY 分頁切換引擎(見下面「首頁 WORKS/BLOG/PLAY 分頁切換」),`initWorksGrid()` 吃一組 tabs 設定,動態渲染 `#worksGrid` 卡片、處理 nav 點擊/網址 hash/瀏覽器上一頁下一頁,支援 `numbered: true` 幫卡片標題自動加兩位數流水號(目前只有 Blog 分頁在用)
 - `js/theme.js` — **所有頁面共用的 Tailwind 設計 token(顏色 + 字體家族)**,新頁面一律載入這個檔案,不要自己重新定義一份顏色/字體
 - `js/script.js` — 首頁 Hero 即時時鐘
 - `js/hero-glitch.js` — 首頁 Hero 大字(TIM SHIH / 文案輪播)的故障感動畫:文字亂碼化、紅藍色偏、字級動態計算(含完整的溢出安全檢查,見下面專門一節)
-- `js/hero-marquee.js` — 低調亂碼跑馬燈,寫成 `initMarquee(fieldId, options)` 可重複呼叫的工廠函式(不是單一頁面寫死的邏輯),目前 Hero 跟 About 各呼叫一次、各自傳入不同的顏色/透明度參數(見下面「首頁捲動敘事」)
-- `js/scroll-reveal.js` — 通用的「元素是否隨某個目標區塊進出視窗而淡入/淡出」IntersectionObserver 工具,靠 `data-reveal-on`(CSS selector)、`data-reveal-invert`、`data-reveal-translate`、`data-reveal-pointer-events` 這組 data 屬性驅動,不用寫 JS 就能讓任何元素套用同一套顯示邏輯(目前用在浮動 nav 跟 Hero 的往下滑動提示)
+- `js/hero-marquee.js` — 低調亂碼跑馬燈,寫成 `initMarquee(fieldId, options)` 可重複呼叫的工廠函式(不是單一頁面寫死的邏輯),目前 Hero、All Works(`#works`)、About 各呼叫一次,Hero 跟 All Works 共用同一組淺色底參數、About 另用一組深色底參數(見下面「首頁全站背景」跟「首頁捲動敘事」)
+- `js/scroll-reveal.js` — 通用的「元素是否隨某個目標區塊進出視窗而淡入/淡出」IntersectionObserver 工具,靠 `data-reveal-on`(CSS selector)、`data-reveal-invert`、`data-reveal-translate`、`data-reveal-pointer-events` 這組 data 屬性驅動,不用寫 JS 就能讓任何元素套用同一套顯示邏輯(目前用在浮動 nav、Hero 的往下滑動提示、Hero 左下角版本號列)
 - `js/scroll-hint.js` — Hero 的往下滑動提示箭頭(位移 + 閃爍兩層獨立 GSAP tween、點擊捲動到 `#works`),顯示/隱藏邏輯委託給 `js/scroll-reveal.js`,不是自己另外寫一套。Hero 這個箭頭上方另外有一個「SCROLL」文字提示(`index.html` 裡跟箭頭同一個 `#scrollHint` 按鈕內,`font-geistmono text-xs tracking-[0.125em] uppercase text-muted`),跟箭頭共用同一組 `data-reveal-*` 淡入淡出,不需要另外處理顯示/隱藏——About/Resume 底部的往上箭頭沒有套這個文字(使用者當下已經在捲動,語意已經明確,不需要重複提示)
 - `js/accordion.js` — 通用手風琴(`initAccordion(ids, options)`),邏輯跟 `js/case-study-template.js` 的 `initAccordions()` 是同一套(GSAP 高度展開/收合 + 互斥),差別是不綁死 case study 的資料格式,靠 `#accordionHeader-<id>`/`#accordionContent-<id>` 命名慣例運作,目前用在首頁 Resume 區塊
 - `js/hero-scroll-fade.js` — GSAP ScrollTrigger 的 pin + scrub 效果集中在這裡(見下面「首頁捲動敘事」專門一節)
@@ -38,7 +38,7 @@
 - `data/data-oko-echo.js` — OkoEcho 的資料物件,透過 `case-study.html?work=oko-echo` 存取
 - `data/data-mahjong.js` — MahJong Ledger 的資料物件,透過 `case-study.html?work=mahjong` 存取
 - `data/data-template.js` — 新增作品時複製這份改名用的空白範本,已更新成目前推薦的預設格式(`content` 陣列 + `media[].afterParagraph`),所有 key 都在、值留空
-- `data/data-works.js` — 首頁 WORKS 分頁的卡片清單(見下面「首頁 WORKS/BLOG 分頁切換」)
+- `data/data-works.js` — 首頁 WORKS 分頁(`WORKS_DATA`)跟 PLAY 分頁(`PLAY_DATA`)的卡片清單,兩個陣列同一個檔案(見下面「首頁 WORKS/BLOG/PLAY 分頁切換」)
 - `data/data-blog.js` — **Blog 文章的唯一資料來源**(`BLOG_POSTS` 陣列),存完整文章內容(標題、日期、封面圖、作者、結構化的 `content` 區塊陣列),不是卡片形狀的假資料——首頁 BLOG 分頁的卡片清單跟 `blog-post.html` 的文章內文共用同一份,見下面「Blog 文章系統」
 - `css/style.css` — 全站共用的少量原生 CSS:防止橫向捲動的 `html,body` 規則、case-study 標題列共用的 `.col-header`、`.dot-grid`/`.dot-grid-dark`(淺色/深色兩版圓點網格背景)、`.glitch-text`(紅藍色偏)、`.loading-lock`/`.loader-dots`/`.loader-dot`(頁面載入動畫,見下面「頁面載入動畫:圓點網格脈動」)
 - `Img/` — 本地端的媒體素材原始檔,**已經排除在 git 版控外**(見 `.gitignore`),只留在本機當備份/編輯預覽用——實際部署的網站讀的是 Cloudflare R2 上的副本,不是這個資料夾。細節見下面「媒體素材託管:Cloudflare R2」。每個作品如果素材較多,底下開自己的子資料夾(例如 `Img/VisionControl_Sources/`、`Img/MPAA_Sources/`),依內容再分子資料夾(如 Overview、Product Strategy)——新增素材時本地路徑慣例維持不變,只是最後寫進 `data/*.js` 的 `src`/`thumbnail` 要換成 R2 網址,不是本地相對路徑。
@@ -169,7 +169,7 @@ Lightbox 裡一律顯示 **desktop 版本**的圖片,不管目前是哪個斷點
 
 **只有一個 `blog-post.html` 殼,不是每篇文章各自一個 html 檔案。** 使用者點進某篇文章時,頁面讀取網址上的識別碼、才去 `data/data-blog.js` 的 `BLOG_POSTS` 陣列裡找出對應那篇的資料來渲染——不是把全部文章內容一次性載入到頁面。
 
-- **網址識別碼用 query string**(`blog-post.html?slug=<slug>`),不是 hash——首頁的 `#blog` 這個 hash 已經是 WORKS/BLOG 分頁狀態在用(見下面「首頁 WORKS/BLOG 分頁切換」),跟「這篇文章是哪一篇」是兩件不同的事,用不同機制表達比較不會混淆。`js/blog-post-template.js` 用 `new URLSearchParams(location.search).get('slug')` 讀取,找不到對應文章時顯示一個簡單的「找不到這篇文章」畫面 + 回 Blog 分頁的連結,不會整頁壞掉。
+- **網址識別碼用 query string**(`blog-post.html?slug=<slug>`),不是 hash——首頁的 `#blog` 這個 hash 已經是 WORKS/BLOG/PLAY 分頁狀態在用(見下面「首頁 WORKS/BLOG/PLAY 分頁切換」),跟「這篇文章是哪一篇」是兩件不同的事,用不同機制表達比較不會混淆。`js/blog-post-template.js` 用 `new URLSearchParams(location.search).get('slug')` 讀取,找不到對應文章時顯示一個簡單的「找不到這篇文章」畫面 + 回 Blog 分頁的連結,不會整頁壞掉。
 - `data/data-blog.js` 的 `BLOG_POSTS` 是**唯一資料來源**,首頁 BLOG 分頁的卡片清單(`index.html` 呼叫 `initWorksGrid()` 前用 `.map()` 現算出來的 `{title, category, href, thumbnail}` 形狀)跟 `blog-post.html` 的文章內文,兩邊都吃同一份資料,不是分開維護兩份。卡片的 `category` 欄位借來放文章日期(`post.date`),`href` 是 `blog-post.html?slug=${post.slug}`,`thumbnail` 是 `post.coverImage`。
 - **文章內頁是純文字版面,不渲染任何圖片/影片**——`coverImage` 只用在首頁卡片縮圖,不會出現在 `blog-post.html` 本身。單篇文章物件格式:`{ slug, title, date, coverImage, author, content: [...] }`。`content` 是結構化區塊陣列,依序渲染,種類自由混用:
   - `{ type: 'paragraph', text }` — 一般段落(可含 `<strong>子標題</strong>` 這種內嵌強調,跟 case-study 段落的慣例一致)
@@ -182,7 +182,7 @@ Lightbox 裡一律顯示 **desktop 版本**的圖片,不管目前是哪個斷點
 - **`blog-post.html` 的 `<body>` 套用跟 Hero 一樣的 `.dot-grid` 圓點網格背景**(`bg-cream dot-grid`),不套跑馬燈——純粹是背景紋理裝飾,維持文章內容清晰可讀,不需要 Hero/About 那套 `initMarquee()` 邏輯。
 - 版面/字體/顏色沿用既有 token,沒有另外發明新角色:大標題用跟 case-study 頁一樣的 `font-unbounded font-extrabold`;back 連結、作者/日期 meta 用跟 case-study 一樣的 `font-geistmono text-xs text-muted`;段落用跟 case-study 完全一樣的 `font-geist text-xs leading-[1.8] text-muted`。小標題(`heading` 區塊)目前沒有現成的角色可以直接借,用 `font-geist font-semibold text-sm text-ink` 跟本文拉開一階區隔——不用 Unbounded,因為那是給「巨大展示標題」的角色,小標題字級不到那個量級。
 - **文章之間的交互參照,只有明確對應得上網站上已發布文章的才轉成真正的站內連結**(`<a href="blog-post.html?slug=...">`,直接寫在 `paragraph` 的 `text` 裡,`content` 支援內嵌 HTML,不需要額外欄位)——Tim 的逐字稿裡常帶著 Obsidian 的 `[[雙方括號]]` 交互參照語法,但大多數連到的是他個人筆記系統裡的其他筆記,不是這個網站上已發布的文章,照樣轉連結會變成死連結。目前的做法是逐篇檢查,只轉確定連得到的那幾個,其餘的整段(通常是文章結尾的「Related: [[...]] · [[...]]」清單)先不渲染,不要整段照抄或猜測性地連過去。
-- 首頁卡片標題超過兩行會截斷加「...」、日期絕不被擠壓——這是共用卡片樣板(`buildWorkCard()`)的規則,細節見下面「元件慣例」的卡片小節。
+- 首頁卡片標題超過兩行會截斷加「...」、標籤(日期)獨立一排、不會被標題擠壓——這是共用卡片樣板(`buildWorkCard()`)的規則,細節見下面「元件慣例」的卡片小節。
 
 ## 顏色 token(定義在 `js/theme.js`)
 
@@ -192,7 +192,7 @@ Lightbox 裡一律顯示 **desktop 版本**的圖片,不管目前是哪個斷點
 | `muted` | `#706F6A` | 次要文字(說明文字、meta 資訊、design type) |
 | `label` | `#878787` | Section 標籤/eyebrow 文字(比 muted 更淡一階) |
 | `cream` | `#F9F7F2` | 暖米白——Hero 區塊、work-detail 整頁背景 |
-| `stone` | `#F2F2F0` | 中性灰白——一般內容區(All Works grid)背景、浮動 Nav 背景 |
+| `stone` | `#F2F2F0` | 中性灰白——浮動 Nav 背景(2026-08-26 之前也是 `<body>`/All Works grid 的背景,現在首頁全站統一用 `cream` + `dot-grid`,`stone` 只剩浮動 nav 這個用途,詳見下面「首頁全站背景」) |
 | `card` | `#F9F9F9` | 卡片色塊底色 |
 
 不要新增顏色前先檢查這張表——大部分情境應該都能用現有 token 表達。footer 的純黑背景直接用 Tailwind 內建的 `bg-black`/`text-white`,不需要獨立 token。
@@ -222,8 +222,8 @@ Unbounded 字重依情境不同:巨大 wordmark(首頁 Hero/Footer)用 `font-bla
 ## 版面與間距
 
 - 任何「大型、桌面基準」的間距數字(如 Figma 給的 120px 留白)都要轉換成 `clamp()`,不要在所有螢幕寬度下寫死同一個 px。小型間距(卡片內距、grid gap、段落間距)可以直接用 Tailwind 預設刻度(`gap-6`、`mt-10` 這種),不需要 clamp。
-- 版面寬度不要寫死(不要 `w-[1344px]` 這種),用「總寬度 − 左右邊界」或 `max-w-[...]` + `mx-auto` 表達。
-- Grid 欄數要 responsive:手機 1 欄、平板 2 欄、桌面 3 欄(`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`,首頁 All Works grid 用的斷點)。
+- 版面寬度不要寫死(不要 `w-[1344px]` 這種),用「總寬度 − 左右邊界」或 `max-w-[...]` + `mx-auto` 表達。**首頁的水平邊界一律用 `px-[var(--page-margin-x)]`(定義在 `css/style.css`,`clamp(1.25rem, 4vw, 2.5rem)`),不要另外幫某個容器訂一組 `max-w-[...] + mx-auto + 自己的 clamp padding`。** 2026-08-26 修過一個坑:`<main>`(包住 `#works` 的容器)原本是 `max-w-[1600px] mx-auto px-[clamp(1.25rem,3.33vw,3rem)]`,在夠寬的螢幕上(超過 1600px + padding)`mx-auto` 會讓左右各多出「(視窗寬度 − 1600px)/2」的置中留白,疊加在自己的 padding 上,結果 All Works 區塊的實際左右邊界比 Hero/About 用 `--page-margin-x` 算出來的邊界寬得多——兩者理論上該對齊(同一頁面同一套邊界),但因為各自用不同公式,肉眼看起來明顯「Works 區塊縮進去一大截」。改成跟 Hero/About 一樣直接 `px-[var(--page-margin-x)]`(拿掉 `max-w`/`mx-auto`)後才真正對齊。之後任何新的首頁區塊容器,水平邊界都直接套這個變數,不要自己另外設計一套「max-width 置中」的邊界邏輯。
+- Grid 欄數要 responsive。首頁 All Works grid(`#worksGrid`)是手機 1 欄、平板以上 2 欄(`grid-cols-1 sm:grid-cols-2`,不再往 `lg:` 加到 3 欄)——2026-08-26 改成大方展示的大卡片版面後,2 欄是刻意定案的上限,不是還沒補完 `lg:` 斷點,加大卡片尺寸換取更有份量的視覺效果,同一畫面能看到的作品數量變少是預期的取捨。其他 grid(如果之後有）不受此限制,可視情境沿用手機 1 欄、平板 2 欄、桌面 3 欄的舊斷點。
 
 ## 動態/響應式文字的溢出安全檢查
 
@@ -236,11 +236,23 @@ Hero 大字(`js/hero-glitch.js`)這類「字級/內容都會動態改變」的�
 - **如果元件有「動畫進行中不應該被重新校準打斷」的狀態(如故障動畫、轉場),被這個狀態擋下的尺寸變化不能就這樣憑空消失——記一個 pending flag,狀態結束時立刻補做一次校準**,不要假設「反正等下一次事件或下一輪動畫自然會校正」,那段空窗期就是使用者實際看得到的溢出。
 - **用 Playwright 驗證「尺寸變化後有沒有正確反應」時,commanding resize 之後要留至少一次 animation frame 的 settle 時間再量測(例如 `await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`),不要在下完 resize 指令後零延遲立刻量。** `ResizeObserver`/`resize` 事件的 callback 本來就是非同步、批次在下一個影格才觸發,零延遲量測到的「溢出」其實是量測方法本身的假訊號,不是真的 bug——這個坑已經在這次調查中親自踩過,浪費不少時間才確認是測試手法問題。真的要測「使用者體感」,量測前留下 settle 時間才是對照使用者實際感知的方式。
 
-## 首頁捲動敘事:Hero / About / Resume / Footer
+## 首頁全站背景:cream + dot-grid + 跑馬燈從 Hero 延續到 All Works
 
-首頁的捲動順序是固定的:**Hero(淡出)→ All Works → About(黑底+圓點+跑馬燈+wordmark+聯絡資訊,pin 住) → Resume+Footer(同一個 pin 內三段式交叉淡出淡入)**。這一節記錄這套機制的規則,新增/調整任何 pin 住的捲動效果都要延續這裡的做法,不要另外發明一套。
+**2026-08-26 定案**:首頁 `<body>` 直接套 `bg-cream dot-grid`(不再是 `bg-stone` 素色),讓 Hero 底下接的 All Works 區塊(`#works`,`<main>` 包住、本身沒有另外設定背景)自然沿用同一個圓點網格背景,捲動下去不會有「Hero 是有紋理的米白、All Works 突然變成一片平面灰白」的視覺斷層。`#about` 區塊本身有自己明確的 `bg-black dot-grid-dark`,套在深色底、不受這個改動影響。
 
-- **全站共用同一套「pin + scrub」機制,定義在 `js/hero-scroll-fade.js`,不要在別的檔案裡各自寫一份 ScrollTrigger。** 目前有兩處套用:(1) Hero 大字 `#heroText` 淡出(單純淡出,`pin:true` 固定 `<header>` 一個視窗高度的捲動距離);(2) About 區塊三段式交叉淡出淡入(wordmark 淡出 → 姓名/電話/email 位移重新編排 → Resume 淡入 → Footer 淡入,全部 pin 在 `#about` 一個區塊內)。兩處都是「建一個 `gsap.timeline()`,把多個 tween 用時間軸座標(0–1)安排重疊/交錯,再用 `ScrollTrigger.create({ trigger, start:'top top', end:'+=N%', pin:true, scrub:true, animation: tl })` 把 timeline 綁到捲動進度」的同一個模式。
+**套在 `<body>` 這一個元素上,不要分別套在 `<header>` 跟 `#works` 兩個區塊上**——`.dot-grid` 是 `background-image` 的固定尺寸圓點網格(`background-size: 24px 24px`,見 `css/style.css`),如果 Hero 跟 All Works 各自獨立套用,兩個元素會各自從自己的 `(0,0)` 起點重新平鋪網格,兩者交界處的圓點間距很容易對不齊、出現一條「接縫」(除非 Hero 的高度剛好是 24px 的整數倍,而 `min-h-screen` 顯然不會剛好整除)。套在同一個 `<body>` 上是唯一能保證從頭到尾一張連續、不斷點的網格的做法。
+
+`bg-stone` 現在只剩浮動 nav 自己的背景色(nav 本身有獨立的 `bg-stone` class,不是繼承 body),不再是頁面級的背景 token——調整首頁背景相關樣式前,先確認是要改「全站背景」(改 body)還是「某個獨立元件自己的底色」(nav/卡片這類有自己 `bg-*` class 的元件),不要混著改。
+
+**跑馬燈也比照辦理,不是只延續了圓點背景卻漏掉動態效果。** `#works` 區塊(`relative`)裡加了 `#worksMarqueeField`(`absolute inset-0`,DOM 順序放在 `#worksHeader` 前面),呼叫方式跟 Hero/About 一樣寫在 `js/hero-marquee.js` 檔案最底部(`initMarquee('worksMarqueeField', { color: 'var(--ink)', opacitySteps: [...] })`,參數跟 Hero 完全一樣,因為兩者都是 `bg-cream` 淺色底)——這個欄位是寫在 `index.html` 的靜態 html,頁面一載入就存在,不像 case study 頁那種動態渲染出來的欄位需要等特定時機才能呼叫 `initMarquee()`。`#worksHeader`(「[ ALL WORKS ]」標籤)加了 `data-protect`,跟 Hero 保護 `#heroText`、Hero 保護大標題同一個道理,避免跑馬燈疊在這個區塊最顯眼的標籤文字上;`#worksGrid` 底下的卡片本身沒有另外保護,跑馬燈可能會有極低透明度的文字飄過卡片圖片上方,這是刻意接受的「低調噪點」效果,不是遺漏。
+
+## 首頁捲動敘事:About / Resume / Footer
+
+首頁的捲動順序是固定的:**Hero → All Works → About(黑底+圓點+跑馬燈+wordmark+聯絡資訊,pin 住) → Resume+Footer(同一個 pin 內三段式交叉淡出淡入)**。這一節記錄這套機制的規則,新增/調整任何 pin 住的捲動效果都要延續這裡的做法,不要另外發明一套。
+
+**Hero 大字(`#heroText`)原本也套過「往下捲動離開視窗時 pin 住 + opacity 淡出」的效果,2026-08-26 拿掉了**——Tim 要求大字不要再跟著捲動消失,`<header>` 現在就是一般內容區塊,捲過去就自然被往上推出視窗,不需要 pin 或任何淡出動畫。拿掉這段之後,`js/hero-scroll-fade.js` 只剩 About 區塊這一處 pin+scrub 應用,不是這一節標題原本講的「Hero 跟 About 各一處」。如果之後想再幫某個區塊加類似的「pin 住 + scrub 淡出/交叉淡出」效果,下面幾條規則(尤其是 timeline 不留 hold、`autoAlpha` 而非 `opacity`)仍然是要延續的做法,不要因為 Hero 那個範例被拿掉就重新發明一套。
+
+- **`js/hero-scroll-fade.js` 是這套「pin + scrub」機制唯一的定義位置,不要在別的檔案裡各自寫一份 ScrollTrigger。** 目前的應用是 About 區塊三段式交叉淡出淡入(wordmark 淡出 → 姓名/電話/email 位移重新編排 → Resume 淡入 → Footer 淡入,全部 pin 在 `#about` 一個區塊內):建一個 `gsap.timeline()`,把多個 tween 用時間軸座標(0–1)安排重疊/交錯,再用 `ScrollTrigger.create({ trigger, start:'top top', end:'+=N%', pin:true, scrub:true, animation: tl })` 把 timeline 綁到捲動進度。
 - **淡出淡入一律用 GSAP 的 `autoAlpha`,不要用單純的 `opacity`。** `autoAlpha` 在數值到 0 時會自動加 `visibility:hidden`,避免「視覺上淡出了,但底下的按鈕/連結還能被點到或被 tab 鍵取得焦點」——這個專案有好幾個淡出區塊本身是互動元件(手風琴按鈕、社群連結),這個坑很容易忽略。
 - **timeline 裡不要留任何「動畫已經跑完、但還要再撐一段捲動距離才放開 pin」的空白 hold 段。** 早期版本在最後一個 tween 後面多接了一段 `duration:0.25` 的 filler 想留緩衝時間,結果使用者的體感是「畫面明明已經定格了,卻還要再多捲一段空白距離」才會看到下一個區塊——已用 Playwright 精確量到這個落差。正確做法:讓 timeline 的總長度直接由**最後一個有意義的 tween**的結束時間決定(不額外加 filler),GSAP scrub 會把這個總長度對應到 pin 的 `end`,「動畫跑完」跟「pin 解除」永遠是同一個時間點。
 - **如果 pin 住的區塊是全站最後一個區塊(後面沒有其他內容),不需要刻意計算「捲到底剛好放開 pin」——這件事會自動成立。** 因為 pin-spacer 的高度就是頁面在該區塊「捲得到的最大距離」的唯一來源,只要 timeline 本身沒有多餘 hold(見上一條),pin 的 `end` 自然就等於 `document.body.scrollHeight` 的極限,使用者捲到真正的頁面底部時動畫剛好也定格完成,不會有多餘的可捲動空白。這個特性已用 Playwright 精確驗證過(`pin 的 end` 與 `maxScroll` 兩個數字完全相等)。
@@ -250,25 +262,28 @@ Hero 大字(`js/hero-glitch.js`)這類「字級/內容都會動態改變」的�
 - **落點座標的 tween 用函式(`x: () => computeDelta().x`)而不是量一次就寫死的數字,並且在 `ScrollTrigger.create()` 加 `invalidateOnRefresh: true`。** 這樣視窗尺寸改變、版面跟著重排時,GSAP 會在下一次 refresh 重新呼叫這個函式拿新的距離,不會停留在舊尺寸量出來的錯誤位移量。
 - **`prefers-reduced-motion: reduce` 的 fallback 不能只是「什麼都不做」,要確認拿掉動畫之後版面本身還是合理的。** 這個專案的 pin+cross-fade 效果依賴多個圖層互相疊在同一塊區域(用 `position:absolute` + `autoAlpha:0` 初始隱藏),如果 reduced-motion 版本什麼都不改,使用者會看到「本來該淡入淡出的內容,現在直接卡死疊在最上層」或「該顯示的內容永遠透明」這類殘留狀態。做法是額外寫一個 `mm.add('(prefers-reduced-motion: reduce)', ...)` 分支,把疊層的元素改回 `position:relative`(讓瀏覽器用一般文件流依序排列)、該顯示的直接設 `autoAlpha:1`,任何「只服務動畫、不服務 fallback 版面」的隱藏範本/占位元素也要在這個分支裡收掉它佔的空間(`height:0`/`marginBottom:0`),不然 fallback 版面會多出一段莫名其妙的空白。
 
-## 首頁 WORKS/BLOG 分頁切換
+## 首頁 WORKS/BLOG/PLAY 分頁切換
 
-底部浮動 nav 的 WORKS 跟 BLOG,**是同一個 `#worksGrid` 容器的兩種資料來源切換,不是兩個頁面之間的路由跳轉**——概念上比照 Instagram 個人主頁貼文/珍藏分頁切換的體驗,不是點連結跳到 `blog.html`。HOME/ABOUT 維持原本各自的捲動行為(HOME 捲回 Hero 頂端、ABOUT 捲到 About 區塊「完成態」),只有 WORKS/BLOG 屬於這套機制。
+底部浮動 nav 的 WORKS、BLOG、PLAY,**是同一個 `#worksGrid` 容器的三種資料來源切換,不是頁面之間的路由跳轉**——概念上比照 Instagram 個人主頁貼文/珍藏分頁切換的體驗,不是點連結跳到 `blog.html`。HOME/ABOUT 維持原本各自的捲動行為(HOME 捲回 Hero 頂端、ABOUT 捲到 About 區塊「完成態」),只有 WORKS/BLOG/PLAY 屬於這套機制。
+
+**WORKS 跟 PLAY 是同一份「作品」內容依類型拆成兩個分頁,不是兩種不同性質的資料**(這點跟 BLOG 不一樣,BLOG 是完全獨立的文章系統)——PLAY 收 Motion Graphic / Graphic Design 這兩類偏視覺/動態的作品(The Criterion Channel Brand Identity、Cyber Spell: Discord、Psycho Thrills、The Serious Business of Comedy、LDN 24),WORKS 留偏 UX/產品/互動裝置類的作品(VisionControl.AI、MPAA、OkoEcho、A Message To The End.、MahJong Ledger)。兩份清單分別是 `data/data-works.js` 的 `WORKS_DATA`/`PLAY_DATA` 兩個陣列,同一個檔案,格式完全一樣。新作品要放哪個分頁,依它的 `category` 貼近哪一邊決定,不是固定規則——之後如果分類界線變模糊,再跟 Tim 確認要不要調整某個作品的分頁歸屬。
 
 **運作方式**(`js/works-grid.js` 的 `initWorksGrid()`):
-- 底部 nav 的 WORKS/BLOG 連結加 `data-tab-link="<tab key>"`,由 `initWorksGrid()` 統一攔截 click(`preventDefault()`),原地換 `#worksGrid` 的內容 + `#worksHeader` 的標題文字,**不會觸發真正的頁面導覽/reload**。
-- 兩個分頁共用同一份卡片樣板(`buildWorkCard()`),`tabs.<key>.items` 統一是 `{ title, category, href, thumbnail? }` 格式(`thumbnail` 可省略,沒有縮圖時卡片維持 `bg-card` 色塊當佔位框)。WORKS 直接吃 `data/data-works.js`;BLOG 的原始資料(`data/data-blog.js` 的 `BLOG_POSTS`)存的是完整文章內容給 `blog-post.html` 用(見「Blog 文章系統」),不是這種卡片形狀,`index.html` 呼叫 `initWorksGrid()` 前用 `.map()` 現算出卡片形狀的清單再傳進去。
+- 底部 nav 的 WORKS/BLOG/PLAY 連結加 `data-tab-link="<tab key>"`,由 `initWorksGrid()` 統一攔截 click(`preventDefault()`),原地換 `#worksGrid` 的內容 + `#worksHeader` 的標題文字,**不會觸發真正的頁面導覽/reload**。
+- 三個分頁共用同一份卡片樣板(`buildWorkCard()`),`tabs.<key>.items` 統一是 `{ title, category, href, thumbnail? }` 格式(`thumbnail` 可省略,沒有縮圖時卡片維持 `bg-card` 色塊當佔位框)。WORKS/PLAY 直接吃 `data/data-works.js` 的對應陣列;BLOG 的原始資料(`data/data-blog.js` 的 `BLOG_POSTS`)存的是完整文章內容給 `blog-post.html` 用(見「Blog 文章系統」),不是這種卡片形狀,`index.html` 呼叫 `initWorksGrid()` 前用 `.map()` 現算出卡片形狀的清單再傳進去。
 - `tabs.<key>.numbered: true` 時,卡片標題前面會加兩位數流水號(01./02./...),編號依 `items` 陣列目前的排列順序即時算出來,不需要寫死在資料裡——目前只有 Blog 分頁在用。
 - 內容切換用 GSAP `autoAlpha` 淡出→換內容→淡入,時長 300ms——沿用這個頁面卡片 hover(`duration-300`)、底部 nav 淡入淡出(`transition duration-300`)已經定案的節奏,不是另外挑一個新數字。
-- **網址會用 `history.pushState` 更新 hash**(WORKS 是預設分頁,網址不帶 hash;BLOG 是 `#blog`)——這個過程不觸發真正的頁面導覽,純粹是 JS 讀取這個狀態去決定顯示哪個資料集。這樣重新整理或分享連結都能正確停在對應分頁;也監聽了 `popstate`,瀏覽器上一頁/下一頁一樣會正確換回對應分頁的內容,不會出現「網址列顯示的分頁跟畫面對不起來」的情況。
-- 點擊 WORKS/BLOG 後會順便 `scrollIntoView` 捲回 `#works` 容器——使用者點了是想看到對應內容,如果人還停留在頁面其他區塊(例如 About),內容換了但畫面沒捲過去,等於看不到剛剛切換的結果。
+- **網址會用 `history.pushState` 更新 hash**(WORKS 是預設分頁,網址不帶 hash;BLOG 是 `#blog`,PLAY 是 `#play`)——這個過程不觸發真正的頁面導覽,純粹是 JS 讀取這個狀態去決定顯示哪個資料集。這樣重新整理或分享連結都能正確停在對應分頁;也監聽了 `popstate`,瀏覽器上一頁/下一頁一樣會正確換回對應分頁的內容,不會出現「網址列顯示的分頁跟畫面對不起來」的情況。
+- 點擊 WORKS/BLOG/PLAY 後會順便 `scrollIntoView` 捲回 `#works` 容器——使用者點了是想看到對應內容,如果人還停留在頁面其他區塊(例如 About),內容換了但畫面沒捲過去,等於看不到剛剛切換的結果。
+- **卡片本身會隨捲動進場**(2026-08-26 加):`applyTab()` 換完內容後呼叫 `wireCardReveal()`,用 `gsap.set(cards, { autoAlpha: 0, y: 24 })` 把卡片先藏起來,再用 `ScrollTrigger.batch(cards, { start: 'top 90%', onEnter: ... })` 讓捲進視窗的那一批卡片一起用 stagger(`stagger: 0.08`)淡入 + 上移歸位——用 `ScrollTrigger.batch()` 而不是自己手寫 IntersectionObserver 判斷延遲時間,同一批進入視窗的卡片自動群組、自動算 stagger。只給 `onEnter`(沒有 `onLeaveBack`),所以是「捲入視窗淡入一次就定格」,不是每次捲出去再捲回來都重新淡出淡入。切換分頁時舊卡片被整批換掉,`wireCardReveal()` 一開始會先 `kill()` 掉上一輪殘留的 ScrollTrigger 實例再重建,不會累積殘留;因為 `ScrollTrigger.batch()` 建立當下就會檢查「這批卡片現在是不是已經在觸發區內」,所以切換分頁當下如果新卡片剛好已經在可視範圍(常見情況——使用者通常就是在看著 `#works` 的時候點的 tab),會立刻觸發淡入,不會卡在「藏起來但沒有任何東西會讓它出現」的狀態。`prefers-reduced-motion: reduce` 時直接 `gsap.set(cards, { autoAlpha: 1, y: 0 })`,不建立任何 ScrollTrigger,卡片維持一般文件流直接顯示。
 
-**`#works` 有 `min-h-screen`(見 `index.html`),不是靠內容自然撐出高度。** WORKS(13 張卡片)跟 BLOG(目前只有 1 篇文章)兩個分頁的內容量差很多,沒有這個下限的話,內容少的分頁高度會矮到同一個視窗裡同時看到上方 Hero 或下方 About(黑底)的殘留背景——不管是使用者自然往下捲動經過這個區塊,還是點 tab 切換過去,都要維持「這個區塊至少填滿一個視窗高度」的視覺慣例。
+**`#works` 有 `min-h-screen`(見 `index.html`),不是靠內容自然撐出高度。** WORKS/PLAY 各 5 張卡片、BLOG 目前只有 1 篇文章,三個分頁的內容量差很多,沒有這個下限的話,內容少的分頁高度會矮到同一個視窗裡同時看到上方 Hero 或下方 About(黑底)的殘留背景——不管是使用者自然往下捲動經過這個區塊,還是點 tab 切換過去,都要維持「這個區塊至少填滿一個視窗高度」的視覺慣例。
 
-**點擊 WORKS/BLOG 的捲動時機刻意等內容真的換完才觸發,不是點擊當下立刻捲。** 踩過的坑:舊寫法在點擊當下就同步呼叫 `scrollIntoView`,這時 DOM 還是切換前的舊內容、高度也還是舊的(例如原本在 Works 的 13 張卡片);瀏覽器據此鎖定一個捲動終點、開始 smooth-scroll,但 300ms 後 GSAP 淡出的 `onComplete` 才真的把內容換成 Blog 的 1 篇文章,文件高度瞬間變矮,原本鎖定的捲動終點超出新的可捲動範圍,瀏覽器只能把捲動位置夾到新的上限——結果精確停在「比 `#works` 頂部還淺一點」的位置,螢幕上緣因此露出 Hero 尾端(圓點背景/版本號列)。修法是把 `scrollIntoView` 的呼叫時機移到 `applyTab()`(內容真正換完)之後,不是點擊的那一刻,這樣捲動目標從一開始就是最終正確的高度,不會被中途變動的文件高度打斷。
+**點擊 WORKS/BLOG/PLAY 的捲動時機刻意等內容真的換完才觸發,不是點擊當下立刻捲。** 踩過的坑:舊寫法在點擊當下就同步呼叫 `scrollIntoView`,這時 DOM 還是切換前的舊內容、高度也還是舊的;瀏覽器據此鎖定一個捲動終點、開始 smooth-scroll,但 300ms 後 GSAP 淡出的 `onComplete` 才真的把內容換成另一個分頁的資料,文件高度瞬間變動,原本鎖定的捲動終點超出新的可捲動範圍,瀏覽器只能把捲動位置夾到新的上限——結果精確停在「比 `#works` 頂部還淺一點」的位置,螢幕上緣因此露出 Hero 尾端(圓點背景/版本號列)。修法是把 `scrollIntoView` 的呼叫時機移到 `applyTab()`(內容真正換完)之後,不是點擊的那一刻,這樣捲動目標從一開始就是最終正確的高度,不會被中途變動的文件高度打斷。
 
-**內容切換也會呼叫 `ScrollTrigger.refresh()`。** 切換分頁改變 `#works` 的實際高度,連帶改變 `#about` 在文件裡的絕對位置,但 ScrollTrigger 快取的 trigger 起訖位置不會自動偵測這種非 resize 觸發的版面變動——不 refresh 的話,`js/hero-scroll-fade.js` 那個 pin 住 `#about` 的 ScrollTrigger 會繼續沿用切換前、已經對不準的位置,造成 pin 觸發時機跟實際畫面對不上。這個 refresh 只影響 `#about` pin 的觸發位置,不影響 Hero→Works 的淡出邏輯(Hero 的 pin 位置只跟它自己的高度有關,不受 `#works` 高度變化影響)。
+**內容切換也會呼叫 `ScrollTrigger.refresh()`。** 切換分頁改變 `#works` 的實際高度,連帶改變 `#about` 在文件裡的絕對位置,但 ScrollTrigger 快取的 trigger 起訖位置不會自動偵測這種非 resize 觸發的版面變動——不 refresh 的話,`js/hero-scroll-fade.js` 那個 pin 住 `#about` 的 ScrollTrigger 會繼續沿用切換前、已經對不準的位置,造成 pin 觸發時機跟實際畫面對不上。
 
-**之後如果要新增第三個分頁(或幫某個分頁加子分類)**,延續同一套模式:`tabs` 物件多加一個 key,`items` 是 `{ title, category, href, thumbnail? }` 格式(直接來自資料檔,或像 Blog 一樣從別的資料形狀 `.map()` 出來都可以),不需要改 `buildWorkCard()` 或分頁切換邏輯本身。
+**之後如果要新增第四個分頁(或幫某個分頁加子分類)**,延續同一套模式:`tabs` 物件多加一個 key,`items` 是 `{ title, tags, href, thumbnail? }` 格式(直接來自資料檔,或像 Blog 一樣從別的資料形狀 `.map()` 出來都可以),不需要改 `buildWorkCard()` 或分頁切換邏輯本身。
 
 ## 頁面載入動畫:圓點網格脈動(`js/page-loader.js`)
 
@@ -295,7 +310,7 @@ Hero 大字(`js/hero-glitch.js`)這類「字級/內容都會動態改變」的�
 
 **`prefers-reduced-motion: reduce` 時跳過脈動循環跟位移類動畫**,圓點直接固定在中間亮度、隱藏時只做單純的 overlay 淡出——呼應全站其他動畫元件已經定案的 reduced-motion 處理原則(見「首頁捲動敘事」一節的對應說明),不是這裡另外發明一套。
 
-**這套機制目前只服務「整頁導覽」(進站、進入 case study、進入 blog 文章),不套用在首頁 WORKS/BLOG 分頁切換上**——那是同一個 `#worksGrid` 容器的資料來源切換(見上一節),不是真正的頁面導覽,本來就沒有「內容還沒加載完整」的問題,已經有自己的 GSAP `autoAlpha` 交叉淡出邏輯,不需要疊加這層 overlay。
+**這套機制目前只服務「整頁導覽」(進站、進入 case study、進入 blog 文章),不套用在首頁 WORKS/BLOG/PLAY 分頁切換上**——那是同一個 `#worksGrid` 容器的資料來源切換(見上一節),不是真正的頁面導覽,本來就沒有「內容還沒加載完整」的問題,已經有自己的 GSAP `autoAlpha` 交叉淡出邏輯,不需要疊加這層 overlay。
 
 ## Responsive 斷點:兩套系統,不要混用
 
@@ -308,7 +323,7 @@ Hero 大字(`js/hero-glitch.js`)這類「字級/內容都會動態改變」的�
 
 ## 元件慣例
 
-- **卡片(All Works grid)**:色塊呈現、不用邊框線,靠 `bg-card` 淺灰底色跟頁面背景做區隔,不要加 `border`。圓角 `rounded-xl`(容器)+ `rounded`(縮圖)。圖片預設 `object-contain`,不裁切(Blog 分頁的卡片是刻意的例外,改用 `object-cover` 裁切填滿,理由見「Blog 文章系統」)。Hover 效果:卡片微放大(`scale-[1.02]`)+ 圖片變暗疊層,兩者都是 `transition` 300ms。標題列(標題 + 分類/日期)是 `items-start` + `gap-x-3`:標題 `flex-1 min-w-0 line-clamp-2`(超過兩行截斷加「...」),分類/日期 `shrink-0 whitespace-nowrap`(絕不被標題擠壓或被迫換行)——兩個分頁共用同一份 `buildWorkCard()`,不是各自客製一份。
+- **卡片(All Works grid)**:縮圖滿版貼齊卡片邊緣,不用邊框線,不留內距(2026-08-26 拿掉原本 `p-[clamp(1.25rem,3.5vw,3rem)]` 那層「相框」留白——Tim 明確表示不要圖片周圍那圈留白像裱框,圖片要 fill 整個容器)。縮圖容器直接是 `relative aspect-[4/3] rounded-xl overflow-hidden bg-card`——只有一層圓角(`rounded-xl`),不是舊版「外層相框 `rounded-xl` + 內層縮圖 `rounded`」兩層圓角疊在一起,因為現在只剩一層 div。`bg-card` 這個底色只在沒有 `thumbnail`(還沒準備素材)時才看得到,當佔位色塊用。圖片預設 `object-contain`,不裁切(Blog 分頁的卡片是刻意的例外,改用 `object-cover` 裁切填滿,理由見「Blog 文章系統」)——拿掉外層留白不等於改成裁切,`object-contain` 這條規則沒有變,只是原圖如果不是剛好 4:3,仍可能在 `aspect-[4/3]` 容器內留一點點內部信封留白,跟拿掉的那層外部相框留白是兩回事,不要混為一談。Hover 效果:卡片微放大(`scale-[1.01]`)+ 圖片變暗疊層,兩者都是 `transition` 300ms,現在套在縮圖容器本身(不是外層已經拿掉的相框 div)。**2026-08-26 也改成大方展示版面**(呼應 Tim 提供的參考截圖):標題不再跟分類同一排左右分佔,改成標題自己獨立一行(`line-clamp-2`,超過兩行截斷加「...」),下面接一整排可以自然換行的膠囊狀標籤(`flex flex-wrap gap-2`,每個 `border border-black/15 rounded-full px-3 py-1 font-geistmono text-[11px] sm:text-xs text-muted`)。標籤資料來自 `item.tags`(陣列,WORKS/PLAY 用,見 `data/data-works.js`);Blog 卡片沒有改成陣列,沿用舊的單一 `item.category`(借放日期),`buildWorkCard()` 裡用 `item.tags || (item.category ? [item.category] : [])` 統一成陣列處理,兩種資料格式共用同一份渲染邏輯,不是各自客製一份。搭配這次改版,`#worksGrid` 也從最多 3 欄改成最多 2 欄(見上面「版面與間距」),卡片本身跟著變大。
 - **卡片縮圖可以是影片**:`thumbnail` 給 `.mp4`/`.mov`/`.webm` 路徑時,`buildWorkCard()` 自動渲染 `<video muted loop playsinline>` 取代 `<img>`,不需要在資料裡另外宣告類型(副檔名已經夠明確)。互動依裝置有沒有 hover 能力分兩種(`js/works-grid.js` 的 `wireHoverVideos()`,每次 `applyTab()` 換內容後重新綁一次,因為卡片是整批用 `innerHTML` 重新產生的新 DOM 節點):有 hover 的裝置(滑鼠)是移進卡片播放、移開暫停,預設靜止在第一影格,跟靜態縮圖的視覺一致,只有 hover 才會動;沒有 hover 的裝置(手機/平板觸控)改用 `IntersectionObserver`,卡片捲進視窗才播放、捲出視窗暫停——**這不是錦上添花,是修一個實際的顯示 bug**:觸控裝置沒有 `mouseenter` 事件,如果沿用桌面那套邏輯,縮圖會永遠停在空白畫面(iOS Safari 對從沒播放過的 `<video>` 常常連第一影格都不解碼),直到使用者點擊卡片離開頁面前都看不到內容。`prefers-reduced-motion` 時觸控裝置改成只在捲進視窗時跳到一個極小的時間點解碼出單一影格,不自動循環播放。`muted` 是瀏覽器允許 JS 呼叫 `play()` 的前提(未靜音的影片瀏覽器會擋自動播放,即使是使用者主動 hover 觸發的)。**影片檔案的編碼格式要用 H.264,不是 HEVC/H.265**——Mac 原生螢幕錄影/QuickTime 匯出常常預設用 HEVC(尤其 Apple Silicon,檔案比較小),但 Chromium 核心的瀏覽器(Chrome、Edge、大部分電腦/手機瀏覽器)不支援解碼 HEVC,只有 Safari 天生吃這個格式——這個坑已經在 `data-a-message-to-the-end.js` 的一支 `.mov` 上踩過:影片能載入、時長讀得到、聲音正常播放,但畫面完全是空的(`videoWidth`/`videoHeight` 回報 0),因為瀏覽器解不出視訊軌。新增任何影片素材前,先用 Playwright 檢查 `video.videoWidth > 0`(不是只看有沒有 404 或 `readyState`),不要只在 Mac/Safari 上肉眼確認就當作沒問題。
 - **Case-study 標題列**:共用 `.col-header`(定義在 `css/style.css`)——固定 96px 高 + 垂直置中,這樣不同區塊不管裡面放純文字還是文字+按鈕,高度天生一致,底下內容才能自然對齊,不需要事後調整某一個的 margin 去湊。**這是這個專案最重要的一條系統規則,之後任何多欄/多區塊版面都要延續這個「固定高度共用標題列」的做法,不要回頭去個別調整每個的 padding。**
 - **手風琴(Overview + sections)**:互斥展開(一次最多一個開著,允許全部收合),用 GSAP `gsap.to(el, {height: 'auto' 或 0})` 做展開/收合動畫——GSAP 原生支援 animate 到 `'auto'`,不需要手動量測高度或另外裝 plugin。Case study 頁面的邏輯統一寫在 `js/case-study-template.js` 的 `initAccordions()`,新增區塊不需要另外寫開關邏輯,資料物件的 `sections` 陣列會自動被納入同一套互斥邏輯。**不屬於 case study 資料格式的手風琴(例如首頁 Resume 區塊)改用 `js/accordion.js` 的通用版 `initAccordion(ids, options)`**——同一套「互斥展開 + `height:auto`」邏輯,但不綁 case study 的資料物件,靠 `#accordionHeader-<id>`/`#accordionContent-<id>` 命名慣例運作,呼叫時傳一組 id 陣列跟 `{ defaultOpenId }`。兩份手風琴邏輯目前刻意分開(一個服務 case study 的資料驅動渲染、一個服務手寫 HTML 的通用場景),新增手風琴前先判斷屬於哪一種情境,不要把 `initAccordion` 硬套進 case study 樣板、或反過來把 case study 邏輯搬進手寫頁面。
@@ -324,4 +339,4 @@ Hero 大字(`js/hero-glitch.js`)這類「字級/內容都會動態改變」的�
 
 **Tim 每次要求 push 到 GitHub 之前,先檢查這次改動有沒有新增/修改設計規則、檔案結構、元件慣例——有的話先更新 CLAUDE.md 反映最新狀態,確認內容跟實際程式碼一致之後,才執行 commit + push。** 不要 push 完才回頭補文件,也不要略過這一步直接 push。如果這次改動單純是內容調整、沒有動到任何系統性規則,就不需要為了湊而硬改文件,但要主動確認過一次,不是預設跳過。
 
-**同一時間也要更新 Obsidian 裡的工作日誌**:`C:\Users\tim\OneDrive\黑曜石工作室 OneDrive\02. 作品\01. 專案\03. Personal Website\03. 每日進度紀錄.md`。把這次 push 之前做的工作、遇到的問題、怎麼解決的,照這份日誌原本的第一人稱、Day-by-day 的寫法補上去(格式參考同一位置的 `02. 創作/作品發想/Spider Lily.md`)。順序是:更新 CLAUDE.md → 更新這份日誌 → commit → push。
+**同一時間也要更新 Obsidian 裡的工作日誌**:`C:\Users\tim\OneDrive\黑曜石工作室 OneDrive\01. 作品\01. 專案\03. Personal Website\03. 每日進度紀錄.md`(2026-08-30 發現 vault 頂層資料夾已經從 `02. 作品` 改編號成 `01. 作品`,這裡的路徑跟著更新,之後如果 vault 結構又調整,同樣要回來修這裡)。把這次 push 之前做的工作、遇到的問題、怎麼解決的,照這份日誌原本的第一人稱、Day-by-day 的寫法補上去。順序是:更新 CLAUDE.md → 更新這份日誌 → commit → push。

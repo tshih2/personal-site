@@ -273,6 +273,14 @@ initMarquee('marqueeField', {
   opacitySteps: [0.1, 0.14, 0.18, 0.22, 0.25],
 });
 
+// All Works 區塊(#works)——跟 Hero 一樣是 bg-cream 淺色底(2026-08-26
+// body 級的 dot-grid 背景已經讓 Hero/Works 的圓點網格連成一張,跑馬燈
+// 也比照辦理,不要只延續背景圖案卻漏掉動態效果),沿用同一組 ink 色階。
+initMarquee('worksMarqueeField', {
+  color: 'var(--ink)',
+  opacitySteps: [0.1, 0.14, 0.18, 0.22, 0.25],
+});
+
 // About 區塊是黑底,沿用 ink 色階會幾乎看不見,改用白色的低透明度階
 // (white/10 ~ white/20,依 Tim 那輪要求的範圍),這階段先不做故障感
 // 的色偏/glitch 效果,單純黑底 + 跑馬燈。

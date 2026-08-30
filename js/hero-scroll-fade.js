@@ -1,33 +1,17 @@
 // 全站共用「大塊內容隨捲動位置淡入/淡出」的 GSAP ScrollTrigger +
-// scrub 機制,目前有兩處套用,邏輯是同一套(pin 住 + scrub 綁定一個
-// timeline)、只是 timeline 內容不同,不是各自寫一份:
+// scrub 機制,目前套用在 About 區塊(#about)——pin 住 + scrub 綁定
+// 一個 timeline 做三段式交叉淡出淡入:
 //
-// 1. Hero 大字(#heroText,TIM SHIH / 文案輪播)——使用者往下捲動、
-//    離開 Hero 視窗範圍時用 opacity 漸層淡出,不是直接被捲出畫面
-//    消失不見。用 ScrollTrigger 把整個 <header> 在額外一段捲動距離內
-//    pin 住(固定在畫面上),期間只對 #heroText 做 opacity 1→0 的
-//    scrub 動畫。上方 utility bar、左下角版本號跟右下角日期時鐘、
-//    背景跑馬燈,全部是 header 的其他子元素,跟著整個 header 一起被
-//    pin 住、原地不動,不受這個 opacity 動畫影響,不需要額外用
-//    position:fixed/sticky 或自己計算釋放時機——ScrollTrigger 的 pin
-//    機制本身就會處理好版面空間的保留(用 pin-spacer 佔位)跟結束後的
-//    釋放。
+// Hero 大字(#heroText,TIM SHIH / 文案輪播)原本也套過同一套 pin +
+// opacity 淡出邏輯(往下捲動離開 Hero 視窗範圍時漸層淡出,不是直接
+// 被捲出畫面消失),2026-08-26 拿掉了——Tim 要求 Hero 大字不要再跟著
+// 捲動消失,單純讓 <header> 跟著頁面正常捲走就好,不需要額外 pin 或
+// opacity 動畫。History:如果之後又要恢復類似效果,可以參考 git 歷史
+// 裡這個檔案原本的寫法(`ScrollTrigger.create({ trigger: header,
+// start: 'top top', end: '+=20%', pin: true, scrub: true, animation:
+// gsap.to(heroText, { opacity: 0 }) })`),不需要重新設計一遍。
 //
-//    `end` 這個額外捲動距離不能照抄「一個視窗高度」(之前是
-//    `+=100%`)——GSAP 的 pin-spacer 保留的總高度是「pinned 元素自己
-//    的自然高度」加上「這段額外的 end 距離」兩者相加,不是只算 end
-//    本身。header 自己已經是 min-h-screen(一個視窗高度),如果 end
-//    再疊加滿滿一個視窗高度,總共會保留兩個視窗高度的空間,但畫面上
-//    只有第一個視窗高度在做事(pin 住淡出),第二個視窗高度是
-//    pin-spacer 的 padding-bottom,完全沒有任何內容,滑過去純粹是
-//    空白——實測用 Playwright 量過 `.pin-spacer` 的 `padding-bottom`
-//    精確等於 end 設的那個值。這個空白區段接在 pin 解除後面,正是
-//    Tim 反映「Hero 淡出後還要多捲一段才看到 All Works」的根本原因。
-//    改成一段小很多的距離(`+=20%`),讓 pin 提供的 scrub 空間只用來
-//    讓淡出動畫有可以細細感受的捲動手感,不是無謂地疊加第二個視窗
-//    高度的空白。
-//
-// 2. About 區塊(#about)——跟 Hero 同一套 pin 機制,但這裡是三段式
+// About 區塊(#about)——跟 Hero 原本用的同一套 pin 機制,但這裡是三段式
 //    交叉淡出淡入 + 一段版面位移/重新編排,不是單純淡出:
 //    a. #aboutWordmarkLayer(TIM SHIH)淡出,同一段時間姓名/電話/email
 //       三個元素(#aboutTopRowName/Phone/Email)各自用自己的 x/y tween
@@ -81,8 +65,6 @@
 (function () {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-  const header = document.querySelector('header');
-  const heroText = document.getElementById('heroText');
   const aboutSection = document.getElementById('about');
   const aboutWordmarkLayer = document.getElementById('aboutWordmarkLayer');
   const resumeContent = document.getElementById('resumeContent');
@@ -99,7 +81,7 @@
     { from: document.getElementById('aboutTopRowEmail'), to: document.getElementById('aboutTopRowTargetEmail') },
   ].filter((pair) => pair.from && pair.to);
   const aboutReady = aboutSection && aboutWordmarkLayer && resumeContent && aboutFooterLayer;
-  if ((!header || !heroText) && !aboutReady) return;
+  if (!aboutReady) return;
 
   // About pin 的 ScrollTrigger 實例——建立時機在下面
   // matchMedia('(prefers-reduced-motion: no-preference)') 分支裡,提升
@@ -131,22 +113,6 @@
 
   mm.add('(prefers-reduced-motion: no-preference)', () => {
     const cleanups = [];
-
-    if (header && heroText) {
-      const heroTween = gsap.to(heroText, { opacity: 0, ease: 'none' });
-      const heroSt = ScrollTrigger.create({
-        trigger: header,
-        start: 'top top',
-        end: '+=20%',
-        pin: true,
-        scrub: true,
-        animation: heroTween,
-      });
-      cleanups.push(() => {
-        heroSt.kill();
-        gsap.set(heroText, { opacity: 1 });
-      });
-    }
 
     if (aboutReady) {
       // resumeContent 一開始就蓋在 wordmark 上面(absolute inset-0),

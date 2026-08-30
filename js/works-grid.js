@@ -1,10 +1,11 @@
 /*
- * 首頁 [ ALL WORKS ] / [ BLOG ] 分頁切換。
+ * 首頁 [ ALL WORKS ] / [ BLOG ] / [ PLAY ] 分頁切換。
  *
- * WORKS 跟 BLOG 是同一個 grid 容器的兩種資料來源,不是路由跳轉——點擊
- * 底部 nav 的 WORKS/BLOG 只是原地換資料 + 換標題文字 + 換網址 hash
- * (用 history.pushState,不會觸發真正的頁面導覽/reload),概念上比照
- * Instagram 個人主頁貼文/珍藏分頁切換的體驗,不是切到另一個 .html。
+ * WORKS/BLOG/PLAY 是同一個 grid 容器的三種資料來源,不是路由跳轉——
+ * 點擊底部 nav 的 WORKS/BLOG/PLAY 只是原地換資料 + 換標題文字 + 換
+ * 網址 hash(用 history.pushState,不會觸發真正的頁面導覽/reload),
+ * 概念上比照 Instagram 個人主頁貼文/珍藏分頁切換的體驗,不是切到另一個
+ * .html。
  *
  * 用法:
  *   <script src="data/data-works.js"></script>
@@ -18,15 +19,19 @@
  *       tabs: {
  *         works: { label: 'ALL WORKS', items: WORKS_DATA },
  *         blog: { label: 'BLOG', items: blogCards, numbered: true },
+ *         play: { label: 'PLAY', items: PLAY_DATA },
  *       },
  *     });
  *   </script>
  *
- * tabs.<key>.items 是一個 { title, category, href, thumbnail? } 陣列
- * ——跟 data-works.js 的 WORKS_DATA 格式一樣。data-blog.js 現在存的是
- * 完整文章內容(BLOG_POSTS,給 js/blog-post-template.js 用),不是這種
- * 卡片形狀,所以 Blog 分頁的 items 是頁面自己(見 index.html)用
- * BLOG_POSTS.map() 現算出來的卡片清單,不是直接把 BLOG_POSTS 傳進來。
+ * tabs.<key>.items 是一個 { title, tags, href, thumbnail? } 陣列
+ * ——跟 data-works.js 的 WORKS_DATA/PLAY_DATA 格式一樣,tags 是分類
+ * 標籤陣列(至少一個)。Blog 卡片沿用舊的單一 category 欄位(借放日期),
+ * buildWorkCard() 裡有 fallback,不強迫 Blog 也改成陣列。data-blog.js
+ * 現在存的是完整文章內容(BLOG_POSTS,給 js/blog-post-template.js
+ * 用),不是這種卡片形狀,所以 Blog 分頁的 items 是頁面自己(見
+ * index.html)用 BLOG_POSTS.map() 現算出來的卡片清單,不是直接把
+ * BLOG_POSTS 傳進來。
  *
  * tabs.<key>.numbered: true 時,卡片標題前面會加上兩位數流水號(01./
  * 02./...),編號直接對應 items 陣列目前的排列順序(index + 1 補零),
@@ -70,13 +75,13 @@ function isVideoThumbnail(src) {
   return /\.(mp4|mov|webm)$/i.test(src);
 }
 
-// 單張卡片——樣式完全沿用既有 All Works 卡片慣例(bg-card 色塊、
+// 單張卡片——樣式沿用既有 All Works 卡片慣例(bg-card 色塊、
 // rounded-xl 容器 + rounded 縮圖、hover 微放大 + 圖片變暗疊層),
-// WORKS/BLOG 兩種資料共用同一份卡片樣板,不是各自客製一份。沒有
+// WORKS/BLOG/PLAY 三種資料共用同一份卡片樣板,不是各自客製一份。沒有
 // thumbnail 時就不渲染 <img>,色塊本身當佔位框,跟原本「還沒有素材」
 // 的卡片視覺一致,不會報錯或留白。numberPrefix/cropThumbnail 只有
-// tabs.numbered/cropThumbnails 開了的分頁才會傳(目前是 Blog),Works
-// 卡片維持原本沒有編號、object-contain 不裁切的樣子。
+// tabs.numbered/cropThumbnails 開了的分頁才會傳(目前是 Blog),Works/
+// Play 卡片維持原本沒有編號、object-contain 不裁切的樣子。
 //
 // thumbnail 是影片檔時,渲染 <video muted loop playsinline> 取代
 // <img>,預設不播放(不加 autoplay)——hover 播放/移開暫停的互動由
@@ -85,6 +90,10 @@ function isVideoThumbnail(src) {
 // 呼叫 play() 的前提(未靜音的影片瀏覽器會擋自動播放,即使是使用者
 // hover 觸發的);playsinline 避免手機版(主要是 iOS Safari)自動跳出
 // 全螢幕播放器。
+//
+// item.tags 是陣列(WORKS/PLAY 用),item.category 是舊的單一分類字串
+// (Blog 卡片用日期借放在這個欄位)——兩種資料格式並存,不強迫 Blog
+// 也改成陣列,這裡統一 fallback 成單元素陣列處理,渲染邏輯只寫一份。
 function buildWorkCard(item, numberPrefix, cropThumbnail) {
   const fitClass = cropThumbnail ? 'object-cover object-center' : 'object-contain';
   let media = '';
@@ -94,23 +103,29 @@ function buildWorkCard(item, numberPrefix, cropThumbnail) {
       : `<img src="${item.thumbnail}" alt="${item.title}" class="w-full h-full ${fitClass}">`;
   }
   const titleText = numberPrefix ? `${numberPrefix} ${item.title}` : item.title;
-  // 標題/日期這排:標題 flex-1 + min-w-0 讓它自己在有限寬度裡換行,
-  // line-clamp-2 超過兩行就截斷加「...」;日期 shrink-0 + whitespace-nowrap
-  // 保證絕對不會被標題擠壓變形或被迫換行——沒有這兩個,flex 預設會讓
-  // 兩個子元素依內容比例互搶寬度,標題長的時候(尤其 Blog 文章標題)
-  // 日期會被擠到換行甚至看起來被裁切。items-start(不是 items-center)
-  // 是因為標題可能兩行、日期只有一行,頂部對齊比垂直置中更自然。
+  const tags = item.tags || (item.category ? [item.category] : []);
+  const tagsHtml = tags
+    .map((tag) => `<span class="font-geistmono text-[11px] sm:text-xs text-muted border border-black/15 rounded-full px-3 py-1">${tag}</span>`)
+    .join('');
+  // 卡片放大成大方展示版面(2026-08-26):標題自己獨立一行(line-clamp-2
+  // 超過兩行截斷),標籤換到下面一整排、可以自然換行(flex-wrap)——
+  // 不再是「標題+單一分類」同一排左右分佔的舊版面,因為現在每個作品
+  // 有多個標籤,硬塞進同一排會把標題擠得更窄。
+  //
+  // 縮圖不再用內距把圖片跟卡片邊緣隔開(2026-08-26 拿掉原本
+  // p-[clamp(1.25rem,3.5vw,3rem)] 那層「相框」留白)——Tim 要圖片滿版
+  // 貼齊卡片邊緣,不要周圍那圈 bg-card 留白像裱框。原本外層「相框」
+  // rounded-xl + 內層縮圖 rounded 兩層圓角,合併成單層容器直接套
+  // rounded-xl,不再需要兩層 div。
   return `
     <a href="${item.href || '#'}" class="group relative block cursor-pointer">
-      <div class="bg-card rounded-xl p-[clamp(1rem,3vw,2.5rem)] transition-transform duration-300 ease-out group-hover:scale-[1.02]">
-        <div class="relative aspect-[4/3] rounded overflow-hidden bg-card">
-          ${media}
-          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
-        </div>
-        <div class="mt-3 flex items-start justify-between gap-x-3 font-geist text-xs">
-          <span class="font-geistmono text-ink flex-1 min-w-0 line-clamp-2">${titleText}</span>
-          <span class="text-muted shrink-0 whitespace-nowrap">${item.category}</span>
-        </div>
+      <div class="relative aspect-[4/3] rounded-xl overflow-hidden bg-card transition-transform duration-300 ease-out group-hover:scale-[1.01]">
+        ${media}
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
+      </div>
+      <div class="mt-4 sm:mt-5">
+        <h3 class="font-geistmono text-sm sm:text-base text-ink line-clamp-2">${titleText}</h3>
+        <div class="mt-3 flex flex-wrap gap-2">${tagsHtml}</div>
       </div>
     </a>
   `;
@@ -129,6 +144,7 @@ function initWorksGrid({ gridSelector, headerSelector, tabs, defaultTab }) {
 
   let currentTab = null;
   let hoverVideoObserver = null;
+  let cardRevealTriggers = [];
   const worksSection = document.getElementById('works');
 
   // 點擊 WORKS/BLOG 後把畫面精確捲動到 #works 頂部——#works 現在有
@@ -195,6 +211,41 @@ function initWorksGrid({ gridSelector, headerSelector, tabs, defaultTab }) {
     videos.forEach((video) => hoverVideoObserver.observe(video));
   }
 
+  // 卡片隨捲動進場:每次 applyTab() 換內容後重新綁一次(舊卡片是整批
+  // innerHTML 換掉的新 DOM 節點,舊的 ScrollTrigger 實例已經對應不到
+  // 任何東西,先 kill 掉再重建,不然會累積殘留實例)。用
+  // ScrollTrigger.batch() 而不是自己手寫 IntersectionObserver——同一批
+  // 進入視窗的卡片會自動 stagger 播放,不需要自己算延遲時間。只在初次
+  // 捲入視窗時觸發一次(只給 onEnter,沒有 onLeaveBack),捲出去再捲
+  // 回來不會重新淡出淡入。
+  function wireCardReveal() {
+    cardRevealTriggers.forEach((st) => st.kill());
+    cardRevealTriggers = [];
+
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    const cards = Array.from(grid.children);
+    if (cards.length === 0) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(cards, { autoAlpha: 1, y: 0 });
+      return;
+    }
+
+    gsap.set(cards, { autoAlpha: 0, y: 24 });
+    cardRevealTriggers = ScrollTrigger.batch(cards, {
+      start: 'top 90%',
+      onEnter: (batch) => gsap.to(batch, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        stagger: 0.08,
+        overwrite: true,
+      }),
+    });
+  }
+
   function applyTab(key) {
     const tab = tabs[key];
     header.textContent = `[ ${tab.label} ]`;
@@ -202,6 +253,7 @@ function initWorksGrid({ gridSelector, headerSelector, tabs, defaultTab }) {
       .map((item, i) => buildWorkCard(item, tab.numbered ? `${String(i + 1).padStart(2, '0')}.` : '', tab.cropThumbnails))
       .join('\n');
     wireHoverVideos();
+    wireCardReveal();
     currentTab = key;
     // 切換分頁常常改變 #works 的實際高度(Works 13 張卡片 vs Blog 目前
     // 只有 1 篇文章),這會連帶改變 #about 在文件裡的絕對位置——但

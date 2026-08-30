@@ -22,7 +22,7 @@
 
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-stone text-ink">
+<body class="bg-cream dot-grid text-ink">
 
   <!-- 進站載入動畫——見 js/page-loader.js 檔案開頭的完整說明。放在
        <body> 最上面確保是第一個進入畫面的元素,蓋住底下還在初始化
@@ -39,6 +39,10 @@
 
     <div class="flex justify-between items-center gap-4 px-[var(--page-margin-x)] pt-[clamp(1.25rem,3vw,2rem)] font-geistmono text-xs tracking-[0.167em]">
       <span>[TIM] CHAO-TING SHIH</span>
+      <div class="text-right">
+        <div data-clock-time>02:35pm</div>
+        <div><span data-clock-month>07</span>/<span data-clock-day>05</span> <span data-clock-year>2026</span></div>
+      </div>
     </div>
 
     <div class="relative flex-1 flex items-center overflow-hidden px-[var(--page-margin-x)]">
@@ -64,12 +68,16 @@
       </h1>
     </div>
 
-    <div class="flex justify-between items-end px-[var(--page-margin-x)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em]">
-      <div>V.001.26.07.</div>
-      <div class="text-right">
-        <div data-clock-time>02:35pm</div>
-        <div><span data-clock-month>07</span>/<span data-clock-day>05</span> <span data-clock-year>2026</span></div>
-      </div>
+    <!-- 版本號:跟往下滑動提示(#scrollHint)共用同一組 data-reveal-*
+         淡入淡出邏輯(data-reveal-invert——停留在 Hero 時顯示,捲到
+         Work 區塊就淡出),不需要另外寫一份 IntersectionObserver。時鐘
+         已經搬到頂部跟姓名同一排(見上面),這裡現在只剩版本號一個
+         子元素。 -->
+    <div
+      data-reveal-on="#works" data-reveal-invert
+      class="opacity-100 px-[var(--page-margin-x)] pb-[clamp(1.5rem,4vw,3rem)] font-geistmono text-xs tracking-[0.167em] transition-opacity duration-300"
+    >
+      V.001.26.07.
     </div>
 
     <!-- 往下滑動提示:預設在 Hero 停留時顯示(data-reveal-invert,
@@ -114,6 +122,8 @@
       <span class="text-black/20">|</span>
       <a href="#blog" data-tab-link="blog" class="hover:text-neutral-500 transition-colors">BLOG</a>
       <span class="text-black/20">|</span>
+      <a href="#play" data-tab-link="play" class="hover:text-neutral-500 transition-colors">PLAY</a>
+      <span class="text-black/20">|</span>
       <!-- 點擊直接跳到 About/Resume 這個 pin 住區塊的「完成態」(TIM
            SHIH 已淡出、Resume 內容可見),不是跳到 pin 剛開始、TIM SHIH
            大字還在的那個瞬間——實際捲動邏輯見 js/hero-scroll-fade.js
@@ -122,27 +132,41 @@
     </div>
   </nav>
 
-  <main class="max-w-[1600px] mx-auto px-[clamp(1.25rem,3.33vw,3rem)]">
+  <main class="px-[var(--page-margin-x)]">
 
-    <!-- min-h-screen:WORKS/BLOG 兩個分頁的卡片數量差很多(Works 13 張、
-         Blog 目前只有 1 篇文章),沒有這個下限的話,內容少的分頁高度會
-         矮到讓上方 Hero 或下方 About(黑底)的背景在同一個視窗裡露出來
-         ——見 js/works-grid.js 的 scrollToWorksTop() 註解,兩者是同一個
-         問題的一體兩面(容器高度下限 + 精確捲動定位)。 -->
-    <section id="works" class="min-h-screen pt-[clamp(3rem,8.33vw,7.5rem)] pb-24">
-      <h2 id="worksHeader" class="font-geistmono text-xs tracking-[0.125em] uppercase text-label">
+    <!-- min-h-screen:WORKS/BLOG/PLAY 三個分頁的卡片數量差很多(Works/
+         Play 各 5 張、Blog 目前只有 1 篇文章),沒有這個下限的話,內容少
+         的分頁高度會矮到讓上方 Hero 或下方 About(黑底)的背景在同一個
+         視窗裡露出來——見 js/works-grid.js 的 scrollToWorksTop() 註解,
+         兩者是同一個問題的一體兩面(容器高度下限 + 精確捲動定位)。 -->
+    <section id="works" class="relative min-h-screen pt-[clamp(3rem,8.33vw,7.5rem)] pb-24">
+      <!-- 跟 Hero 同一套跑馬燈背景(js/hero-marquee.js 的 initMarquee),
+           讓捲進 All Works 之後不只背景圓點網格延續,連動態的跑馬燈
+           噪點也是同一套視覺語言——不是只有 dot-grid 延續、動畫效果卻
+           斷在 Hero 就沒了。呼叫寫在 js/hero-marquee.js 檔案底部,跟
+           Hero/About 那兩個呼叫並列同一批(這個欄位是寫在這裡的靜態
+           html,頁面一載入就存在,不像 case study 頁的欄位是動態渲染
+           出來的,不需要等特定時機才呼叫)。顏色參數跟 Hero 一樣用淺色
+           底的 ink 色階。 -->
+      <div id="worksMarqueeField" class="pointer-events-none select-none absolute inset-0 overflow-hidden" aria-hidden="true"></div>
+
+      <!-- data-protect:跟 Hero 保護 #heroText 同一個道理,避免跑馬燈
+           軌道直接疊在這個區塊的標籤文字上。 -->
+      <h2 id="worksHeader" data-protect class="font-geistmono text-xs tracking-[0.125em] uppercase text-label">
         [ ALL WORKS ]
       </h2>
       <hr class="mt-1 mb-6 border-black/10">
 
       <!-- 內容由 js/works-grid.js 的 initWorksGrid() 動態渲染(見頁面
-           底部的呼叫),依網址 hash 決定初始顯示 WORKS 還是 BLOG 資料,
-           不是寫死在這裡的靜態 HTML——WORKS/BLOG 共用同一份卡片樣板
-           (buildWorkCard())。WORKS 直接吃 data/data-works.js;BLOG 的
-           原始資料(data/data-blog.js 的 BLOG_POSTS)存的是完整文章
-           內容給 blog-post.html 用,卡片形狀是頁面底部的呼叫現場用
-           .map() 現算出來的,不要回頭在這裡手寫卡片。 -->
-      <div id="worksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4 sm:gap-x-6 sm:gap-y-5 lg:gap-x-8 lg:gap-y-6"></div>
+           底部的呼叫),依網址 hash 決定初始顯示 WORKS/BLOG/PLAY 哪一個
+           資料集,不是寫死在這裡的靜態 HTML——三個分頁共用同一份卡片
+           樣板(buildWorkCard())。WORKS/PLAY 直接吃 data/data-works.js
+           的 WORKS_DATA/PLAY_DATA;BLOG 的原始資料(data/data-blog.js
+           的 BLOG_POSTS)存的是完整文章內容給 blog-post.html 用,卡片
+           形狀是頁面底部的呼叫現場用 .map() 現算出來的,不要回頭在這裡
+           手寫卡片。2 欄大卡片版面(2026-08-26 改版,原本是最多 3 欄的
+           小卡片)搭配 gap-y-10/14 的大間距,呼應大方展示的需求。 -->
+      <div id="worksGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-10 sm:gap-y-14"></div>
     </section>
 
   </main>
@@ -508,6 +532,7 @@
       tabs: {
         works: { label: 'ALL WORKS', items: WORKS_DATA },
         blog: { label: 'BLOG', items: blogCards, numbered: true, cropThumbnails: true },
+        play: { label: 'PLAY', items: PLAY_DATA },
       },
     });
     initScrollHint('scrollHint', 'scrollHintArrow', {
