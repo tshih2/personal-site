@@ -29,8 +29,8 @@ const CASE_STUDY_DATA = {
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Research & Problem Framing/R&PF_ID+TPC — Internship Discovery + Traditional Production Costs - Mobile.png',
-            mobile: 'Img/VisionControl_Sources/Research & Problem Framing/R&PF_ID+TPC — Internship Discovery + Traditional Production Costs - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research & Problem Framing/R&PF_ID+TPC — Internship Discovery + Traditional Production Costs - Mobile.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Research & Problem Framing/R&PF_ID+TPC — Internship Discovery + Traditional Production Costs - Mobile.png',
           },
           alt: 'Internship discovery and traditional production costs overview',
           afterParagraph: -1,
@@ -51,8 +51,8 @@ const CASE_STUDY_DATA = {
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Solution & Product Direction/POSES.png',
-            mobile: 'Img/VisionControl_Sources/Solution & Product Direction/POSES.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Solution & Product Direction/POSES.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Solution & Product Direction/POSES.png',
           },
           alt: 'Pose to image workflow diagram',
           afterParagraph: 0,
@@ -60,8 +60,8 @@ const CASE_STUDY_DATA = {
         {
           type: 'image',
           src: {
-            desktop: 'Img/VisionControl_Sources/Solution & Product Direction/S&PD — Direct Input & System Flow  - Mobile.png',
-            mobile: 'Img/VisionControl_Sources/Solution & Product Direction/S&PD — Direct Input & System Flow  - Mobile.png',
+            desktop: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Solution & Product Direction/S&PD — Direct Input & System Flow  - Mobile.png',
+            mobile: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/Solution & Product Direction/S&PD — Direct Input & System Flow  - Mobile.png',
           },
           alt: 'Pose to image workflow diagram',
           afterParagraph: 1,
