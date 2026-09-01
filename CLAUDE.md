@@ -14,7 +14,7 @@
 - `case-study.html` — **所有 case study 頁共用的單一薄殼**,不是每個作品各自建一個 html 檔案(VisionControl.AI/MPAA 兩個較早期作品原本各自有自己的 `vision-control-rewritten.html`/`mpaa.html`,已經統一遷移改用這個共用殼,兩份舊檔案已移除)。靠網址 `?work=<作品 slug>` 參數決定顯示哪個作品,`js/case-study-loader.js` 依這個參數動態載入對應的 `data/data-<作品 slug>.js`,呼叫 `renderCaseStudyPage()`(見下面「Case study 樣板系統」)
 - `blog-post.html` — **所有 Blog 文章共用的單一薄殼**,不是每篇文章各自一個 html 檔案。載入 `js/blog-post-template.js` + `data/data-blog.js`,依網址 `?slug=` 從 `BLOG_POSTS` 陣列找出對應那篇文章的資料才渲染(見下面「Blog 文章系統」)
 - `favicon.png` — 全站網站圖標,是唯一刻意放在根目錄、直接進 git 版控的圖片(見下面「網站圖標」)——瀏覽器分頁圖示是每個頁面載入都要用到的東西,不適合跟其他 case study 素材一樣依賴 R2(多一次外部請求、R2 掛掉時整站分頁圖示都不見),而且檔案很小,直接進 repo 沒有 Img/ 那種大型媒體檔案的顧慮
-- `js/case-study-template.js` — **Case study 頁面的樣板引擎**,吃一個資料物件、動態生成整個三欄版面(見下面「Case study 樣板系統」)
+- `js/case-study-template.js` — **Case study 頁面的樣板引擎**,吃一個資料物件、動態生成整個三欄版面。依 `data.layout` 分兩條渲染路徑:預設的手風琴版面,跟 2026-09-01 加的連續閱讀版面(`layout: 'continuous'`,目前只有 VisionControl.AI 在用)——見下面「Case study 樣板系統」
 - `js/case-study-loader.js` — `case-study.html` 的載入邏輯:讀網址 `?work=` 參數、動態插入對應的 `data/data-<work>.js` `<script>`、載入完成後呼叫 `renderCaseStudyPage()`。找不到 `?work=` 參數或資料檔載入失敗都會顯示「找不到這個作品」的畫面 + 回首頁連結,不會整頁壞掉。
 - `js/blog-post-template.js` — **Blog 文章頁的樣板引擎**,吃 `BLOG_POSTS` 陣列 + 網址上的 `slug`,動態生成單欄文章閱讀版面(見下面「Blog 文章系統」)
 - `js/works-grid.js` — 首頁 WORKS/BLOG/PLAY 分頁切換引擎(見下面「首頁 WORKS/BLOG/PLAY 分頁切換」),`initWorksGrid()` 吃一組 tabs 設定,動態渲染 `#worksGrid` 卡片、處理 nav 點擊/網址 hash/瀏覽器上一頁下一頁,支援 `numbered: true` 幫卡片標題自動加兩位數流水號(目前只有 Blog 分頁在用)
@@ -27,7 +27,7 @@
 - `js/accordion.js` — 通用手風琴(`initAccordion(ids, options)`),邏輯跟 `js/case-study-template.js` 的 `initAccordions()` 是同一套(GSAP 高度展開/收合 + 互斥),差別是不綁死 case study 的資料格式,靠 `#accordionHeader-<id>`/`#accordionContent-<id>` 命名慣例運作,目前用在首頁 Resume 區塊
 - `js/hero-scroll-fade.js` — GSAP ScrollTrigger 的 pin + scrub 效果集中在這裡(見下面「首頁捲動敘事」專門一節)
 - `js/page-loader.js` — 全站共用的頁面載入動畫(圓點網格脈動),`index.html`/`case-study.html`/`blog-post.html` 三個共用殼都套用同一套(見下面「頁面載入動畫:圓點網格脈動」)
-- `data/data-vision-control-rewritten.js` — VisionControl.AI 目前上線使用的資料物件,採用目前推薦的預設資料格式(`content` 陣列 + `media[].afterParagraph` 捲動同步,見下面「Case study 樣板系統」)
+- `data/data-vision-control-rewritten.js` — VisionControl.AI 目前上線使用的資料物件,採用 `layout: 'continuous'` 的連續閱讀模式,並以 `media[].afterParagraph` 控制媒體在自然文件流中的位置(見下面「Case study 樣板系統」)
 - `data/data-mpaa-new.js` — The Mary Pickford Arts Alliance 目前上線使用的資料物件
 - `data/data-criterion-channel.js` — The Criterion Channel Brand Identity 的資料物件,透過 `case-study.html?work=criterion-channel` 存取
 - `data/data-cyber-spell-discord.js` — Cyber Spell: Discord 的資料物件,透過 `case-study.html?work=cyber-spell-discord` 存取
@@ -37,7 +37,7 @@
 - `data/data-a-message-to-the-end.js` — A Message To The End. 的資料物件,透過 `case-study.html?work=a-message-to-the-end` 存取
 - `data/data-oko-echo.js` — OkoEcho 的資料物件,透過 `case-study.html?work=oko-echo` 存取
 - `data/data-mahjong.js` — MahJong Ledger 的資料物件,透過 `case-study.html?work=mahjong` 存取
-- `data/data-template.js` — 新增作品時複製這份改名用的空白範本,已更新成目前推薦的預設格式(`content` 陣列 + `media[].afterParagraph`),所有 key 都在、值留空
+- `data/data-template.js` — 新增作品時複製這份改名用的空白範本,所有 key 都在、值留空。**目前只有手風琴版面的格式**(沒有 `layout`/`displayTitle`/`afterParagraph` 這幾個連續閱讀版面才用得到的欄位,見下面「連續閱讀版面」)——複製這份範本做出來的新作品預設都是手風琴,要用連續閱讀版面得手動加欄位,不是這份範本目前的預設值
 - `data/data-works.js` — 首頁 WORKS 分頁(`WORKS_DATA`)跟 PLAY 分頁(`PLAY_DATA`)的卡片清單,兩個陣列同一個檔案(見下面「首頁 WORKS/BLOG/PLAY 分頁切換」)
 - `data/data-blog.js` — **Blog 文章的唯一資料來源**(`BLOG_POSTS` 陣列),存完整文章內容(標題、日期、封面圖、作者、結構化的 `content` 區塊陣列),不是卡片形狀的假資料——首頁 BLOG 分頁的卡片清單跟 `blog-post.html` 的文章內文共用同一份,見下面「Blog 文章系統」
 - `css/style.css` — 全站共用的少量原生 CSS:防止橫向捲動的 `html,body` 規則、case-study 標題列共用的 `.col-header`、`.dot-grid`/`.dot-grid-dark`(淺色/深色兩版圓點網格背景)、`.glitch-text`(紅藍色偏)、`.loading-lock`/`.loader-dots`/`.loader-dot`(頁面載入動畫,見下面「頁面載入動畫:圓點網格脈動」)
@@ -78,9 +78,9 @@
 
 **全部四個作品(VisionControl.AI/MPAA/Criterion Channel/Cyber Spell: Discord)都統一用這個共用殼**,沒有任何作品還留著自己獨立的 html 殼——VisionControl.AI/MPAA 原本各自有 `vision-control-rewritten.html`/`mpaa.html`,遷移到共用殼之後這兩份檔案已經刪除,`data/data-works.js` 的對應 `href` 也改成 `case-study.html?work=vision-control-rewritten`/`case-study.html?work=mpaa-new`(沿用資料檔既有的檔名當 slug,沒有另外改名,所以 slug 裡還留著 `rewritten`/`new` 這種歷史命名痕跡——如果之後想要更乾淨的 slug,需要連同資料檔一起改名,屬於另一項需要另外確認的工作,不是這次遷移範圍)。
 
-資料物件至少要有:`title`、`category`、`intro`、`author`、`backHref`、`overview`(見下面完整格式)、`sections`(陣列,任意數量的 `{title, content, media?}`,這些就是底下的手風琴區塊,不是寫死 User Research/Process/Reflection 這幾個名字)。
+資料物件至少要有:`title`、`category`、`intro`、`author`、`backHref`、`overview`(見下面完整格式)、`sections`(陣列,任意數量的 `{title, content, media?}`)。預設不寫 `layout` 時沿用手風琴;設成 `layout: 'continuous'` 時,Overview 與所有 sections 會直接排成一篇持續往下閱讀的長頁,不需要逐章展開。
 
-版面邏輯(三欄結構、OVERVIEW 跟手風琴共用的展開/收合互動、hairline、`.col-header` 固定高度對齊)全部在 `js/case-study-template.js` 裡,不要因為某個作品需要客製化就把邏輯抄一份出去修改——如果樣板真的無法表達某個作品需要的東西,先跟 Tim 討論要不要擴充資料格式(例如加一個新的 media type),而不是繞過樣板直接寫死 HTML。
+版面邏輯(三欄結構、OVERVIEW 跟手風琴共用的展開/收合互動、連續閱讀模式、hairline、`.col-header` 固定高度對齊)全部在 `js/case-study-template.js` 裡,不要因為某個作品需要客製化就把邏輯抄一份出去修改——如果樣板真的無法表達某個作品需要的東西,先跟 Tim 討論要不要擴充資料格式(例如加一個新的 media type),而不是繞過樣板直接寫死 HTML。
 
 ### 共用殼:`case-study.html?work=`
 
@@ -122,7 +122,31 @@
 
 新作品只要給 `media` 就會自動套用這套捲動同步呈現,不需要額外欄位;沒有素材時才落回模式 1。**這一套邏輯是共用的 `buildAccordionBlock()`/`buildMediaColumn()`/`initMediaCarousel()`,OVERVIEW 內部也是呼叫這幾個函式,不是另外寫一份——修改行為時兩種模式都要一起確認沒有壞掉。**
 
-**這一版拿掉了「文字欄捲動位置驅動圖片切換」的設計**(`afterParagraph` 欄位、GSAP `autoAlpha` 交叉淡出、`object-contain` 塞進共用固定框——這些都已移除,不要再沿用)。實測踩到兩個問題:文字內容不夠長時完全沒有捲動空間可以觸發切換(OVERVIEW 曾經因此永遠停在第一張圖);文字內容剛好夠長時,捲動位置換算成圖片 index 的門檻很難抓準,容易跳過某張圖。`object-contain` 塞共用固定框也會把圖片縮小,不符合「維持原始尺寸」的需求。媒體欄自己獨立捲動 + CSS scroll-snap 直接解決這兩個問題,不依賴文字內容的長度或捲動位置,原生行為也比自己算捲動門檻更穩定。如果之後想要「文字捲到某段落時媒體欄也連動切換」這種加分效果,要當成疊加在這套機制之上的獨立功能討論,不要回頭改成文字驅動媒體。
+### 連續閱讀版面(`data.layout === 'continuous'`)
+
+**2026-09-01 加的第二種版面,目前只有 VisionControl.AI 在用**(`data-vision-control-rewritten.js` 的 `layout: 'continuous'`)。沒有 `layout` 欄位(或值不是 `'continuous'`)的其餘作品完全不受影響——`renderCaseStudyPage()`/`buildHtml()` 開頭就依這個欄位分流成兩條路徑,手風琴那條(`buildAccordionBlock()`/`buildMediaColumn()`/`initMediaColumnHeights()`/`initMediaCarousel()`/`initAccordions()`)完全沒有改動,兩條路徑除了共用 `collectBlocks()`/`buildMediaItem()`/`buildParagraphs()`/`buildLightbox()`/`initLightbox()` 這幾個小工具之外彼此獨立。
+
+跟手風琴版面最大的差異:Overview + 全部 sections 直接攤開連續往下排列,不需要點擊展開。**版面是三欄,不是兩欄**:第一欄作品基本信息(標題、分類、簡介、作者)、第二欄章節快轉導覽,這兩欄在桌面寬度都固定在畫面上不隨捲動移動;第三欄才是真正的內容,是整個版面裡唯一會捲動的欄位。第一、二欄能「固定不動」不是靠 `position: sticky`,是延續手風琴版面 intro-col 本來就有的做法——`#fold` 本身是 `lg:h-screen`、不會整頁捲動,只有第三欄 `<main>` 自己 `lg:overflow-y-auto` 獨立捲動,第一、二欄只是這個捲動容器之外的普通 flex 兄弟元素,自然就會「留在原地」,不需要額外機制。**2026-09-02 從最初的兩欄版面(章節導覽是疊在第三欄內容上方的 `sticky top-0` 橫條)改成三欄**——原本的橫條做法會在使用者往下捲動時一直蓋在內容最上緣,體感比較像「內容底下有一條浮動列」;獨立成第二欄之後,導覽跟內容互不重疊,也更貼近 Tim 給的參考稿(單一資訊欄 + 單一導覽欄 + 單一內容欄,三者並排)。
+
+- **素材位置**用 `media[].afterParagraph` 這個整數決定(`buildContinuousBlock()`):`-1` 放在該 section 第一段之前,`0` 放在第一段之後,`1` 放在第二段之後,以此類推;沒有指定或數字對不上任何段落的素材,會自動排在該 section 最後面(不會憑空消失,見 `buildContinuousBlock()` 的 `unplacedMedia`)。**這個欄位純粹是靜態排版用的,不會驅動任何捲動同步或動畫**——CLAUDE.md 稍早記錄過的「文字欄捲動位置驅動圖片切換」設計已經拿掉,`afterParagraph` 是同一個名字重新用在完全不同的用途上,不要誤會成那個舊功能復活了。
+- **段落跟素材都支援 `title`/`align`,2026-09-03 加的**——`content` 陣列每一項可以維持純字串(等同 `{ text: 字串 }`,舊寫法照樣可以用,`normalizeContinuousParagraph()` 統一轉換),也可以寫成 `{ text, title?, align? }` 物件:
+  - `title`(可省略)是這一段自己專屬的小標題,顯示在段落文字正上方(`<h3 class="mb-4 font-geist font-semibold text-sm text-ink">`)——這跟這個 section 本身的 `<h2>` 大標題是兩層不同的東西,不要混為一談。以前的做法是把小標題寫死進 `<strong>...</strong>` 塞進同一段文字裡,現在拆成獨立欄位是因為段落內文本身要套用完全不同的字體(見下面 Arial 那條),繼續塞進同一段字串會讓標題也被迫套用內文的字體/字級。
+  - `align`(可省略,預設 `'left'`)決定這一段文字在內容欄裡貼齊哪一側,用 `mr-auto`(left)/`ml-auto`(right)做——**不是文字自己的 `text-align`**,是整個文字區塊(`max-w-3xl`)在較寬的內容欄裡的左右位置。段落 `align: 'right'` 搭配鄰近素材(反過來靠左),可以做出雜誌式的 Z 字型交錯閱讀動線。`media[]` 的每一項也支援同一個 `align` 欄位(`buildContinuousMedia()`),資料格式還在,但目前不會有視覺效果,見下一條。
+  - **素材的寬度歷經好幾輪調整,最後定案是「一律 `w-full`,填滿整個內容欄,不設 `max-width` 上限」——2026-09-05 定案,Tim 明確要求所有 media(圖片/影片)都要 fill the space。** 中間的過程:一開始用 `max-w-5xl`(1024px),比第三欄實際可用寬度(當時大約 850px 上下)還寬,結果素材永遠貼滿整欄,`align` 完全沒有視覺效果(兩側算出來的 margin 都是 0);改成 `max-w-3xl`(768px)、之後第三欄本身放大到 `max-w-[1200px]` 時再跟著放大一階到 `max-w-4xl`(896px),兩輪都是刻意留窄一點,讓 `align` 能把素材推到某一側做出交錯效果。但 Tim 最後的優先順序是「滿版展示」優先於「素材也能交錯」,所以直接拿掉 `max-width`,改回 `w-full`。**副作用:素材的 `align` 欄位現在不會再有任何視覺效果**(`w-full` 已經沒有多餘空間可以被 `margin: auto` 推動)——欄位保留著沒有刪除(留著無害,只是不生效),段落文字自己的 `align`/`max-w-3xl` 完全沒受影響,一樣照原本邏輯靠左右。如果之後又想讓素材也能交錯,兩個目標(滿版 vs 交錯)互斥,要先跟 Tim 確認清楚要選哪一個,或者討論要不要另外加一個獨立欄位分開控制,不要自己決定要不要拿掉 `w-full`。
+  - **驗證這類「新出現的 Tailwind class 有沒有生效」時,用 Playwright 動態注入測試資料後,記得等一段時間(至少一次 `waitForTimeout`)再量測 `getComputedStyle()`,不要注入完 DOM 立刻同步量。** Tailwind CDN 是靠 MutationObserver 即時偵測 DOM 裡新出現的 class 字串、才動態產生對應的 CSS 規則——如果某個 class(例如 `ml-auto`)在頁面初始載入時完全沒被用過(所有既有內容預設都是 `align: 'left'` → `mr-auto`),第一次注入含 `align: 'right'` 的測試資料時,`ml-auto` 對應的 CSS 規則可能還沒被 Tailwind 產生出來,零延遲量測會得到「margin 沒生效」的假訊號,不是真的 bug——這個坑已經在這次驗證時親自踩過,补一次延遲重新量測後確認其實是好的。
+- **段落內文字體改成 Arial Regular**(`font-['Arial'] font-normal leading-[1.5]`,字級目前是 `text-[12pt]`——2026-09-03 先定案 20pt、2026-09-04 改回 12pt,Tim 覺得 20pt 太大)——這是 Tim 明確要求的例外,只套用在連續閱讀版面的段落內文上,不是全站字體規則的變動(其餘元件,包含這個版面自己的 `<h1>`/`<h2>`/`<h3>`/導覽文字,都還是原本的 `font-unbounded`/`font-geistmono`/`font-geist`)。`text-[12pt]` 直接用 CSS 原生的 `pt` 單位(瀏覽器原生支援,不需要換算成 px/rem),Arial 是作業系統內建字體,不需要另外載入 Google Fonts 或任何 `@font-face`。
+- **第三欄(內容欄)寬度上限是 `lg:max-w-[1200px]`,不是 `flex-1` 撐滿剩餘空間**——2026-09-04 改的,原本 `<main>` 是 `flex-1`,螢幕夠寬時(尤其超寬螢幕)內容本身的 `max-w-2xl`/`max-w-3xl` 遠比可用寬度窄,右側會留下一大片空白。改成明確的寬度上限後,空白還是存在(內容本來就不需要那麼寬),但至少是「內容欄自己不需要那麼寬」的自然結果,不是「flex-1 硬撐出一個過大的容器,子元素卻用不到」。中間試過把第二、三欄一起包一層 `justify-center` 讓兩者在扣掉第一欄後的剩餘空間裡置中(量過在 1920px 寬視窗下,左右兩側間距精確對稱都是 230px),但 Tim 覺得第二欄(導覽)離第一欄太遠,要求**第二欄退回原本緊貼第一欄的位置,第三欄的寬度上限不用改**——所以拿掉了那層 `justify-center`,現在第二、三欄都直接照 flex 預設的 `justify-start` 排列,彼此之間、跟第一欄之間都沒有額外留白,右側的空白純粹是「內容欄本身沒有撐滿剩餘空間」造成的,不是刻意置中的效果。之後如果又想調整第二/三欄的水平位置,先跟 Tim 確認清楚是要調整哪一欄、留白要出現在哪一側,不要直接假設「置中」是預設答案。
+
+**2026-09-04 再改一次:靠「加寬第二欄本身」讓第三欄往右移,不是靠外層 `justify-center` 加留白。** 這次 Tim 要的效果是「第二欄留在原地(緊貼第一欄),但整體再往中間靠一點」——關鍵差異在於留白算是「加在第二欄的框裡」還是「加在第二欄外面」:`justify-center` 那個做法是在 nav 前面插入一段看不見的 margin,把 nav 整個(連同裡面的文字連結)一起往右推,文字因此離第一欄變遠;現在的做法是把 nav 自己的框加寬(`lg:flex-[0_0_18%]`,原本是固定 `160px`),nav 內部的文字連結本身有 `px-8` 內距、靠左對齊,不會因為外層框變寬就跟著往右移——所以視覺上「導覽文字」還是貼著第一欄沒有動,只是 nav 框的右邊界往右延伸,把第三欄一起往右推。因為 nav 沒有背景色/邊框,框變寬留下的空白跟外面加 margin 留下的空白其實長得一模一樣,但意義不同:框變寬時,只要文字本身還是左對齊,就一定不會被誤認成「導覽離第一欄變遠了」。改用 `%` 而不是固定 px,是因為想要「螢幕越寬,第二欄讓出的空間越多」的比例效果,`lg:min-w-[160px]` 保留當作下限,避免 `lg:` 斷點剛好卡在 1024px 時算出來的百分比寬度太窄擠壓到文字。
+
+**「靠縮小第二欄湊出第三欄左右對稱」這條路一開始行不通,是參數組合下的數學限制,不是沒調好——2026-09-04 同一天 Tim 直接選了另一個方向處理:與其縮小第三欄湊對稱,不如把第三欄本身放大,讓它吃掉更多右側留白。** 原本第三欄的寬度上限固定在 `900px` 時,要讓左右留白對稱,理論上需要的第二欄寬度是 `(扣掉第一欄後的可用寬度 − 900) ÷ 2`——這個數字在筆電常見的 1440px 寬度下算出來大約只有 120px,比 nav 文字實際需要的最小寬度(160px)還窄,兩個限制互相衝突,那個寬度下不可能真正置中。改成把第三欄的寬度上限直接加大到 `1200px` 之後,問題不再是「湊對稱」,而是讓第三欄本身盡量吃滿可用空間——用 Playwright 量過:1440px 寬度下,第三欄現在直接撐滿到剩餘可用空間(右側留白降到 0);1920px 寬度下,右側留白從原本(900px 上限時)的 346px 降到 46px。留白對不對稱這個理論問題並沒有真的解決,但視覺上留白本身已經小到幾乎感覺不到,體感上跟「置中」原本要解決的問題(一大片不平衡的空白)是同一回事,額外的好處是內容(影片、圖片)本身也顯示得更大更清楚。**這是 Tim 明確選的方向,不是自己判斷「反正差不多」就代為決定——之後如果這個上限還要再調,同樣的邏輯(加大內容欄本身,不是靠縮小其他欄位湊對稱)是目前定案的方向。**
+- **第二欄的章節導覽**(`initContinuousNavigation()`)垂直排列,每個連結對應一個 section 的錨點。點擊會平滑捲動第三欄(不是 `window`)到對應 section,同時用 `history.replaceState()`(不是 `pushState`)更新網址 hash,不會多留一筆瀏覽紀錄。**目前捲到哪個 section,對應連結會自動變 `text-ink`(其餘維持 `text-label`)**,靠 `IntersectionObserver` 做 scrollspy——`rootMargin: '-20% 0px -70% 0px'` 把偵測範圍收窄成螢幕頂端往下一小段,哪個 section 的標題進到這段範圍就算「目前這個」,不需要自己手算捲動位置對應第幾個 section。**2026-09-03 拿掉了 active 狀態的底線**(原本疊加 `border-b border-ink`)——Tim 覺得底線太搶眼,現在 active 只靠顏色深淺區分(`text-ink` vs `text-label`),不要再加回底線。連結本身維持 `inline-block`(不是 `block`)的理由不變:就算之後又想加底線一類的裝飾,底線也該貼齊文字寬度,不要撐滿整欄。
+- **三欄的視覺對齊**:只有第一欄(作品基本信息)有分隔線(`lg:border-r`),第二欄(章節導覽)跟第三欄的每個 section 都刻意不加任何邊框——**2026-09-03 拿掉了原本每個 section 底部的 `border-b`**(原本的用意是分隔各個 section,但視覺上疊在一起太多線,Tim 要求拿掉,section 之間單純靠留白區隔)。第二欄跟第三欄的第一個區塊(Overview)桌面寬度的頂部內距都是實測調出來的 `lg:pt-36`,讓「Overview」這幾個字(不管是第二欄的連結、還是第三欄 Overview 區塊自己的 `<h2>`)的頂部都對齊第一欄大標題(`<h1>`)的頂部——用 Playwright 量過 `getBoundingClientRect().top`,三者(`<h1>`、第二欄 Overview 連結、第三欄 Overview 的 `<h2>`)完全相等(桌面寬度 1440px 下量測)。**只有 Overview 這個區塊需要 `lg:pt-36`,其餘 section 維持原本的 `lg:pt-20`**——因為只有 Overview 一開始(捲動位置在頂端時)會跟第一、二欄同一水平線,其餘 section 的位置是由上面內容的自然高度往下推算,不是固定在容器頂端,套用同一個 `pt-36` 沒有意義,也會把其餘 section 的內距拉得不必要地大。**這個 `pt-36` 數字是針對 `<h1>` 目前的字級/margin 調出來的,不是算出來的公式**——`<h1>` 的字級是響應式的(`text-[1.875rem] lg:text-[1.75rem] xl:text-[2.25rem] 2xl:text-[2.75rem]`),不同斷點下 `<h1>` 實際佔的高度會有些微差異,`pt-36` 只保證在量測當下的斷點精確對齊,其他斷點可能有幾 px 的落差,如果之後要更精確,一樣要重新用 Playwright 量測調整,不要憑感覺改數字。拿掉 section 之間的 `border-b`、加大 Overview 的頂部內距都不影響可以捲到的內容範圍——第三欄還是同一個 `overflow-y-auto` 容器,捲到底一樣能看到最後一個 section 的最後一段文字,已經用 Playwright 把 `<main>` 捲到 `scrollHeight` 確認過,不會有任何內容被擠出捲動範圍外變得看不到。
+- **圖片 lightbox 沿用跟手風琴版面完全一樣的 `initLightbox()`,不是另外寫一份**——`buildContinuousMedia()` 產生的每個素材容器刻意也掛上 `media-item` class(疊加在 `continuous-media` 之外),外層 section 內容包一層 `id="mediaColumn-<id>"`(`buildContinuousBlock()` 裡文字+媒體共用的那個容器)。這兩個命名慣例是 `initLightbox()` 查詢「可點擊的圖片」跟「同一組導覽清單範圍」的依據——這裡踩過一個坑:第一版只顧著排版邏輯,忘了對齊這兩個 class/id 慣例,結果連續閱讀版面的圖片點了完全沒反應(`role="button"`/`cursor-pointer` 樣式都有,但 `initLightbox()` 的 `querySelectorAll('.media-item[data-lightbox-src]')` 找不到任何符合的元素,靜默失敗、不會報錯,不細看很容易漏掉)。之後如果要再新增第三種版面,務必記得沿用這兩個慣例,不要各自發明一套。
+- **大標題支援可選的 `displayTitle` 欄位**(HTML 字串,可以帶 `<br>` 手動換行),優先於 `title` 顯示在左欄的 `<h1>`——`document.title`(瀏覽器分頁標題)固定用 `title`,不受 `displayTitle` 影響。這個欄位兩種版面都支援(不是只有連續版面才有),沒有給的作品直接 fallback 用 `title`,不影響其餘作品。
+- `data/data-template.js` 目前**還沒有**更新成把 `layout`/`displayTitle`/`afterParagraph` 這幾個新欄位列進去——複製它建立的新作品預設一律是手風琴版面。要讓另一個作品也用連續閱讀版面,直接在複製出來的資料檔手動加上 `layout: 'continuous'` 跟對應的 `afterParagraph` 值即可,不需要等 `data-template.js` 補上這個選項才能用;但如果之後決定要把連續閱讀版面推廣成常態選項,記得回頭把 `data-template.js` 也補上對應的註解/空白欄位。
+
+**Accordion 模式已拿掉「文字欄捲動位置驅動圖片切換」的設計**(GSAP `autoAlpha` 交叉淡出、`object-contain` 塞進共用固定框都已移除,不要再沿用)。實測踩到兩個問題:文字內容不夠長時完全沒有捲動空間可以觸發切換(OVERVIEW 曾經因此永遠停在第一張圖);文字內容剛好夠長時,捲動位置換算成圖片 index 的門檻很難抓準,容易跳過某張圖。`object-contain` 塞共用固定框也會把圖片縮小,不符合「維持原始尺寸」的需求。媒體欄自己獨立捲動 + CSS scroll-snap 直接解決這兩個問題,不依賴文字內容的長度或捲動位置,原生行為也比自己算捲動門檻更穩定。`afterParagraph` 現在只在 `layout: 'continuous'` 中作為靜態排序欄位:-1 是第一段之前,0 是第一段之後,以此類推;它不會驅動動畫或同步捲動。
 
 **舊資料格式相容性**:`content` 給字串(不是陣列)一樣會被當成單一段落接受;`overview` 用 `paragraphs`(不是 `content`)、media 放在頂層 `data.media`(不是 `overview.media`)也一樣支援——這是為了不強迫舊格式的資料檔案跟著改寫。只有新資料檔案需要照上面「預設渲染邏輯」的格式寫。
 

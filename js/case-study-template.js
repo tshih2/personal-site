@@ -13,7 +13,9 @@
  * 資料物件格式(目前推薦的預設寫法——新作品一律照這個寫,詳見
  * 下面「兩種渲染模式」的說明):
  * {
+ *   layout: 'accordion' | 'continuous', // optional; defaults to accordion
  *   title: string,                // 左欄大標題
+ *   displayTitle: string,         // optional HTML display title; document title still uses title
  *   category: string,             // 標題下方分類標籤
  *   intro: string,                // 左欄介紹段落
  *   author: string,               // 左欄底部作者/meta 資訊
@@ -21,7 +23,10 @@
  *   overview: {
  *     content: string[],          // 右側描述文字,陣列裡每一個字串是
  *                                  // 獨立一段(可含 <strong>子標題</strong>),
- *                                  // 段數不限
+ *                                  // 段數不限。layout:'continuous' 下
+ *                                  // 每一項也可以寫成
+ *                                  // { text, title?, align? } 物件
+ *                                  // (見下面「連續閱讀版面段落物件格式」)
  *     media: [ ... ]               // 見下面「media 項目格式」,可省略
  *                                  // (完全沒有媒體時整段變成單欄)
  *   },
@@ -35,7 +40,25 @@
  * }
  *
  * media 項目格式:
- *   { type: 'image', src, alt } | { type: 'video', src } | { type: 'youtube', src, alt } | { type: 'placeholder', label }
+ *   { type: 'image', src, alt, afterParagraph?, align? } | { type: 'video', src, afterParagraph?, align? } | { type: 'youtube', src, alt, afterParagraph?, align? } | { type: 'placeholder', label, afterParagraph?, align? }
+ *
+ *   `afterParagraph`/`align` 只在 layout:'continuous' 使用,Accordion
+ *   模式忽略這兩個欄位。`afterParagraph`:-1 代表放在該章第一段之前,
+ *   0 代表第一段之後,以此類推;沒有指定的媒體會放在該章文字之後。
+ *   `align`:'left'(預設)或 'right',決定這個素材貼齊內容欄哪一側,
+ *   搭配段落自己的 align(見下面「連續閱讀版面段落物件格式」)可以
+ *   做出圖文交錯的編排。
+ *
+ * 連續閱讀版面段落物件格式(layout:'continuous' 專用,Accordion 模式
+ * 的 content 只接受純字串):
+ *   { text: string, title?: string, align?: 'left' | 'right' }
+ *
+ *   純字串一樣可以用,等同 { text: 字串 }(不用為了套用新版樣式強迫
+ *   改寫既有的資料檔)。`title` 顯示在這一段文字正上方(跟 section 的
+ *   <h2> 是兩層不同的標題)。`align` 預設 'left',決定這段文字在內容
+ *   欄裡貼齊哪一側,不是文字自己的 text-align。段落內文固定套用
+ *   Arial Regular 20pt,是這個版面刻意的例外,不是全站字體規則的
+ *   一部分,細節見 CLAUDE.md「連續閱讀版面」。
  *
  *   src 可以是純字串(同一個檔案兩種斷點都顯示),也可以是
  *   { desktop, mobile } 物件(兩種斷點各自顯示不同檔案,`lg:` 以上顯示
@@ -130,10 +153,15 @@ function renderCaseStudyPage(data, mountSelector) {
     throw new Error(`renderCaseStudyPage: 找不到掛載點 "${mountSelector}"`);
   }
 
+  const isContinuous = data.layout === 'continuous';
   mount.innerHTML = buildHtml(data);
-  initAccordions(data);
-  initMediaColumnHeights(mount, data);
-  initMediaCarousel(mount, data);
+  if (isContinuous) {
+    initContinuousNavigation(mount);
+  } else {
+    initAccordions(data);
+    initMediaColumnHeights(mount, data);
+    initMediaCarousel(mount, data);
+  }
   initLightbox(mount);
 }
 
@@ -159,6 +187,8 @@ function collectBlocks(data) {
 }
 
 function buildHtml(data) {
+  if (data.layout === 'continuous') return buildContinuousHtml(data);
+
   const backHref = data.backHref || 'index.html';
   const blocks = collectBlocks(data);
 
@@ -171,7 +201,7 @@ function buildHtml(data) {
           <a href="${backHref}" class="font-geistmono text-xs text-muted hover:text-ink transition-colors">← BACK</a>
         </div>
 
-        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[2.25rem] sm:text-[2.75rem] leading-[1.1] tracking-[-0.034em]">${data.title}</h1>
+        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[2.25rem] sm:text-[2.75rem] leading-[1.1] tracking-[-0.034em]">${data.displayTitle || data.title}</h1>
         <p class="mt-8 font-geistmono text-xs text-muted uppercase">${data.category}</p>
 
         <p class="mt-12 font-geist text-xs leading-[1.6] text-muted">${data.intro}</p>
@@ -190,6 +220,214 @@ function buildHtml(data) {
 
     ${buildLightbox()}
   `;
+}
+
+// PDF-like reading mode: three columns, not two. Column 1 (work info) and
+// column 2 (section jump-nav) both stay put on screen while column 3 (the
+// article itself) uses the browser's normal page scroll—no nested
+// media/text scrollers. Columns 1/2 don't need `position: sticky` to stay
+// put; they're just ordinary flex siblings of #fold (which itself never
+// scrolls on desktop, same as the accordion layout's intro-col), while
+// column 3 is the only child with `overflow-y-auto`. That's the same trick
+// the accordion layout's intro-col already relies on—no new mechanism.
+function buildContinuousHtml(data) {
+  const backHref = data.backHref || 'index.html';
+  const blocks = collectBlocks(data);
+  const nav = blocks.map(({ id, title }) => `
+    <a href="#${id}" data-continuous-nav-link="${id}" class="inline-block font-geistmono text-xs text-label uppercase hover:text-ink transition-colors">${title}</a>
+  `).join('\n');
+
+  return `
+    <div id="fold" class="flex flex-col lg:flex-row lg:h-screen lg:w-screen">
+
+      <!-- 第一欄:作品基本信息,桌面寬度固定在畫面上不隨捲動移動。 -->
+      <aside class="intro-col border-b lg:border-b-0 lg:border-r border-black/10 flex flex-col px-8 lg:h-full lg:flex-[0_0_20.8333%] lg:min-w-[260px]">
+        <div class="col-header border-b border-black/10">
+          <a href="${backHref}" class="font-geistmono text-xs text-muted hover:text-ink transition-colors">← BACK</a>
+        </div>
+
+        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[1.875rem] lg:text-[1.75rem] xl:text-[2.25rem] 2xl:text-[2.75rem] leading-[1.1] tracking-[-0.034em]">${data.displayTitle || data.title}</h1>
+        <p class="mt-8 font-geistmono text-xs text-muted uppercase">${data.category}</p>
+        <p class="mt-12 font-geist text-xs leading-[1.6] text-muted">${data.intro}</p>
+
+        <div class="mt-12 lg:mt-auto pt-8 pb-12 font-geistmono text-xs text-muted">
+          <p>${data.author}</p>
+        </div>
+      </aside>
+
+      <!-- 第二、三欄的外層包裝。2026-09-04 拿掉了 lg:justify-center
+           ——之前用它讓「導覽 + 內容」在扣掉第一欄之後的剩餘空間裡置中,
+           但 Tim 覺得第二欄(導覽)離第一欄太遠,要求第二欄退回原本
+           緊貼第一欄的位置。拿掉 justify-center 之後,flex 預設的
+           justify-start 讓 nav/main 直接照順序緊貼排列,不留置中用的
+           左側空白——第三欄本身的樣式(lg:max-w-[900px],不是
+           flex-1)完全沒有改動,右側自然留白只是「內容欄本身沒有撐滿
+           剩餘空間」的結果,不是刻意置中的空白。 -->
+      <div class="flex flex-col lg:flex-row lg:h-full lg:flex-1">
+
+        <!-- 第二欄:章節快轉導覽,獨立一欄(不是疊在第三欄內容上方的
+             sticky 橫條),一樣固定在畫面上。目前捲到哪個 section,對應
+             連結會變 text-ink + 底線,由 initContinuousNavigation() 的
+             IntersectionObserver 驅動,不是純 CSS 能表達的狀態。 -->
+        <nav class="flex flex-col px-8 pt-36 pb-10 lg:h-full lg:flex-[0_0_18%] lg:min-w-[160px]" aria-label="Case study sections">
+          <div class="flex flex-col gap-5">
+            ${nav}
+          </div>
+        </nav>
+
+        <!-- 第三欄:Overview + 全部 sections 連續排列,整個版面裡唯一
+             會捲動的欄位。 -->
+        <main class="min-w-0 lg:w-full lg:max-w-[1200px] lg:h-full lg:overflow-y-auto">
+          ${blocks.map(buildContinuousBlock).join('\n')}
+        </main>
+
+      </div>
+
+    </div>
+
+    ${buildLightbox()}
+  `;
+}
+
+// content 陣列每一項可以是純字串(沿用舊寫法,等同 { text: 字串 }),
+// 也可以是 { text, title?, align? } 物件:
+//   title — 這一段自己專屬的小標題,顯示在段落文字正上方,跟這個
+//           section 本身的 <h2> 大標題是兩層不同的東西,不要混為一談
+//           (以前的做法是把小標題寫死進 <strong>...</strong> 塞進同一段
+//           文字裡,現在拆成獨立欄位是為了讓標題可以套用跟內文不同的
+//           字體/樣式,不用再靠內嵌 HTML 硬湊)。
+//   align — 'left'(預設)或 'right',決定這一段文字在內容欄裡貼齊
+//           哪一側,用 margin-inline auto 做(不是文字自己的
+//           text-align)。素材(buildContinuousMedia())也支援同一個
+//           align 欄位——兩者搭配著用,可以做出「這段文字靠右、緊接著
+//           下一張圖靠左」這種交錯編排,不需要額外的排版機制。
+function normalizeContinuousParagraph(item) {
+  return typeof item === 'string' ? { text: item } : item;
+}
+
+function buildContinuousBlock({ id, title, content, media }) {
+  const paragraphs = (Array.isArray(content) ? content : [content]).map(normalizeContinuousParagraph);
+  const mediaItems = Array.isArray(media) ? media : [];
+  const placed = new Set();
+
+  function mediaAt(position) {
+    return mediaItems.map((item, index) => ({ item, index }))
+      .filter(({ item }) => item.afterParagraph === position)
+      .map(({ item, index }) => {
+        placed.add(index);
+        return buildContinuousMedia(item, index);
+      })
+      .join('\n');
+  }
+
+  const beforeCopy = mediaAt(-1);
+  const copy = paragraphs.map((paragraph, index) => `
+    <div class="continuous-copy max-w-3xl ${paragraph.align === 'right' ? 'ml-auto' : 'mr-auto'}">
+      ${paragraph.title ? `<h3 class="mb-4 font-geist font-semibold text-sm text-ink">${paragraph.title}</h3>` : ''}
+      <p class="font-['Arial'] text-[12pt] font-normal leading-[1.5] text-muted">${paragraph.text}</p>
+    </div>
+    ${mediaAt(index)}
+  `).join('\n');
+  const unplacedMedia = mediaItems.map((item, index) => ({ item, index }))
+    .filter(({ index }) => !placed.has(index))
+    .map(({ item, index }) => buildContinuousMedia(item, index))
+    .join('\n');
+
+  // Overview(id === 'overview')桌面寬度的頂部內距特別加大成 lg:pt-36
+  // ——目的是讓「OVERVIEW」這個 <h2> 標籤的頂部對齊第一欄大標題
+  // <h1> 的頂部(量測方式、理由跟第二欄導覽的 pt-36 完全一樣,見
+  // CLAUDE.md「連續閱讀版面」)。只有 Overview 需要這個特殊值——它是
+  // 唯一一開始(捲動位置在頂端時)就會跟第一欄同一水平線的區塊,其餘
+  // section 的位置本來就是由上面內容的自然高度往下推算,不是固定在
+  // 容器頂端,不需要也不該套用同一個 pt-36。
+  const topPaddingClass = id === 'overview' ? 'pt-12 lg:pt-36' : 'pt-12 lg:pt-20';
+
+  return `
+    <section id="${id}" class="scroll-mt-16 px-8 ${topPaddingClass} pb-12 lg:px-14 lg:pb-20">
+      <h2 class="font-geistmono text-xs text-label uppercase">${title}</h2>
+      <div id="mediaColumn-${id}" class="mt-10 flex flex-col gap-10 lg:gap-14">
+        ${beforeCopy}
+        ${copy}
+        ${unplacedMedia}
+      </div>
+    </section>
+  `;
+}
+
+// class 同時掛 `media-item`(跟手風琴模式共用的慣例)+ `continuous-media`
+// ——initLightbox() 是靠 `.media-item[data-lightbox-src]` 查詢觸發元素、
+// 靠 `el.closest('[id^="mediaColumn-"]')` 找出同一組導覽清單的範圍(見
+// buildContinuousBlock() 外層那個 `id="mediaColumn-${id}"` div),兩者
+// 都要對上才能讓連續捲動版面的圖片點得開全螢幕檢視,不是額外重寫一份
+// lightbox 邏輯。
+function buildContinuousMedia(item, index) {
+  const isImage = item.type === 'image';
+  const lightboxSrc = isImage ? (typeof item.src === 'object' ? item.src.desktop : item.src) : '';
+  const triggerAttrs = isImage
+    ? `data-lightbox-src="${lightboxSrc}" data-lightbox-alt="${item.alt || ''}" role="button" tabindex="0" aria-label="View full image"`
+    : '';
+  const triggerClass = isImage ? 'cursor-pointer' : '';
+  // 2026-09-05 拿掉素材的 max-width 上限,一律 w-full 貼滿內容欄——
+  // Tim 明確要求所有 media(圖片/影片)都要 fill the space,不要再留白
+  // 邊。之前(max-w-3xl→max-w-4xl)刻意留窄一點是為了讓 align 能把
+  // 素材推到某一側做出交錯效果,但這次的優先順序反過來:滿版展示比
+  // align 的交錯效果更重要。**副作用:素材的 align 欄位現在不會再有
+  // 任何視覺效果**(w-full 已經沒有多餘空間可以被 margin auto 推動)
+  // ——這個欄位保留著沒有拿掉(留著也無害,只是不再生效),段落文字的
+  // align 沒有受影響,一樣照原本邏輯用 max-w-3xl 靠左右。如果之後又
+  // 想要素材也能交錯,要先跟 Tim 確認清楚優先順序(滿版 vs 交錯只能
+  // 二選一,除非另外用一個獨立欄位分開控制)。
+  const alignClass = item.align === 'right' ? 'ml-auto' : 'mr-auto';
+
+  return `
+    <div class="continuous-media media-item ${triggerClass} ${alignClass} w-full" data-media-index="${index}" ${triggerAttrs}>
+      ${buildMediaItem(item)}
+    </div>
+  `;
+}
+
+// 章節導覽:點擊平滑捲動到對應 section(第三欄 <main> 內部捲動,不是
+// window),同時用 replaceState 更新網址 hash 不留歷史紀錄。另外用
+// IntersectionObserver 做 scrollspy——目前捲到哪個 section 就讓對應
+// 連結變深色 + 底線,不需要使用者自己對照捲動位置猜現在在看哪一段。
+// rootMargin 把偵測範圍收窄成螢幕頂端往下一小段,哪個 section 進到
+// 這段範圍就算「目前這個」,不用自己手算捲動位置對應第幾個 section。
+function initContinuousNavigation(mount) {
+  const links = Array.from(mount.querySelectorAll('[data-continuous-nav-link]'));
+
+  links.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const target = mount.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.replaceState(null, '', link.getAttribute('href'));
+    });
+  });
+
+  if (links.length === 0 || typeof IntersectionObserver === 'undefined') return;
+
+  function setActive(id) {
+    links.forEach((link) => {
+      const active = link.dataset.continuousNavLink === id;
+      link.classList.toggle('text-ink', active);
+      link.classList.toggle('text-label', !active);
+    });
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    },
+    { rootMargin: '-20% 0px -70% 0px' }
+  );
+
+  links.forEach((link) => {
+    const section = mount.querySelector(link.getAttribute('href'));
+    if (section) observer.observe(section);
+  });
 }
 
 // 手風琴內容區「固定高度 + 左右分欄,兩欄各自獨立捲動」的外殼——
@@ -355,11 +593,11 @@ function buildMediaItem(item) {
   if (item.type === 'video') {
     if (typeof item.src === 'object') {
       return `
-        <video src="${item.src.desktop}" class="hidden lg:block w-full" data-variant="desktop" controls></video>
-        <video src="${item.src.mobile}" class="block lg:hidden w-full" data-variant="mobile" controls></video>
+        <video src="${item.src.desktop}" class="hidden lg:block w-full" data-variant="desktop" controls playsinline preload="metadata"></video>
+        <video src="${item.src.mobile}" class="block lg:hidden w-full" data-variant="mobile" controls playsinline preload="metadata"></video>
       `;
     }
-    return `<video src="${item.src}" class="w-full block" controls></video>`;
+    return `<video src="${item.src}" class="w-full block" controls playsinline preload="metadata"></video>`;
   }
   if (item.type === 'youtube') {
     const videoId = extractYouTubeId(item.src);
