@@ -246,7 +246,7 @@ function buildContinuousHtml(data) {
           <a href="${backHref}" class="font-geistmono text-xs text-muted hover:text-ink transition-colors">← BACK</a>
         </div>
 
-        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[1.875rem] lg:text-[1.75rem] xl:text-[2.25rem] 2xl:text-[2.75rem] leading-[1.1] tracking-[-0.034em]">${data.displayTitle || data.title}</h1>
+        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[1.625rem] lg:text-[1.75rem] xl:text-[2.25rem] 2xl:text-[2.75rem] leading-[1.1] tracking-[-0.034em]">${data.displayTitle || data.title}</h1>
         <p class="mt-8 font-geistmono text-xs text-muted uppercase">${data.category}</p>
         <p class="mt-12 font-geist text-xs leading-[1.6] text-muted">${data.intro}</p>
 
