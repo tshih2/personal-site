@@ -1,7 +1,7 @@
 const CASE_STUDY_DATA = {
   layout: 'continuous',
   title: 'VisionControl.AI',
-  category: 'GENERATIVE AI / CREATIVE TECHNOLOGY / POSE TRACKING',
+  category: 'GENERATIVE AI / CREATIVE TECHNOLOGY / USER RESEARCH',
   intro: 'A browser-based AI prototype that turns physical movement into controllable image-generation input. Developed independently over 14 weeks, VisionControl explores how people can communicate visual intent to AI by demonstrating a pose instead of relying on text alone.',
   author: 'CREATED BY TIM SHIH — AI PRODUCT DESIGNER / CREATIVE TECHNOLOGIST — SPRING 2024 — 14 WEEKS',
   backHref: 'index.html',

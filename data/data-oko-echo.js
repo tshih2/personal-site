@@ -14,10 +14,10 @@ const CASE_STUDY_DATA = {
       }
     ],
     media: [
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/02.png', afterParagraph: -1 },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/03.png', afterParagraph: -1 },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/04.png', afterParagraph: -1 },
-      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/05.png', afterParagraph: -1 },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design%20MockUp/02_2.png', afterParagraph: -1 },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design%20MockUp/03_3.png', afterParagraph: -1 },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design%20MockUp/04_4.png', afterParagraph: -1 },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design%20MockUp/05_5.png', afterParagraph: -1 },
     ],
   },
 
