@@ -1,7 +1,6 @@
 const CASE_STUDY_DATA = {
   layout: 'continuous',
   title: 'VisionControl.AI',
-  displayTitle: 'VisionControl.<br>AI',
   category: 'GENERATIVE AI / CREATIVE TECHNOLOGY / POSE TRACKING',
   intro: 'A browser-based AI prototype that turns physical movement into controllable image-generation input. Developed independently over 14 weeks, VisionControl explores how people can communicate visual intent to AI by demonstrating a pose instead of relying on text alone.',
   author: 'CREATED BY TIM SHIH — AI PRODUCT DESIGNER / CREATIVE TECHNOLOGIST — SPRING 2024 — 14 WEEKS',
@@ -23,8 +22,13 @@ const CASE_STUDY_DATA = {
       title: 'RESEARCH',
       content: [
         'Traditional image production requires creators to communicate precise visual intent across people and tools. As generative AI entered this workflow, I noticed that text prompts were especially weak at describing spatial details such as body position. I narrowed the experiment to one question: could creators communicate pose through demonstration rather than description?',
-        '”How might we give content creators direct control over a generated character’s pose without requiring them to describe every physical detail through text?’',
+        {
+          style: 'quote',
+          align: 'center',
+          text: '”How might we give content creators direct control over a generated character’s pose without requiring them to describe every physical detail through text?’'
+        },
       ],
+      
       media: [
         {
           type: 'image',

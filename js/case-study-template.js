@@ -45,19 +45,25 @@
  *   `afterParagraph`/`align` 只在 layout:'continuous' 使用,Accordion
  *   模式忽略這兩個欄位。`afterParagraph`:-1 代表放在該章第一段之前,
  *   0 代表第一段之後,以此類推;沒有指定的媒體會放在該章文字之後。
- *   `align`:'left'(預設)或 'right',決定這個素材貼齊內容欄哪一側,
- *   搭配段落自己的 align(見下面「連續閱讀版面段落物件格式」)可以
- *   做出圖文交錯的編排。
+ *   `align`:'left'(預設)、'right' 或 'center',決定這個素材貼齊
+ *   內容欄哪一側(或置中),搭配段落自己的 align(見下面「連續閱讀
+ *   版面段落物件格式」)可以做出圖文交錯的編排。素材目前是 `w-full`
+ *   滿版展示(見 buildContinuousMedia()),`align` 因此暫時不會有視覺
+ *   效果,欄位保留著沒有拿掉。
  *
  * 連續閱讀版面段落物件格式(layout:'continuous' 專用,Accordion 模式
  * 的 content 只接受純字串):
- *   { text: string, title?: string, align?: 'left' | 'right' }
+ *   { text: string, title?: string, align?: 'left' | 'right' | 'center', style?: 'quote' }
  *
  *   純字串一樣可以用,等同 { text: 字串 }(不用為了套用新版樣式強迫
  *   改寫既有的資料檔)。`title` 顯示在這一段文字正上方(跟 section 的
- *   <h2> 是兩層不同的標題)。`align` 預設 'left',決定這段文字在內容
- *   欄裡貼齊哪一側,不是文字自己的 text-align。段落內文固定套用
- *   Arial Regular 20pt,是這個版面刻意的例外,不是全站字體規則的
+ *   <h2> 是兩層不同的標題,但字體刻意套用同一套 `font-geistmono text-xs
+ *   text-label uppercase`,讓兩層標題視覺上讀作同一種角色)。`align`
+ *   預設 'left',決定這段文字在內容
+ *   欄裡貼齊哪一側或置中,不是文字自己的 text-align。`style: 'quote'`
+ *   套用拉出式引言樣式(斜體、字級加大、文字置中、區塊變窄),通常會
+ *   搭配 `align: 'center'` 一起用,但兩者是獨立欄位。一般段落內文固定
+ *   套用 Arial Regular 12pt,是這個版面刻意的例外,不是全站字體規則的
  *   一部分,細節見 CLAUDE.md「連續閱讀版面」。
  *
  *   src 可以是純字串(同一個檔案兩種斷點都顯示),也可以是
@@ -157,6 +163,7 @@ function renderCaseStudyPage(data, mountSelector) {
   mount.innerHTML = buildHtml(data);
   if (isContinuous) {
     initContinuousNavigation(mount);
+    initContinuousCarousels(mount);
   } else {
     initAccordions(data);
     initMediaColumnHeights(mount, data);
@@ -246,7 +253,7 @@ function buildContinuousHtml(data) {
           <a href="${backHref}" class="font-geistmono text-xs text-muted hover:text-ink transition-colors">← BACK</a>
         </div>
 
-        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[1.625rem] lg:text-[1.75rem] xl:text-[2.25rem] 2xl:text-[2.75rem] leading-[1.1] tracking-[-0.034em]">${data.displayTitle || data.title}</h1>
+        <h1 class="mt-12 break-words font-unbounded font-extrabold text-[1.625rem] lg:text-[clamp(1.375rem,1.7vw,2.75rem)] leading-[1.1] tracking-[-0.034em]">${data.displayTitle || data.title}</h1>
         <p class="mt-8 font-geistmono text-xs text-muted uppercase">${data.category}</p>
         <p class="mt-12 font-geist text-xs leading-[1.6] text-muted">${data.intro}</p>
 
@@ -296,13 +303,25 @@ function buildContinuousHtml(data) {
 //           (以前的做法是把小標題寫死進 <strong>...</strong> 塞進同一段
 //           文字裡,現在拆成獨立欄位是為了讓標題可以套用跟內文不同的
 //           字體/樣式,不用再靠內嵌 HTML 硬湊)。
-//   align — 'left'(預設)或 'right',決定這一段文字在內容欄裡貼齊
-//           哪一側,用 margin-inline auto 做(不是文字自己的
-//           text-align)。素材(buildContinuousMedia())也支援同一個
-//           align 欄位——兩者搭配著用,可以做出「這段文字靠右、緊接著
-//           下一張圖靠左」這種交錯編排,不需要額外的排版機制。
+//   align — 'left'(預設)、'right' 或 'center',決定這一段文字在
+//           內容欄裡貼齊哪一側(或置中),用 margin-inline auto 做
+//           (不是文字自己的 text-align)。素材(buildContinuousMedia())
+//           也支援同一個 align 欄位——兩者搭配著用,可以做出「這段文字
+//           靠右、緊接著下一張圖靠左」這種交錯編排,不需要額外的排版
+//           機制。
+//   style — 可省略,目前唯一支援的值是 'quote',套用拉出式引言(pull
+//           quote)的樣式(斜體、字級加大、文字置中、區塊變窄),見
+//           buildContinuousBlock() 裡的說明。
 function normalizeContinuousParagraph(item) {
   return typeof item === 'string' ? { text: item } : item;
+}
+
+// align → margin-inline auto 的對照表,段落跟素材共用同一套邏輯,
+// 避免兩處各自寫一份容易漏掉 'center' 這種之後新增的值。
+function continuousAlignClass(align) {
+  if (align === 'right') return 'ml-auto';
+  if (align === 'center') return 'mx-auto';
+  return 'mr-auto';
 }
 
 function buildContinuousBlock({ id, title, content, media }) {
@@ -310,28 +329,52 @@ function buildContinuousBlock({ id, title, content, media }) {
   const mediaItems = Array.isArray(media) ? media : [];
   const placed = new Set();
 
+  // 同一組(同一個 afterParagraph 值,或都沒被任何段落接住的
+  // unplacedMedia)裡如果有兩項以上素材,自動合併成一個可點擊切換的
+  // 輪播(見 buildContinuousCarousel())——只有一項時完全比照原本
+  // buildContinuousMedia() 的單張素材渲染,不受影響。這是刻意選擇的
+  // 分組依據:資料檔不需要額外欄位標記「這幾張要輪播」,只要給同一個
+  // afterParagraph 值就自動成組,既有資料檔(每項素材各自不同
+  // afterParagraph)完全不受影響。
+  function renderGroup(group) {
+    if (group.length === 0) return '';
+    group.forEach(({ index }) => placed.add(index));
+    if (group.length === 1) return buildContinuousMedia(group[0].item, group[0].index);
+    return buildContinuousCarousel(group.map(({ item }) => item), `${id}-media-${group[0].index}`);
+  }
+
   function mediaAt(position) {
-    return mediaItems.map((item, index) => ({ item, index }))
-      .filter(({ item }) => item.afterParagraph === position)
-      .map(({ item, index }) => {
-        placed.add(index);
-        return buildContinuousMedia(item, index);
-      })
-      .join('\n');
+    const group = mediaItems.map((item, index) => ({ item, index }))
+      .filter(({ item }) => item.afterParagraph === position);
+    return renderGroup(group);
   }
 
   const beforeCopy = mediaAt(-1);
-  const copy = paragraphs.map((paragraph, index) => `
-    <div class="continuous-copy max-w-3xl ${paragraph.align === 'right' ? 'ml-auto' : 'mr-auto'}">
-      ${paragraph.title ? `<h3 class="mb-4 font-geist font-semibold text-sm text-ink">${paragraph.title}</h3>` : ''}
-      <p class="font-['Arial'] text-[12pt] font-normal leading-[1.5] text-muted">${paragraph.text}</p>
-    </div>
-    ${mediaAt(index)}
-  `).join('\n');
-  const unplacedMedia = mediaItems.map((item, index) => ({ item, index }))
-    .filter(({ index }) => !placed.has(index))
-    .map(({ item, index }) => buildContinuousMedia(item, index))
-    .join('\n');
+  const copy = paragraphs.map((paragraph, index) => {
+    const alignClass = continuousAlignClass(paragraph.align);
+    // style: 'quote' 是這個欄位目前唯一支援的值(其他值/沒給都當一般
+    // 內文處理)——套用斜體、比內文大一階的字級、置中文字對齊、
+    // 縮窄的區塊寬度(max-w-xl,比一般內文的 max-w-3xl 窄),做出拉出式
+    // 引言(pull quote)的觀感。跟 `align` 是兩個獨立欄位:`style: 'quote'`
+    // 只決定「這段文字長什麼樣」,區塊本身要貼左/貼右/置中還是由
+    // `align` 決定,兩者通常會搭配使用(引言搭配 `align: 'center'`),
+    // 但不是綁死的,個別調整也合法。
+    const isQuote = paragraph.style === 'quote';
+    const widthClass = isQuote ? 'max-w-xl' : 'max-w-3xl';
+    const textClass = isQuote
+      ? "font-['Arial'] text-[16pt] italic font-normal leading-[1.5] text-ink text-center"
+      : "font-['Arial'] text-[12pt] font-normal leading-[1.5] text-muted";
+    return `
+      <div class="continuous-copy ${widthClass} ${alignClass}">
+        ${paragraph.title ? `<h3 class="mb-4 font-geistmono text-xs text-label uppercase">${paragraph.title}</h3>` : ''}
+        <p class="${textClass}">${paragraph.text}</p>
+      </div>
+      ${mediaAt(index)}
+    `;
+  }).join('\n');
+  const unplacedMedia = renderGroup(
+    mediaItems.map((item, index) => ({ item, index })).filter(({ index }) => !placed.has(index))
+  );
 
   // Overview(id === 'overview')桌面寬度的頂部內距特別加大成 lg:pt-36
   // ——目的是讓「OVERVIEW」這個 <h2> 標籤的頂部對齊第一欄大標題
@@ -340,10 +383,10 @@ function buildContinuousBlock({ id, title, content, media }) {
   // 唯一一開始(捲動位置在頂端時)就會跟第一欄同一水平線的區塊,其餘
   // section 的位置本來就是由上面內容的自然高度往下推算,不是固定在
   // 容器頂端,不需要也不該套用同一個 pt-36。
-  const topPaddingClass = id === 'overview' ? 'pt-12 lg:pt-36' : 'pt-12 lg:pt-20';
+  const topPaddingClass = id === 'overview' ? 'pt-12 lg:pt-36' : 'pt-12 lg:pt-8';
 
   return `
-    <section id="${id}" class="scroll-mt-16 px-8 ${topPaddingClass} pb-12 lg:px-14 lg:pb-20">
+    <section id="${id}" class="scroll-mt-16 px-8 ${topPaddingClass} pb-12 lg:px-14 lg:pb-8">
       <h2 class="font-geistmono text-xs text-label uppercase">${title}</h2>
       <div id="mediaColumn-${id}" class="mt-10 flex flex-col gap-10 lg:gap-14">
         ${beforeCopy}
@@ -377,11 +420,58 @@ function buildContinuousMedia(item, index) {
   // align 沒有受影響,一樣照原本邏輯用 max-w-3xl 靠左右。如果之後又
   // 想要素材也能交錯,要先跟 Tim 確認清楚優先順序(滿版 vs 交錯只能
   // 二選一,除非另外用一個獨立欄位分開控制)。
-  const alignClass = item.align === 'right' ? 'ml-auto' : 'mr-auto';
+  const alignClass = continuousAlignClass(item.align);
 
   return `
     <div class="continuous-media media-item ${triggerClass} ${alignClass} w-full" data-media-index="${index}" ${triggerAttrs}>
       ${buildMediaItem(item)}
+    </div>
+  `;
+}
+
+// 連續閱讀版面的輪播——同一組(同一個 afterParagraph 值)裡有兩項以上
+// 素材時才會用到,單張素材完全不受影響(見 buildContinuousBlock() 的
+// renderGroup())。用途:同一個位置放好幾張素材時,不想要它們各自佔一整
+// 屏堆疊,改成點擊下方圓點切換,一次只顯示一張。
+//
+// 素材尺寸沿用跟單張素材完全一樣的 buildMediaItem()(w-full,原始
+// 長寬比,不裁切、不縮小)——2026-09-06 一開始改成 max-h + object-contain
+// 塞進固定高度容器,Tim 覺得圖片被縮小了,要求「圖片size改回原本的
+// 樣子」但保留點擊切換,所以外層 viewport 的高度改成動態量測「目前
+// 顯示的那張」的自然渲染高度(initContinuousCarousels() 的
+// setViewportHeight()),不是寫死的固定值——每張圖高度可能差很多,
+// 切換時 viewport 本身的高度也會跟著用 GSAP tween 過去,不是瞬間跳動。
+//
+// 圖片點擊行為維持不變(開啟全螢幕 lightbox,見 buildLightbox()/
+// initLightbox()),不會被輪播的切換行為蓋掉——切換只透過下方的圓點,
+// 不是點圖片本身,兩種互動分開,不會互相搶點擊事件。
+function buildContinuousCarousel(items, groupId) {
+  const slides = items.map((item, i) => {
+    const isImage = item.type === 'image';
+    const lightboxSrc = isImage ? (typeof item.src === 'object' ? item.src.desktop : item.src) : '';
+    const triggerAttrs = isImage
+      ? `data-lightbox-src="${lightboxSrc}" data-lightbox-alt="${item.alt || ''}" role="button" tabindex="0" aria-label="View full image"`
+      : '';
+    const triggerClass = isImage ? 'cursor-pointer' : '';
+    return `
+      <div class="carousel-slide media-item absolute inset-x-0 top-0 w-full ${triggerClass}" data-slide-index="${i}" ${triggerAttrs}>
+        ${buildMediaItem(item)}
+      </div>
+    `;
+  }).join('\n');
+
+  const dots = items.map((_, i) => `
+    <button type="button" class="carousel-dot w-2 h-2 rounded-full transition-colors ${i === 0 ? 'bg-ink' : 'bg-black/15'}" data-dot-index="${i}" aria-label="View image ${i + 1} of ${items.length}"></button>
+  `).join('\n');
+
+  return `
+    <div class="continuous-carousel w-full" data-carousel-id="${groupId}">
+      <div class="continuous-carousel-viewport relative w-full overflow-hidden" style="height: 400px">
+        ${slides}
+      </div>
+      <div class="mt-4 flex items-center justify-center gap-2">
+        ${dots}
+      </div>
     </div>
   `;
 }
@@ -427,6 +517,88 @@ function initContinuousNavigation(mount) {
   links.forEach((link) => {
     const section = mount.querySelector(link.getAttribute('href'));
     if (section) observer.observe(section);
+  });
+}
+
+// 連續閱讀版面的輪播切換邏輯——只處理 buildContinuousCarousel() 產出的
+// .continuous-carousel(單張素材不會有這個 class,不受影響)。點擊下方
+// 圓點時用 GSAP autoAlpha 交叉淡出淡入(跟全站其他換圖/開關動畫同一個
+// 慣例),不是硬切。autoAlpha 到 0 時會自動加 visibility:hidden,連帶
+// 讓沒在顯示的那幾張不會被 lightbox 點到或用 Tab 取得焦點,不需要另外
+// 管 pointer-events。prefers-reduced-motion 時直接把 duration 歸零,
+// 沿用 CLAUDE.md 記錄過的 reduced-motion 處理原則,不用另外寫一條分支。
+//
+// viewport(.continuous-carousel-viewport)的高度是動態量測「目前顯示
+// 的那張」自然渲染高度後設定的,不是寫死的固定值——素材維持原始尺寸
+// (buildMediaItem() 的 w-full,不裁切、不縮小),每張圖高度可能差很多,
+// 所以每次切換都要重新量測、用 GSAP tween 過去,讓 viewport 本身的高度
+// 也跟著平滑變化,不是瞬間跳動。等待素材載入完成才量測的作法(img
+// complete/load、video readyState/loadedmetadata)跟 initMediaColumnHeights()
+// 對圖片/影片的既有慣例一致。
+function initContinuousCarousels(mount) {
+  const carousels = Array.from(mount.querySelectorAll('.continuous-carousel'));
+  if (carousels.length === 0) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const duration = reduceMotion ? 0 : 0.3;
+
+  carousels.forEach((carousel) => {
+    const viewport = carousel.querySelector('.continuous-carousel-viewport');
+    const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
+    const dots = Array.from(carousel.querySelectorAll('.carousel-dot'));
+    if (!viewport || slides.length <= 1) return;
+
+    let activeIndex = 0;
+    gsap.set(slides, { autoAlpha: (i) => (i === 0 ? 1 : 0) });
+
+    // 直接量 slide 本身的渲染高度(不是挑桌面/手機哪一個 <img>)——
+    // slide 裡桌面版/手機版兩個 <img> 用 hidden/block 依斷點切換顯示,
+    // 沒顯示的那個是 display:none、天生不佔版面高度,slide 自己的
+    // getBoundingClientRect().height 已經自動只反映目前斷點實際顯示的
+    // 那個版本,不需要另外判斷現在是哪個斷點。
+    function measure(slide) {
+      return slide.getBoundingClientRect().height;
+    }
+
+    function setViewportHeight(height, animate) {
+      if (height <= 0) return;
+      if (animate) gsap.to(viewport, { height, duration, overwrite: true });
+      else gsap.set(viewport, { height });
+    }
+
+    function goTo(index) {
+      if (index === activeIndex) return;
+      gsap.to(slides[activeIndex], { autoAlpha: 0, duration });
+      gsap.to(slides[index], { autoAlpha: 1, duration });
+      setViewportHeight(measure(slides[index]), true);
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('bg-ink', i === index);
+        dot.classList.toggle('bg-black/15', i !== index);
+      });
+      activeIndex = index;
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => goTo(i));
+    });
+
+    slides.forEach((slide, i) => {
+      Array.from(slide.querySelectorAll('img, video')).forEach((el) => {
+        function onReady() {
+          if (i === activeIndex) setViewportHeight(measure(slide), false);
+        }
+        if (el.tagName === 'VIDEO') {
+          if (el.readyState >= 1) onReady();
+          else el.addEventListener('loadedmetadata', onReady, { once: true });
+        } else if (el.complete) {
+          onReady();
+        } else {
+          el.addEventListener('load', onReady, { once: true });
+        }
+      });
+    });
+
+    window.addEventListener('resize', () => setViewportHeight(measure(slides[activeIndex]), false));
   });
 }
 
