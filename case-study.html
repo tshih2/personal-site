@@ -39,6 +39,11 @@
        動態載入對應的 data/data-<作品 slug>.js,再呼叫
        renderCaseStudyPage()。新增作品時只要準備資料檔,不需要複製這個
        html。 -->
+  <!-- 頁尾上一個/下一個作品導覽(見 js/case-study-template.js 的
+       buildFooterNav())需要 WORKS_DATA/PLAY_DATA 這兩份清單決定循環
+       順序,所以這裡也載入 data/data-works.js——跟首頁 index.html 是
+       同一份資料來源,不是另外複製一份作品清單。 -->
+  <script src="data/data-works.js"></script>
   <script src="js/case-study-template.js"></script>
   <script src="js/case-study-loader.js"></script>
 </body>

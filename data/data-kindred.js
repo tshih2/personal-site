@@ -95,16 +95,37 @@ const CASE_STUDY_DATA = {
                 title:'A Calm and Structured Interface',
                 text:'The visual system uses a restrained teal palette, generous spacing, clear hierarchy, and reusable components to make sensitive information feel understandable without appearing diagnostic or clinical.'
             }
-        ]
-    },
-    {
-        title:'OUTCOME & NEXT VALIDATION',
-        content:[
+        ],
+        media:[
             {
-                title:'What the Prototype Established',
-                text:'The prototype connects AI-guided observation, evidence-linked reports, controlled sharing, and professional support within one coherent care experience. A shared Care Space preserves visible authorship and allows different caregivers to contribute without merging their records into one anonymous account.'
+                type:'video',src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/PROTOTYPE/RECORD_OBSERVATION_AE.mp4',afterParagraph:-1,
+            },
+            {
+                type:'video', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/PROTOTYPE/DAILY_GRAPH_AE.mp4',afterParagraph:0,
+            },
+            {
+                type:'video', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/PROTOTYPE/APPOINTMENT_WITH_PROFESSIONAL_AE.mp4', afterParagraph:1,
+
+            },
+            {
+                type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/Color%20Palette%20%2B%20Type.png', afterParagraph:2,
+            },
+            {
+                type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/COMPONENTS.png',afterParagraph:2,
+            },
+            {
+                type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/ICON.png', afterParagraph:2
             },
         ]
-    }
+    },
+    // {
+    //     title:'OUTCOME & NEXT VALIDATION',
+    //     content:[
+    //         {
+    //             title:'What the Prototype Established',
+    //             text:'The prototype connects AI-guided observation, evidence-linked reports, controlled sharing, and professional support within one coherent care experience. A shared Care Space preserves visible authorship and allows different caregivers to contribute without merging their records into one anonymous account.'
+    //         },
+    //     ]
+    // }
   ],
 };

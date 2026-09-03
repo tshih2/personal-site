@@ -91,6 +91,14 @@
 - 網址沒帶 `?work=`,或資料檔 404/載入失敗,都會顯示一個簡單的「找不到這個作品」畫面 + 回首頁連結,不會整頁空白或報錯——跟 `blog-post.html` 找不到對應 slug 時的處理邏輯是同一個精神。
 - `data/data-works.js` 裡新作品的 `href` 直接寫 `case-study.html?work=<作品 slug>` 就好,不需要額外欄位。
 
+### 頁尾上一個/下一個作品導覽(`buildFooterNav()`)
+
+**2026-09-03 加的,手風琴、連續閱讀兩種版面共用同一個函式**——Tim 想要捲到 case study 頁最下面時,能直接點「上一個/下一個作品」切換,循環瀏覽整個作品清單(在第一個作品按上一個會繞到最後一個,在最後一個按下一個會繞回第一個),不用先回首頁再重新點選。
+
+- **清單順序直接讀取全域的 `WORKS_DATA`/`PLAY_DATA`**(`data/data-works.js`)——`case-study.html` 因此額外載入了這個檔案(`<script src="data/data-works.js">`,插在 `case-study-template.js` 前面),不是另外複製一份作品清單維護。`buildFooterNav()` 用網址目前的 `?work=` slug 組回對應的 `href`,先去 `WORKS_DATA` 找、找不到再去 `PLAY_DATA` 找,找到後用**那份清單自己的順序**算上一個/下一個(用 `%` 取餘數做循環)——WORKS 跟 PLAY 是兩份獨立清單,各自循環,不會互相串起來(例如 PLAY 最後一項的「下一個」是繞回 PLAY 第一項,不會接到 WORKS 開頭)。兩份清單都找不到目前這個作品時(理論上不該發生)直接回傳空字串,不勉強顯示一個連不到正確位置的導覽。
+- **插入位置是各自版面「捲動到底才看得到」的那個容器最後面**(手風琴是右欄那個 `lg:overflow-y-auto lg:flex-1` 的 div、連續閱讀是 `<main>`),不是疊在 `#fold` 外面當一般網頁的頁尾——`case-study.html` 的 `<body>` 在桌面寬度是 `lg:overflow-hidden`(不會捲動),只有這兩個容器自己會捲動,加在 `#fold` 外面的話桌面版永遠看不到,一定要塞進「真正在捲動」的那個容器裡,捲到最後才會自然露出來。手風琴、連續閱讀各自的水平內距(`px-10` / `px-8 lg:px-14`)透過 `buildFooterNav(paddingClass)` 的參數傳入,跟該版面其餘內容的左右邊界對齊,不是套用同一個寫死的值。
+- 視覺上是一條 `border-t border-black/10` 的 hairline 分隔線接兩個左右對齊的連結(左邊 PREVIOUS、右邊 NEXT),字體沿用 `font-geistmono text-xs`(標籤用 `text-label uppercase`、作品標題用 `text-muted`),hover 時一起變 `text-ink`——跟全站其他「標籤 + 內容」的視覺語言一致,沒有另外發明新樣式。標題用 `truncate` 避免長標題在窄螢幕上把版面撐開或跟另一側的連結擠在一起。
+
 ### 預設渲染邏輯:左右分欄 + 媒體欄獨立捲動(scroll-snap)+ 圓點指示器
 
 **這是 `case-study-template.js` 目前的系統預設規則,適用於 OVERVIEW 跟任何一個 section——不是 Research & Problem Framing 這種特定內容的專屬寫法,而是「只要有 `media`,就自動套用同一套邏輯呈現」,不需要每個 section 各自客製化程式碼。**

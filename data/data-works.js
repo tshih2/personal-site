@@ -12,10 +12,10 @@
 // 完全一樣,只是拆成獨立的陣列給 index.html 的 initWorksGrid() 當
 // 另一個 tab 的 items。
 const WORKS_DATA = [
-  { title: 'VisionControl.AI', tags: ['PRODUCT DESIGN','UI / UX','GENERATIVE AI', 'CREATIVE TECHNOLOGY'], href: 'case-study.html?work=vision-control-rewritten', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/NewCover.png' },
-  { title: 'KINDRED', tags: ['PRODUCT DESIGN','UI / UX',], href: 'case-study.html?work=kindred', thumbnail: '' },
+  { title: 'KINDRED', tags: ['PRODUCT DESIGN','UI / UX',], href: 'case-study.html?work=kindred', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/HERO_POSTER/BRAND%20POSTER%20_%201_2.png' },
+  { title: 'OkoEcho', tags: ['Product Design','UI / UX', 'SUSTAINABILITY'], href: 'case-study.html?work=oko-echo', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/01.png' },  
   { title: 'The Mary Pickford Arts Alliance', tags: ['PRODUCT DESIGN', 'UI / UX','AI-ASSITED COLLABORATION'], href: 'case-study.html?work=mpaa-new', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MPAA_Sources/Cover/New_Cover.png' },
-  { title: 'OkoEcho', tags: ['Product Design','UI / UX', 'SUSTAINABILITY'], href: 'case-study.html?work=oko-echo', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/OkoEcho/Design MockUp/01.png' },
+  { title: 'VisionControl.AI', tags: ['PRODUCT DESIGN','UI / UX','GENERATIVE AI', 'CREATIVE TECHNOLOGY'], href: 'case-study.html?work=vision-control-rewritten', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/VisionControl_Sources/vision-control-new/NewCover.png' },
   { title: 'A Message To The End.', tags: ['INTERACTION DESIGN', 'PHYSICAL COMPUTING','INTERACTIVE INSTALLATION'], href: 'case-study.html?work=a-message-to-the-end', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Cover/MessageToTheEnd.mp4' },
   { title: 'MahJong Ledger', tags: ['PRODUCT DESIGN', 'WEB APP', 'RAPID PROTOTYPING'], href: 'case-study.html?work=mahjong', thumbnail: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/MahJong/Video/MahJongDemo.mp4' },
 ];

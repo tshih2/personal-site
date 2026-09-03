@@ -221,6 +221,7 @@ function buildHtml(data) {
       <!-- 右欄:Overview + 手風琴區塊清單。桌面這一欄自己捲動;手機/平板跟著整頁一起捲 -->
       <div class="min-w-0 flex flex-col lg:h-full lg:overflow-y-auto lg:flex-1">
         ${blocks.map(buildAccordionBlock).join('\n')}
+        ${buildFooterNav('px-10')}
       </div>
 
     </div>
@@ -286,6 +287,7 @@ function buildContinuousHtml(data) {
              會捲動的欄位。 -->
         <main class="min-w-0 lg:w-full lg:max-w-[1200px] lg:h-full lg:overflow-y-auto">
           ${blocks.map(buildContinuousBlock).join('\n')}
+          ${buildFooterNav('px-8 lg:px-14')}
         </main>
 
       </div>
@@ -634,6 +636,54 @@ function buildTwoColumnShell(mediaColumnHtml, textColumnHtml, id) {
       </div>
     </div>
   `;
+}
+
+// Case study 頁尾:上一個/下一個作品的循環導覽——手風琴、連續閱讀
+// 兩種版面共用同一個函式,各自插在自己「捲動到底才看得到」的那個
+// 容器最後面(手風琴是右欄、連續閱讀是 <main>),不是疊在 #fold 外面
+// 當一般頁尾——桌面版 <body> 本身是 lg:overflow-hidden 不會捲動,加在
+// #fold 外面桌面版永遠看不到,只有塞進「這個版面真正在捲動」的那個
+// 容器裡,捲到最後才會自然露出來。
+//
+// 清單順序直接讀取全域的 WORKS_DATA/PLAY_DATA(case-study.html 另外
+// 載入了 data/data-works.js,不是另外複製一份作品清單維護)——用網址
+// 目前的 ?work= slug 組回對應的 href,去兩份清單裡各自找一次,找到
+// 就用那份清單的順序算上一個/下一個,前後用取餘數(%)做循環(最後
+// 一個的下一個繞回第一個,第一個的上一個繞回最後一個)。兩份清單都
+// 找不到時(理論上不該發生,除非資料檔還沒加進任何一份清單)直接
+// 回傳空字串,不勉強顯示一個連不到正確位置的導覽。
+function buildFooterNav(paddingClass) {
+  const slug = new URLSearchParams(location.search).get('work');
+  if (!slug) return '';
+
+  const targetHref = `case-study.html?work=${slug}`;
+  const lists = [
+    typeof WORKS_DATA !== 'undefined' ? WORKS_DATA : null,
+    typeof PLAY_DATA !== 'undefined' ? PLAY_DATA : null,
+  ].filter(Boolean);
+
+  for (const list of lists) {
+    const index = list.findIndex((item) => item.href === targetHref);
+    if (index === -1) continue;
+
+    const prev = list[(index - 1 + list.length) % list.length];
+    const next = list[(index + 1) % list.length];
+
+    return `
+      <footer class="mt-16 border-t border-black/10 ${paddingClass} py-10 flex items-center justify-between gap-6">
+        <a href="${prev.href}" class="group flex min-w-0 flex-col items-start gap-2">
+          <span class="font-geistmono text-xs text-label uppercase transition-colors group-hover:text-ink">← Previous</span>
+          <span class="max-w-full truncate font-geistmono text-xs text-muted transition-colors group-hover:text-ink">${prev.title}</span>
+        </a>
+        <a href="${next.href}" class="group flex min-w-0 flex-col items-end gap-2 text-right">
+          <span class="font-geistmono text-xs text-label uppercase transition-colors group-hover:text-ink">Next →</span>
+          <span class="max-w-full truncate font-geistmono text-xs text-muted transition-colors group-hover:text-ink">${next.title}</span>
+        </a>
+      </footer>
+    `;
+  }
+
+  return '';
 }
 
 function buildAccordionHeader(id, title, defaultOpen) {
