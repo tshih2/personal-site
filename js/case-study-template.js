@@ -248,9 +248,26 @@ function buildContinuousHtml(data) {
   return `
     <div id="fold" class="flex flex-col lg:flex-row lg:h-screen lg:w-screen">
 
-      <!-- 第一欄:作品基本信息,桌面寬度固定在畫面上不隨捲動移動。 -->
-      <aside class="intro-col border-b lg:border-b-0 lg:border-r border-black/10 flex flex-col px-8 lg:h-full lg:flex-[0_0_20.8333%] lg:min-w-[260px]">
-        <div class="col-header border-b border-black/10">
+      <!-- 第一欄:作品基本信息,桌面寬度固定在畫面上不隨捲動移動。
+           pt-20(平板/手機專用,lg:pt-0 取消)是刻意讓出空間給下面
+           <nav> 在 <lg: 寬度時的 fixed 頂欄——理由見 <nav> 那段註解。
+
+           這裡的 .col-header(← BACK)在 <lg: 寬度整個隱藏——2026-09-03
+           改的,Tim 要求平板/手機版「左邊是 back 右邊是 hamburger
+           menu」共用同一排,所以 ← BACK 改成在 <nav> 的 fixed 頂欄裡
+           重新渲染一份(見下面),這裡桌面版專用的這份不能再顯示,不然
+           會同時出現兩個「← BACK」。用 !hidden(強制 important)不是
+           單純 hidden,是因為 .col-header 這個 class 本身在
+           css/style.css 裡定義了 display:flex(固定高度 96px 那條全站
+           共用規則),而且 css/style.css 這個 <link> 在 case-study.html
+           裡排在 Tailwind CDN 的 <script> 後面載入,兩者是同一個
+           specificity(都是單一 class 選擇器)——CSS 疊層規則下「後載入
+           的規則贏」,如果只用普通的 hidden(display:none),.col-header
+           自己的 display:flex 反而會贏,平板/手機版還是看得到這個空的
+           96px 高橫條。加 ! 讓 Tailwind 產生 display:none !important,
+           不管載入順序或 specificity 高低都保證蓋過去。 -->
+      <aside class="intro-col border-b lg:border-b-0 lg:border-r border-black/10 flex flex-col px-8 pt-20 lg:pt-0 lg:h-full lg:flex-[0_0_20.8333%] lg:min-w-[260px]">
+        <div class="col-header border-b border-black/10 !hidden lg:!flex">
           <a href="${backHref}" class="font-geistmono text-xs text-muted hover:text-ink transition-colors">← BACK</a>
         </div>
 
@@ -274,12 +291,73 @@ function buildContinuousHtml(data) {
       <div class="flex flex-col lg:flex-row lg:h-full lg:flex-1">
 
         <!-- 第二欄:章節快轉導覽,獨立一欄(不是疊在第三欄內容上方的
-             sticky 橫條),一樣固定在畫面上。目前捲到哪個 section,對應
-             連結會變 text-ink + 底線,由 initContinuousNavigation() 的
-             IntersectionObserver 驅動,不是純 CSS 能表達的狀態。 -->
-        <nav class="flex flex-col px-8 pt-36 pb-10 lg:h-full lg:flex-[0_0_18%] lg:min-w-[160px]" aria-label="Case study sections">
-          <div class="flex flex-col gap-5">
-            ${nav}
+             橫條),桌面(lg:)固定在畫面上、清單一律展開。目前捲到哪個
+             section,對應連結會變 text-ink + 底線,由
+             initContinuousNavigation() 的 IntersectionObserver 驅動,
+             不是純 CSS 能表達的狀態。
+
+             平板/手機(<lg:)改成 hamburger——2026-09-03 加的,清單預設
+             收合,點擊上面這顆按鈕才展開,不是像桌面版一路把所有
+             section 連結攤開佔掉畫面。這顆按鈕本身要在捲頁時留在畫面上
+             (Tim 要求),用的是 position:fixed 不是 sticky——這裡踩過
+             一個坑:一開始用 sticky top-0,但實測完全沒有貼住,捲動時
+             跟著頁面一起飄走,行為跟 position:static 一模一樣。原因是
+             全站唯一的橫向捲動防護(css/style.css 的
+             html, body { overflow-x: hidden },CLAUDE.md「邊界保護」
+             一節記錄過,不能因為這裡卡住就在其他地方另外加)會讓瀏覽器
+             依照 CSS 規則把 body 的 overflow-y 也強制變成 auto(規格
+             規定:一軸不是 visible 時,另一軸如果是 visible 會被強制
+             改成 auto)——body 因此「看起來」變成一個有捲動機制的容器,
+             sticky 元素會誤把 body 當成離自己最近的捲動祖先,而不是
+             實際真正在捲動、瀏覽器滑鼠滾輪真正作用的 <html> 本身
+             (用 Playwright 量過 document.scrollingElement 是 HTML、
+             body.scrollTop 捲動時完全不動就能確認)。body 沒有真的在
+             捲,套用 sticky 的元素自然跟著整個 body 一起被 html 捲走,
+             跟 static 沒有兩樣。改成 fixed 完全繞開這個問題——fixed
+             是相對「視窗」定位,不看任何祖先的 overflow 設定(除非祖先
+             有 transform,這裡沒有),不管 sticky 的祖先鏈算給誰都不受
+             影響。副作用是 fixed 元素會整個脫離文件流,一開始(還沒
+             捲動時)就會直接蓋在第一欄最上面,所以第一欄(intro-col)
+             加了 pt-20(lg:pt-0 取消)把內容往下推,讓出這個固定頂欄
+             的高度,不是捲到某個位置才出現的「傳統 sticky」語意,是
+             從頁面一開始載入就固定貼在螢幕最上緣的持續頂欄。
+
+             展開的清單改成 position:absolute 疊在內容上方的浮動面板
+             (不是往下推開頁面內容)——因為 nav 本身是 fixed(建立新的
+             定位參考點),清單 absolute 定位天然就是相對這個 fixed nav
+             的 padding box,不需要另外算座標。#continuousNavToggle 這顆
+             按鈕 lg:hidden(桌面版完全不出現),展開/收合的 GSAP 動畫
+             只在 (max-width: 1023px) 這個 matchMedia 範圍內註冊,寬度
+             跨過 lg: 斷點時會自動收掉(revert),不會殘留寫死的 inline
+             height 卡住桌面版一路展開的清單。 -->
+        <nav class="fixed inset-x-0 top-0 z-20 flex flex-col border-b border-black/10 bg-cream px-8 py-6 lg:static lg:inset-auto lg:z-auto lg:border-b-0 lg:pb-10 lg:pt-36 lg:h-full lg:flex-[0_0_18%] lg:min-w-[160px]" aria-label="Case study sections">
+          <!-- <lg: 專用的一排:左邊 ← BACK、右邊 hamburger——Tim 明確要求
+               這兩個共用同一排,不是各自獨立一行。← BACK 桌面版原本在
+               第一欄自己的 .col-header 裡(見上面 aside 那段),這裡是
+               <lg: 專用的第二份,兩者用 lg:hidden / lg:!flex 互斥顯示,
+               不會同時出現兩個「← BACK」。 -->
+          <div class="flex items-center justify-between lg:hidden">
+            <a href="${backHref}" class="font-geistmono text-xs text-muted transition-colors hover:text-ink">← BACK</a>
+            <button type="button" id="continuousNavToggle" class="flex items-center gap-2 font-geistmono text-xs uppercase text-label transition-colors hover:text-ink" aria-expanded="false" aria-controls="continuousNavList">
+              <svg id="continuousNavToggleIcon" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+              <span>Sections</span>
+            </button>
+          </div>
+          <!-- 收合動畫 tween 的是 #continuousNavList 這個外層的
+               height,自己不能有 padding——box-sizing:border-box 下,
+               height:0 沒辦法把 padding 也一起壓成 0,padding 會撐出一個
+               最小高度,inline height:0 形同虛設,清單永遠留一截沒收乾淨
+               (這個坑已經在加這個功能時親自踩過:量出來 inline style 明明
+               是 height:0px,computed height 卻還是 py-6 撐出來的
+               ~49px)。修法是把視覺樣式(padding/背景/邊框/陰影)移到
+               裡面這層 div,外層只負責 absolute 定位 + overflow:hidden +
+               動畫的 height,兩層責任分開,不是同一層身兼二職。 -->
+          <div id="continuousNavList" class="absolute inset-x-0 top-full overflow-hidden lg:!static lg:!inset-auto lg:!mt-0 lg:!h-auto lg:!overflow-visible">
+            <div class="flex flex-col gap-5 border-b border-black/10 bg-cream px-8 py-6 shadow-[0_8px_24px_rgba(0,0,0,0.08)] lg:!border-b-0 lg:!bg-transparent lg:!px-0 lg:!py-0 lg:!shadow-none">
+              ${nav}
+            </div>
           </div>
         </nav>
 
@@ -466,10 +544,23 @@ function buildContinuousCarousel(items, groupId) {
     <button type="button" class="carousel-dot w-2 h-2 rounded-full transition-colors ${i === 0 ? 'bg-ink' : 'bg-black/15'}" data-dot-index="${i}" aria-label="View image ${i + 1} of ${items.length}"></button>
   `).join('\n');
 
+  // 左右翻頁箭頭——圓形按鈕沿用手風琴收合按鈕的既有視覺語言(w-9/w-10
+  // + rounded-full + border-black/15),不是另外發明新樣式;背景用
+  // bg-cream/90(半透明米白)蓋在素材上,不管底下的圖片/影片顏色深淺
+  // 都能維持可辨識度,跟 lightbox 深色背景那組箭頭(白框白字)分屬兩種
+  // 情境各自對應的配色,不是同一份 CSS。這兩顆按鈕是 viewport 的
+  // 直接子元素(跟 .carousel-slide 同層,不是塞進 slide 裡面),點擊
+  // 不會被 initLightbox() 誤判成點了圖片本身。
   return `
     <div class="continuous-carousel w-full" data-carousel-id="${groupId}">
       <div class="continuous-carousel-viewport relative w-full overflow-hidden" style="height: 400px">
         ${slides}
+        <button type="button" class="carousel-arrow carousel-arrow-prev absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/15 bg-cream/90 transition-colors hover:bg-cream lg:h-10 lg:w-10" aria-label="Previous image">
+          <svg class="h-4 w-4 text-ink lg:h-5 lg:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <button type="button" class="carousel-arrow carousel-arrow-next absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/15 bg-cream/90 transition-colors hover:bg-cream lg:h-10 lg:w-10" aria-label="Next image">
+          <svg class="h-4 w-4 text-ink lg:h-5 lg:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+        </button>
       </div>
       <div class="mt-4 flex items-center justify-center gap-2">
         ${dots}
@@ -520,15 +611,84 @@ function initContinuousNavigation(mount) {
     const section = mount.querySelector(link.getAttribute('href'));
     if (section) observer.observe(section);
   });
+
+  initContinuousNavHamburger(mount);
+}
+
+// 平板/手機(<lg:)的章節導覽收合成 hamburger——桌面版完全不受影響
+// (#continuousNavToggle 本身是 lg:hidden,清單也用 lg:!static 等一整組
+// !important 覆蓋強制恢復成桌面版的一般排版,理由見 buildContinuousHtml()
+// 的註解)。這裡只處理 <lg: 那段寬度的展開/收合互動,用
+// gsap.matchMedia() 把邏輯限定在 `(max-width: 1023px)` 範圍內——跨過
+// lg: 斷點時 GSAP 會自動 revert 掉用 gsap.set/to 設過的 inline height,
+// 不會殘留一個把清單卡在收合狀態的 inline style;但 DOM 事件監聽器不在
+// GSAP 的自動 revert 範圍內,所以自己回傳一個 cleanup 函式手動移除,
+// 避免使用者把視窗寬度來回拖過 lg: 斷點時,同一個按鈕疊加好幾個重複的
+// click 監聽器。
+//
+// 按鈕本身在 buildContinuousHtml() 裡是 sticky top-0——Tim 要求捲頁時
+// hamburger 要留在畫面上,不要跟著捲走。展開的清單因此也改成
+// position:absolute 疊在內容上方的浮動面板(不是往下推開頁面內容,
+// 那樣會讓 sticky 的按鈕在展開瞬間跳著長高、擠壓下面的內容,體感很
+// 奇怪)——面板打開時多加一個 document 層級的 click 監聽器,點擊 nav
+// 以外的任何地方會自動收合,不用強迫使用者一定要點連結或再點一次
+// hamburger 才能關掉這個蓋在內容上方的浮動選單。
+function initContinuousNavHamburger(mount) {
+  const nav = mount.querySelector('nav[aria-label="Case study sections"]');
+  const toggle = mount.querySelector('#continuousNavToggle');
+  const list = mount.querySelector('#continuousNavList');
+  const icon = mount.querySelector('#continuousNavToggleIcon path');
+  if (!nav || !toggle || !list) return;
+
+  const HAMBURGER_PATH = 'M4 7h16M4 12h16M4 17h16';
+  const CLOSE_PATH = 'M6 6l12 12M6 18L18 6';
+  const DURATION = 0.3;
+  const EASE = 'power2.inOut';
+
+  const mm = gsap.matchMedia();
+
+  mm.add('(max-width: 1023px)', () => {
+    let isOpen = false;
+
+    gsap.set(list, { height: 0, overflow: 'hidden' });
+    toggle.setAttribute('aria-expanded', 'false');
+    if (icon) icon.setAttribute('d', HAMBURGER_PATH);
+
+    function setOpen(next) {
+      isOpen = next;
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      if (icon) icon.setAttribute('d', isOpen ? CLOSE_PATH : HAMBURGER_PATH);
+      gsap.to(list, { height: isOpen ? 'auto' : 0, duration: DURATION, ease: EASE });
+    }
+
+    function handleToggleClick() {
+      setOpen(!isOpen);
+    }
+
+    function handleDocumentClick(event) {
+      if (isOpen && !nav.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    toggle.addEventListener('click', handleToggleClick);
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+      toggle.removeEventListener('click', handleToggleClick);
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  });
 }
 
 // 連續閱讀版面的輪播切換邏輯——只處理 buildContinuousCarousel() 產出的
 // .continuous-carousel(單張素材不會有這個 class,不受影響)。點擊下方
-// 圓點時用 GSAP autoAlpha 交叉淡出淡入(跟全站其他換圖/開關動畫同一個
-// 慣例),不是硬切。autoAlpha 到 0 時會自動加 visibility:hidden,連帶
-// 讓沒在顯示的那幾張不會被 lightbox 點到或用 Tab 取得焦點,不需要另外
-// 管 pointer-events。prefers-reduced-motion 時直接把 duration 歸零,
-// 沿用 CLAUDE.md 記錄過的 reduced-motion 處理原則,不用另外寫一條分支。
+// 圓點或左右箭頭時用 GSAP autoAlpha 交叉淡出淡入(跟全站其他換圖/開關
+// 動畫同一個慣例),不是硬切。autoAlpha 到 0 時會自動加
+// visibility:hidden,連帶讓沒在顯示的那幾張不會被 lightbox 點到或用
+// Tab 取得焦點,不需要另外管 pointer-events。prefers-reduced-motion
+// 時直接把 duration 歸零,沿用 CLAUDE.md 記錄過的 reduced-motion 處理
+// 原則,不用另外寫一條分支。
 //
 // viewport(.continuous-carousel-viewport)的高度是動態量測「目前顯示
 // 的那張」自然渲染高度後設定的,不是寫死的固定值——素材維持原始尺寸
@@ -537,17 +697,29 @@ function initContinuousNavigation(mount) {
 // 也跟著平滑變化,不是瞬間跳動。等待素材載入完成才量測的作法(img
 // complete/load、video readyState/loadedmetadata)跟 initMediaColumnHeights()
 // 對圖片/影片的既有慣例一致。
+//
+// 2026-09-03 加了自動播放(每 2 秒換下一張,循環)——只要有滑鼠可以
+// hover 到輪播範圍內(mouseenter),或分頁切到背景/隱藏(visibilitychange
+// 的 document.hidden),就暫停,離開/切回來才繼續,避免使用者想仔細看
+// 或點按鈕時被自動跳圖打斷。手動點圓點/箭頭切換後也會重新從頭計時
+// (restartAutoplay()),不是繼續沿用舊的 2 秒倒數,不然手動選好一張的
+// 瞬間可能下一秒就被自動播放蓋掉,體感很奇怪。prefers-reduced-motion
+// 時完全不啟動自動播放(圓點/箭頭手動切換還是正常可用),沿用全站對
+// 動態效果的 reduced-motion 處理慣例。
 function initContinuousCarousels(mount) {
   const carousels = Array.from(mount.querySelectorAll('.continuous-carousel'));
   if (carousels.length === 0) return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const duration = reduceMotion ? 0 : 0.3;
+  const AUTOPLAY_INTERVAL_MS = 2000;
 
   carousels.forEach((carousel) => {
     const viewport = carousel.querySelector('.continuous-carousel-viewport');
     const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
     const dots = Array.from(carousel.querySelectorAll('.carousel-dot'));
+    const prevBtn = carousel.querySelector('.carousel-arrow-prev');
+    const nextBtn = carousel.querySelector('.carousel-arrow-next');
     if (!viewport || slides.length <= 1) return;
 
     let activeIndex = 0;
@@ -580,9 +752,58 @@ function initContinuousCarousels(mount) {
       activeIndex = index;
     }
 
+    function goToNext() {
+      goTo((activeIndex + 1) % slides.length);
+    }
+
+    function goToPrev() {
+      goTo((activeIndex - 1 + slides.length) % slides.length);
+    }
+
+    let autoplayTimer = null;
+    function stopAutoplay() {
+      if (autoplayTimer !== null) {
+        window.clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+    function startAutoplay() {
+      if (reduceMotion) return;
+      stopAutoplay();
+      autoplayTimer = window.setInterval(goToNext, AUTOPLAY_INTERVAL_MS);
+    }
+    function restartAutoplay() {
+      startAutoplay();
+    }
+
     dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => goTo(i));
+      dot.addEventListener('click', () => {
+        goTo(i);
+        restartAutoplay();
+      });
     });
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        goToPrev();
+        restartAutoplay();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        goToNext();
+        restartAutoplay();
+      });
+    }
+
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', startAutoplay);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAutoplay();
+      else startAutoplay();
+    });
+
+    startAutoplay();
 
     slides.forEach((slide, i) => {
       Array.from(slide.querySelectorAll('img, video')).forEach((el) => {
