@@ -19,7 +19,7 @@ const CASE_STUDY_DATA = {
       
     ],
     media: [
-      { type: 'video', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/A Message To The End/Overview/Project_ShowCase_Subtitled.mp4', afterParagraph: -1 },
+      { type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/MOCKUP/MOCKUP_1_1.png', afterParagraph: -1 },
     ],
   },
 
@@ -29,7 +29,7 @@ const CASE_STUDY_DATA = {
         content:[
             {
                 title:'Learning From Secondary Sources',
-                text:'I reviewed published research and public caregiver stories about autism, emotional regulation, family support, and access to services. These stories were synthesized into a Composite Caregiver Journey rather than presented as direct interviews.'
+                text:'I reviewed published research and caregiver stories about autism, emotional regulation, family support, and access to services, while also interviewing three parents of autistic children to understand their firsthand experiences.'
             },
             {
                 title:'The Context Gap',
@@ -40,6 +40,18 @@ const CASE_STUDY_DATA = {
                 align:'center',
                 text:'“How might we help caregivers and autistic children turn everyday observations into shared understanding, so support can become more confident, coordinated, and increasingly self-directed over time?”'
             }
+        ],
+        media:[
+            {
+                type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/IMG/User%20Research.png', afterParagraph:-1,
+            },
+            {
+                type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/IMG/user-journey-map.png', afterParagraph:0,
+            },
+            {
+                type: 'image', src: 'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/IMG/INSIGHT.png', afterParagraph:1,
+            }
+
         ]
     },
     {
@@ -52,6 +64,45 @@ const CASE_STUDY_DATA = {
             {
                 title:'From Caregiver-Led Support to Self-Directed Agency',
                 text:'During early support, caregivers may take greater responsibility for documenting context and coordinating care. As the child grows, participation, consent, privacy, and ownership should gradually shift toward shared decision-making and self-directed support.',
+            },
+        ],
+        media:[
+            {
+                type: 'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/IMG/INFORAMTION%20ARCHITECTURE.png',afterParagraph:-1
+            },
+            {
+                type: 'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/IMG/INFORAMTION%20ARCHITECTURE-1.png',afterParagraph:-1
+
+            }
+        ]
+    },
+    {
+        title:'CORE EXPERIENCE',
+        content:[
+            {
+                title:'Capture First, Clarify Later',
+                text:'Caregivers can quickly type or speak what they noticed before important details are forgotten. AI then asks focused questions about missing context, communication, support, and outcomes. The caregiver reviews and edits the structured observation before saving or sharing it. AI guides clarification; it does not diagnose the child or decide what an event means.'
+            },
+            {
+                title:'See Patterns Without Losing Context',
+                text:'Daily, weekly, and monthly reports organize recorded observations into recurring situations, supports, and outcomes. Every summarized pattern remains linked to its original observations so caregivers can review the evidence before acting on it.',
+            },
+            {
+                title:'Connect With Professional Support',
+                text:'Caregivers can prepare for appointments by selecting relevant observations, reports, and questions. Information remains private by default and is shared only with chosen professionals or care-team members.'
+            },
+            {
+                title:'A Calm and Structured Interface',
+                text:'The visual system uses a restrained teal palette, generous spacing, clear hierarchy, and reusable components to make sensitive information feel understandable without appearing diagnostic or clinical.'
+            }
+        ]
+    },
+    {
+        title:'OUTCOME & NEXT VALIDATION',
+        content:[
+            {
+                title:'What the Prototype Established',
+                text:'The prototype connects AI-guided observation, evidence-linked reports, controlled sharing, and professional support within one coherent care experience. A shared Care Space preserves visible authorship and allows different caregivers to contribute without merging their records into one anonymous account.'
             },
         ]
     }
