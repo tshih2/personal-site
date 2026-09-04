@@ -118,14 +118,18 @@ const CASE_STUDY_DATA = {
             },
         ]
     },
-    // {
-    //     title:'OUTCOME & NEXT VALIDATION',
-    //     content:[
-    //         {
-    //             title:'What the Prototype Established',
-    //             text:'The prototype connects AI-guided observation, evidence-linked reports, controlled sharing, and professional support within one coherent care experience. A shared Care Space preserves visible authorship and allows different caregivers to contribute without merging their records into one anonymous account.'
-    //         },
-    //     ]
-    // }
+    {
+        title:'OUTCOME & NEXT VALIDATION',
+        content:[
+            {
+                title:'Research-Informed Iteration',
+                text:'Interviews with three parents of autistic children, followed by ongoing message-based feedback, informed two prototype iterations. The second iteration revised how children’s information was recorded and introduced a professional appointment-booking flow in response to parents’ stated needs. Faculty feedback recognized the continuity between the research, caregivers’ emotional experiences, and the resulting product decisions.'
+            },
+            {
+                title:'PROTOTYPE OUTCOME AND NEXT VALIDATION',
+                text:'The final Figma prototype established an age-progressive care model: caregiver-led documentation for children ages 2–7 gradually transitions toward greater participation, consent, and ownership for the child. Daily, weekly, and monthly summaries connect recorded observations with preparation for professional conversations. The prototype was not usability-tested by the interviewed parents or clinical professionals. The next step would be to evaluate whether families can record observations clearly, understand the reports, trust the sharing controls, and confidently prepare for appointments.'
+            },
+        ]
+    },  
   ],
 };

@@ -44,8 +44,12 @@ const CASE_STUDY_DATA = {
       title: 'OUTCOME',
       content: [
         {
-          title:'What I Learned',
-          text:'The project showed me that a useful product does not always need to replace an entire activity. By preserving how my family already scores and communicates, I could focus on the one coordination problem that technology was well suited to solve.'
+          title:'LIVE FAMILY USE',
+          text:'The deployed app is now used by 13 family members across 11 Mahjong sessions. A shared real-time ledger replaced fragmented LINE score updates, while multiple rooms support simultaneous tables and zero-sum validation prevents invalid settlements.'
+        },
+        {
+          title:'WHAT THE PROJECT DEMONSTRATED',
+          text:'Live use showed that the most useful intervention was not replacing how my family plays Mahjong, but strengthening the missing coordination layer. The project also demonstrated my ability to translate interaction decisions into a maintained product, including an automated workflow that runs every 48 hours to keep the service available between irregular family gatherings.'
         }
       ],
     },

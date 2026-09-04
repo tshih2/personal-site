@@ -116,12 +116,12 @@ const CASE_STUDY_DATA = {
       title: 'OUTCOME & REFLECTION',
       content: [
         {
-          title:'What the Prototype Demonstrated',
-          text:'OkoEcho demonstrates how environmental research can be translated into a focused information architecture, behavioral loop, visual system, and high-fidelity product concept. It presents a coherent interaction direction, but does not prove data accuracy, sustained behavior change, or user trust.',
+          title:'TESTING-LED ITERATION',
+          text:'I conducted three interviews with people living in Berlin followed by two rounds of prototype testing and iteration. Feedback led me to refine the interface and introduce the Resonance Map, which allows users to compare personal activity with signals from friends and surrounding neighborhoods. Participants responded positively to the map’s ability to make collective behavior visible, suggesting that community-level feedback could encourage people to reflect on their own choices.',
         },
         {
-          title:'Next Step',
-          text:'The next iteration should focus on one measurable behavior, such as transportation. Testing a narrower experience would make it possible to evaluate the feedback language, calculation transparency, permission model, and motivational value before expanding the system.',
+          title:'WHAT THE PROTOTYPE DEMONSTRATED',
+          text:'The final Figma prototype connected three core ideas—personal carbon tracking, shared city signals, and practical rewards—into one behavioral loop. It established a coherent product and visual direction, but did not prove carbon-data accuracy or sustained behavior change. A future iteration should test one measurable behavior before expanding the system.',
         }
 ],
       media: [

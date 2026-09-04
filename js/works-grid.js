@@ -76,7 +76,7 @@ function isVideoThumbnail(src) {
 }
 
 // 單張卡片——樣式沿用既有 All Works 卡片慣例(bg-card 色塊、
-// rounded-xl 容器 + rounded 縮圖、hover 微放大 + 圖片變暗疊層),
+// rounded-2xl 容器、hover 微放大 + 圖片變暗疊層),
 // WORKS/BLOG/PLAY 三種資料共用同一份卡片樣板,不是各自客製一份。沒有
 // thumbnail 時就不渲染 <img>,色塊本身當佔位框,跟原本「還沒有素材」
 // 的卡片視覺一致,不會報錯或留白。numberPrefix/cropThumbnail 只有
@@ -115,11 +115,22 @@ function buildWorkCard(item, numberPrefix, cropThumbnail) {
   // 縮圖不再用內距把圖片跟卡片邊緣隔開(2026-08-26 拿掉原本
   // p-[clamp(1.25rem,3.5vw,3rem)] 那層「相框」留白)——Tim 要圖片滿版
   // 貼齊卡片邊緣,不要周圍那圈 bg-card 留白像裱框。原本外層「相框」
-  // rounded-xl + 內層縮圖 rounded 兩層圓角,合併成單層容器直接套
-  // rounded-xl,不再需要兩層 div。
+  // rounded-xl + 內層縮圖 rounded 兩層圓角,合併成單層容器。
+
+  // 2026-09-03 圓角統一:rounded-xl(12px)改成 rounded-2xl(16px)——
+  // 這個縮圖容器實際渲染尺寸動輒 600px 以上寬,12px 的圓角換算成視覺
+  // 上幾乎看不出來,跟首頁其他小尺寸元件(標籤膠囊、社群連結按鈕、
+  // 手風琴收合圓鈕都是 rounded-full,依各自 30-40px 高度換算出來的
+  // 實際圓角半徑落在 13-18px 左右)擺在一起,「圓角感」明顯對不上。
+  // 大容器不能直接套 rounded-full(整個變成橢圓形太誇張),但可以把
+  // 固定半徑加大到跟小元件的實際圓角半徑同一個量級,讓大小元件的
+  // 轉角視覺上讀起來像同一套語言,不是分成「幾乎方形」跟「膠囊形」
+  // 兩種不相關的風格。首頁浮動 nav 列(index.html)則反過來直接加上
+  // rounded-full——它本身高度矮(~50-70px),跟其他 pill/圓鈕屬於
+  // 同一個尺寸量級,直接套滿圓角就能跟它們一致,不需要另外算數字。
   return `
     <a href="${item.href || '#'}" class="group relative block cursor-pointer">
-      <div class="relative aspect-[4/3] rounded-xl overflow-hidden bg-card transition-transform duration-300 ease-out group-hover:scale-[1.01]">
+      <div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card transition-transform duration-300 ease-out group-hover:scale-[1.01]">
         ${media}
         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300"></div>
       </div>

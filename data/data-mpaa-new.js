@@ -76,20 +76,13 @@ const CASE_STUDY_DATA = {
       title: 'OUTCOME',
       content:[
       {
-        text: 'The nonprofit dashboard brings proposals, requests, reminders, and progress updates into a shared view. This responds to the interview finding that collaboration already occurred, but coordination was dispersed and difficult to sustain alongside other responsibilities.',
+        title: 'FROM RESEARCH TO SPONSOR PROPOSAL',
+        text: 'Over 14 weeks, our three-person team translated an in-depth interview with Art Division and three sponsor sessions into two iterations of a multi-audience platform prototype. I co-created the information architecture and owned the AI-assisted partnership proposal concept, event discovery and registration flow, and nonprofit dashboard.',
       },
       {
-        title: 'What the prototype demonstrated',
-        text: 'The prototype showed how the dashboard could centralize collaboration tasks, providing a clear view of proposals, requests, reminders, and progress updates. This helped demonstrate the potential to reduce administrative burden and improve coordination among nonprofit teams.',
+        title:'WHAT THE PROTOTYPE DEMONSTRATED',
+        text: 'The final Figma prototype demonstrated how one platform could connect nonprofits, funders, and the public through shared activities, collaboration proposals, and visible community impact. We presented the final concept to MPAA stakeholders, and the student collaboration was later featured in an official MPAA video. A later MPAA website reflects a similar direction around profiles, partnerships, events, and resource exchange. This represents continuity in the organization’s public direction, but is not proof that specific screens or features from our prototype were implemented.',
       },
-      {
-        title:'A direction that later appeared in public',
-        text: 'A later Mary Pickford Arts Alliance website presents a similar mission around nonprofit profiles, partnerships, projects, resource exchange, and volunteer engagement. This is a retrospective comparison based on the public site—not verified evidence that specific screens or features were implemented from our prototype.',
-      },
-      {
-        title: 'Reflection',
-        text: 'The project strengthened my ability to translate qualitative research into product strategy, structure a multi-sided information system, and communicate a complex proposal to stakeholders. It also taught me to separate the promise of an AI-assisted concept from what a design prototype can actually prove.',
-      }
       ],
     },
   ],
