@@ -2,7 +2,7 @@ const CASE_STUDY_DATA = {
   layout: 'continuous',
   title: 'KINDRED',
   category: 'PRODUCT DESIGN / UI / UX',
-  intro: 'A shared care and observation platform that helps families preserve everyday context, coordinate support, and prepare for professional conversations—without attempting to read or diagnose a child’s emotions<span class="block mt-12 font-geistmono text-xs uppercase text-label">My Role</span><span class="block mt-3 font-geist text-xs leading-[1.6] text-muted">I developed the research synthesis, composite caregiver journey, information architecture, core interaction flows, visual system, and high-fidelity mobile prototype.</span>',
+  intro: 'Kindred is a shared care and observation platform that helps parents of autistic children preserve everyday context, coordinate support across caregivers and professionals, and prepare for more informed conversations, without attempting to interpret or diagnose a child’s emotions.<span class="block mt-12 font-geistmono text-xs uppercase text-label">My Role</span><span class="block mt-3 font-geist text-xs leading-[1.6] text-muted">I developed the research synthesis, composite caregiver journey, information architecture, core interaction flows, visual system, and high-fidelity mobile prototype.</span>',
   author: 'CREATED BY TIM SHIH — WINTER 2022',
   backHref: 'index.html',
 
@@ -10,7 +10,7 @@ const CASE_STUDY_DATA = {
     content: [
       {
         title:'Connecting Everyday Care With Professional Support',
-        text:'Families often build valuable knowledge about a child’s communication, routines, preferences, and effective supports. However, that context can become fragmented across family members, schools, and care professionals. Kindred explores how everyday observations could become structured, traceable information that families can review and selectively share with trusted members of a care team.'
+        text:'Parents of autistic children develop valuable knowledge about their child’s communication, routines, preferences, and what support works for them. Yet this understanding is often scattered across conversations with family members, teachers, and care professionals. Kindred explores how parents can turn everyday observations into organized records that preserve the original context and can be selectively shared with trusted members of their child’s care team.'
       },
        {
         title:'Prototype Status',
@@ -28,8 +28,8 @@ const CASE_STUDY_DATA = {
         title:'RESEARCH & PROBLEM FRAMING',
         content:[
             {
-                title:'Learning From Secondary Sources',
-                text:'I reviewed published research and caregiver stories about autism, emotional regulation, family support, and access to services, while also interviewing three parents of autistic children to understand their firsthand experiences.'
+                title:'Parent Interviews & Research',
+                text:'I interviewed three parents of autistic children to understand their everyday interactions with their child and how their emotional experiences had evolved as their child grew. These conversations explored parents’ reflections on their experiences over time. I complemented the interviews with published research and caregiver stories about autism, emotional regulation, family support, and access to services.'
             },
             {
                 title:'The Context Gap',
@@ -38,7 +38,7 @@ const CASE_STUDY_DATA = {
             {
                 style:'quote',
                 align:'center',
-                text:'“How might we help caregivers and autistic children turn everyday observations into shared understanding, so support can become more confident, coordinated, and increasingly self-directed over time?”'
+                text:'“How might we help parents and autistic children build shared understanding from everyday experiences, so they can make care decisions together?”'
             }
         ],
         media:[
@@ -63,7 +63,7 @@ const CASE_STUDY_DATA = {
             },
             {
                 title:'From Caregiver-Led Support to Self-Directed Agency',
-                text:'During early support, caregivers may take greater responsibility for documenting context and coordinating care. As the child grows, participation, consent, privacy, and ownership should gradually shift toward shared decision-making and self-directed support.',
+                text:'Caregivers may initially take the lead in documenting observations and coordinating care because children may need help recording their experiences, using tools, or managing care arrangements. Because these records concern the child’s own life, Kindred’s long-term direction is to support children in expressing their preferences from the start and gaining a greater say in what is recorded, what is shared, and how they are supported. Participation should adapt to each child’s communication preferences and support needs, with caregivers helping them express and act on their choices.',
             },
         ],
         media:[
@@ -81,7 +81,7 @@ const CASE_STUDY_DATA = {
         content:[
             {
                 title:'Capture First, Clarify Later',
-                text:'Caregivers can quickly type or speak what they noticed before important details are forgotten. AI then asks focused questions about missing context, communication, support, and outcomes. The caregiver reviews and edits the structured observation before saving or sharing it. AI guides clarification; it does not diagnose the child or decide what an event means.'
+                text:'In this prototype flow, caregivers type or speak a quick observation before details are forgotten. AI asks follow-up questions to clarify what happened, the surrounding context, what support was offered, and what followed. The responses become an organized report that caregivers can review and edit before saving or sharing. AI helps clarify the observation without diagnosing the child or determining the cause of an event.'
             },
             {
                 title:'See Patterns Without Losing Context',
@@ -111,7 +111,7 @@ const CASE_STUDY_DATA = {
                 type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/Color%20Palette%20%2B%20Type.png', afterParagraph:2,
             },
             {
-                type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/COMPONENTS.png',afterParagraph:2,
+                type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/COMPONENTS_2.png',afterParagraph:2,
             },
             {
                 type:'image', src:'https://pub-8db552ff737f4c078c20b51e96636eb5.r2.dev/Img/KINDRED/DESIGN%20SYSTEM/ICON.png', afterParagraph:2

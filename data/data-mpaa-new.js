@@ -28,16 +28,16 @@ const CASE_STUDY_DATA = {
       title: 'RESEARCH',
       content: [
         {
-          text: 'Working with the Mary Pickford Foundation, we aimed to bridge the gap between Los Angeles arts nonprofits by designing a platform that could make partnerships, shared resources, and collaborative events easier to initiate and sustain.',
+          text: 'We interviewed Art Division’s lead graphic designer, whose overlapping roles reflected how small arts organizations operate. We learned that partnerships often begin informally through personal connections, but limited time and shared infrastructure make them difficult to sustain.',
         },
         {
           title: 'INSIGHT',
-          text: 'Small nonprofit teams carry overlapping responsibilities while depending on donations to provide free programs and materials. Collaboration often relies on personal connections, and organizations lack the time, staffing, and shared infrastructure to consistently discover partners, coordinate resources, and follow through on new opportunities. This question highlights the need for a more intuitive way for content creators to manipulate generated characters.’'
+          text: 'Small nonprofit teams carry overlapping responsibilities while depending on donations to provide free programs and materials. Collaboration often relies on personal connections, and organizations lack the time, staffing, and shared infrastructure to consistently discover partners, coordinate resources, and follow through on new opportunities.’'
         },
         {
           style: 'quote',
           align: 'center',
-          text: '”How might we help local nonprofits turn scattered relationships and resources into structured, mutually beneficial collaborations—without adding more administrative work to already stretched teams?’'
+          text: '”How might we help local nonprofits turn scattered relationships and resources into structured, mutually beneficial collaborations without adding more administrative work to already stretched teams?’'
         },
       ],
       media: [
@@ -77,11 +77,11 @@ const CASE_STUDY_DATA = {
       content:[
       {
         title: 'FROM RESEARCH TO SPONSOR PROPOSAL',
-        text: 'Over 14 weeks, our three-person team translated an in-depth interview with Art Division and three sponsor sessions into two iterations of a multi-audience platform prototype. I co-created the information architecture and owned the AI-assisted partnership proposal concept, event discovery and registration flow, and nonprofit dashboard.',
+        text: 'Over 14 weeks, our three person team translated an in-depth interview with Art Division and three sponsor sessions into two iterations of a multi-audience platform prototype. I created the information architecture and owned the AI-assisted partnership proposal concept, event discovery and registration flow, and nonprofit dashboard.',
       },
       {
         title:'WHAT THE PROTOTYPE DEMONSTRATED',
-        text: 'The final Figma prototype demonstrated how one platform could connect nonprofits, funders, and the public through shared activities, collaboration proposals, and visible community impact. We presented the final concept to MPAA stakeholders, and the student collaboration was later featured in an official MPAA video. A later MPAA website reflects a similar direction around profiles, partnerships, events, and resource exchange. This represents continuity in the organization’s public direction, but is not proof that specific screens or features from our prototype were implemented.',
+        text: 'The final Figma prototype demonstrated how one platform could connect nonprofits, funders, and the public through shared activities, collaboration proposals, and visible community impact. We presented the final concept to MPAA stakeholders, and the student collaboration was later featured in an official MPAA video. A later MPAA website reflects a similar direction around profiles, partnerships, events, and resource exchange. This represents continuity in the organization’s public direction.',
       },
       ],
     },
